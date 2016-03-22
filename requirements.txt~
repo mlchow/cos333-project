@@ -10,3 +10,5 @@ itsdangerous==0.23
 wsgiref==0.1.2
 psycopg2>=2.6
 sqlalchemy>=0.6
+postgresql>=9.4
+flask-sqlalchemy>=2.1
