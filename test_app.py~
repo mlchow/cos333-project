@@ -49,7 +49,14 @@ def parse_transcript(transcript):
 		pdf = pdfquery.PDFQuery(transcript)
 	except:
 		return render_template('index.html')
-	
+	conn = psycopg2.connect(
+		database=url.path[1:],
+		user=url.username,
+		password=url.password,
+		host=url.hostname,
+		port=url.port
+	)
+	curr = conn.cursor()
 	pdf.load(0) # arg(s) are the pages to consider
 	label = pdf.pq('LTTextLineHorizontal:contains("Name: ")')
 	name = label.text()
@@ -85,15 +92,19 @@ def parse_transcript(transcript):
 	        courses.append(clas)
 	#print clas
 	label = pdf.pq('LTTextLineHorizontal:contains("SPF")')
-	for lab in label("LTTextLineHorizontal"):                                      
-	    top_corner = float(lab.attrib['y0'])
-	    bottom_corner = float(lab.attrib['y1'])
-	    clas = pdf.pq('LTTextLineHorizontal:in_bbox("%s, %s, %s, %s")' % (0, top_corner, 620, bottom_corner)).text()
-	    if clas[3] == " ":
-	        courses.append(clas)
+	for lab in label("LTTextLineHorizontal"):                             
+		top_corner = float(lab.attrib['y0'])
+		bottom_corner = float(lab.attrib['y1'])
+		clas = pdf.pq('LTTextLineHorizontal:in_bbox("%s, %s, %s, %s")' % (0, top_corner, 620, bottom_corner)).text()
+		if clas[3] == " ":
+			courses.append(clas)
 	#print clas
 	student['courses'] = courses
 	studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
+	curr.execute("INSERT INTO Users VALUES (%s,%s,%s)",(student['name'],student['degree'],student['major']))
+	conn.commit()
+	curr.close()
+	conn.close()
 	return '<html><head><title></title></head><body><h1>Your Progress</h2>'+studentinfo+'</body></html>'
 	#print student
 

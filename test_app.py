@@ -9,7 +9,7 @@ app = Flask(__name__)
 # connect to database
 
 #urlparse.uses_netloc.append("postgres")
-url_s = os.environ["postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk"]
+url_s = os.environ["DATABASE_URL"]
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(url_s)
 
