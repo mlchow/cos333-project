@@ -1,21 +1,32 @@
 import os,psycopg2,urlparse
 from flask import Flask, request
 from flask import render_template
+#from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+# http://blog.y3xz.com/blog/2012/08/16/flask-and-postgresql-on-heroku
 # connect to database
 
+#urlparse.uses_netloc.append("postgres")
+url_s = os.environ["postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk"]
 urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ["postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk"])
+url = urlparse.urlparse(url_s)
 
-conn = psycopg2.connect(
-    database=url.path[1:],
-    user=url.username,
-    password=url.password,
-    host=url.hostname,
-    port=url.port
-)
+#app.config['SQLALCHEMY_DATABASE_URI'] = url
+#db = SQLAlchemy(app)
+
+#class User(db.Model):
+ #   id = db.Column(db.Integer, primary_key=True)
+  #  name = db.Column(db.String(80))
+   # email = db.Column(db.String(120), unique=True)
+
+    #def __init__(self, name, email):
+     #   self.name = name
+      #  self.email = email
+
+    #def __repr__(self):
+     #   return '<Name %r>' % self.name
 
 # Under MIT License
 
@@ -38,6 +49,7 @@ def parse_transcript(transcript):
 		pdf = pdfquery.PDFQuery(transcript)
 	except:
 		return render_template('index.html')
+	
 	pdf.load(0) # arg(s) are the pages to consider
 	label = pdf.pq('LTTextLineHorizontal:contains("Name: ")')
 	name = label.text()
@@ -82,8 +94,6 @@ def parse_transcript(transcript):
 	#print clas
 	student['courses'] = courses
 	studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
-	for course in student['courses']:
-		studentinfo = studentinfo + course + '<br />'
 	return '<html><head><title></title></head><body><h1>Your Progress</h2>'+studentinfo+'</body></html>'
 	#print student
 

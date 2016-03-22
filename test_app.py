@@ -1,7 +1,7 @@
-import os,psycopg2 #,urlparse
+import os,psycopg2,urlparse
 from flask import Flask, request
 from flask import render_template
-from flask.ext.sqlalchemy import SQLAlchemy
+#from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -9,30 +9,24 @@ app = Flask(__name__)
 # connect to database
 
 #urlparse.uses_netloc.append("postgres")
-url = os.environ["postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk"]
+url_s = os.environ["postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk"]
+urlparse.uses_netloc.append("postgres")
+url = urlparse.urlparse(url_s)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = url
-db = SQLAlchemy(app)
+#app.config['SQLALCHEMY_DATABASE_URI'] = url
+#db = SQLAlchemy(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    email = db.Column(db.String(120), unique=True)
+#class User(db.Model):
+ #   id = db.Column(db.Integer, primary_key=True)
+  #  name = db.Column(db.String(80))
+   # email = db.Column(db.String(120), unique=True)
 
-    def __init__(self, name, email):
-        self.name = name
-        self.email = email
+    #def __init__(self, name, email):
+     #   self.name = name
+      #  self.email = email
 
-    def __repr__(self):
-        return '<Name %r>' % self.name
-
-#conn = psycopg2.connect(
- #   database=url.path[1:],
-  #  user=url.username,
-   # password=url.password,
-    #host=url.hostname,
-   # port=url.port
-#)
+    #def __repr__(self):
+     #   return '<Name %r>' % self.name
 
 # Under MIT License
 
@@ -55,6 +49,14 @@ def parse_transcript(transcript):
 		pdf = pdfquery.PDFQuery(transcript)
 	except:
 		return render_template('index.html')
+	conn = psycopg2.connect(
+		database=url.path[1:],
+		user=url.username,
+		password=url.password,
+		host=url.hostname,
+		port=url.port
+	)
+	curr = conn.cursor()
 	pdf.load(0) # arg(s) are the pages to consider
 	label = pdf.pq('LTTextLineHorizontal:contains("Name: ")')
 	name = label.text()
@@ -90,19 +92,19 @@ def parse_transcript(transcript):
 	        courses.append(clas)
 	#print clas
 	label = pdf.pq('LTTextLineHorizontal:contains("SPF")')
-	for lab in label("LTTextLineHorizontal"):                                      
-	    top_corner = float(lab.attrib['y0'])
-	    bottom_corner = float(lab.attrib['y1'])
-	    clas = pdf.pq('LTTextLineHorizontal:in_bbox("%s, %s, %s, %s")' % (0, top_corner, 620, bottom_corner)).text()
-	    if clas[3] == " ":
-	        courses.append(clas)
+	for lab in label("LTTextLineHorizontal"):                             
+		top_corner = float(lab.attrib['y0'])
+		bottom_corner = float(lab.attrib['y1'])
+		clas = pdf.pq('LTTextLineHorizontal:in_bbox("%s, %s, %s, %s")' % (0, top_corner, 620, bottom_corner)).text()
+		if clas[3] == " ":
+			courses.append(clas)
 	#print clas
 	student['courses'] = courses
 	studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
-	for course in student['courses']:
-		studentinfo = studentinfo + course + '<br />'
-	db.session.add(User(student['name'],'iingato@princeton.edu'))
-	db.session.commit()
+	curr.execute("INSERT INTO Users VALUES (%s,%s,%s)",(student['name'],student['degree'],student['major']))
+	conn.commit()
+	curr.close()
+	conn.close()
 	return '<html><head><title></title></head><body><h1>Your Progress</h2>'+studentinfo+'</body></html>'
 	#print student
 
