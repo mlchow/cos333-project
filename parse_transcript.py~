@@ -1,6 +1,16 @@
+# Under MIT License
+
 import pdfquery
 import xml.etree.ElementTree as ET
 
+<<<<<<< HEAD
+#import cgi
+#form = cgi.FieldStorage()
+#file = form.getvalue('transcript')
+#print transcript
+
+=======
+>>>>>>> 3943bdc5cfd0b72ec9b30f21ac4663de68ecefce
 # must unencrypt transcript before using
 # instructions we can give to user: http://smallbusiness.chron.com/remove-encryption-pdf-file-44390.html
 # or http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html
@@ -52,4 +62,8 @@ for lab in label("LTTextLineHorizontal"):
         courses.append(clas)
 #print clas
 student['courses'] = courses
+<<<<<<< HEAD
+#print student
+=======
 print student
+>>>>>>> 3943bdc5cfd0b72ec9b30f21ac4663de68ecefce

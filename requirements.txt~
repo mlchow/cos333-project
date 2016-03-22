@@ -1,0 +1,13 @@
+pdfquery==0.4.2
+lxml==3.5.0
+pdfminer==20140328
+pyquery==1.2.9
+<<<<<<< HEAD
+Flask==0.10.1
+Jinja2==2.7.1
+MarkupSafe==0.18
+Werkzeug==0.9.4
+itsdangerous==0.23
+wsgiref==0.1.2
+=======
+>>>>>>> 3943bdc5cfd0b72ec9b30f21ac4663de68ecefce
