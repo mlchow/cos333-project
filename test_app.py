@@ -104,6 +104,8 @@ def parse_transcript(transcript):
 	#print clas
 	student['courses'] = courses
 	studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
+	for course in student['courses']:
+		studentinfo = course + '<br />'
 	#curr.execute("INSERT INTO Users VALUES (%s,%s,%s)",(student['name'],student['degree'],student['major']))
 	#conn.commit()
 	#curr.close()
