@@ -125,7 +125,7 @@ def start():
     #netid = C.Authenticate()
     #if len(netid) > 10:
      #   return redirect(netid)
-    return render_template('index.html', netid)
+    return render_template('index.html')
     #return "<html><body>"+os.getenv('HTTP_HOST','nope')+"</body></html>"
     #return redirect('https://fed.princeton.edu/cas/',code=302)
     #return render_template('index.html')
