@@ -113,7 +113,7 @@ def parse_transcript(transcript):
 
 @app.route("/")
 def start():
-    netid = C.Authenticate()
+    #netid = C.Authenticate()
     return render_template('index.html')
 
 @app.route("/",methods=["POST"])

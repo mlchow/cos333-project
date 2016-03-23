@@ -1,12 +1,15 @@
 import os,psycopg2,urlparse
 from flask import Flask, request
 from flask import render_template
+import CASClient
 #from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 # http://blog.y3xz.com/blog/2012/08/16/flask-and-postgresql-on-heroku
 # connect to database
+
+C = CASClient.CASClient()
 
 #urlparse.uses_netloc.append("postgres")
 url_s = os.environ["DATABASE_URL"]
@@ -49,14 +52,14 @@ def parse_transcript(transcript):
 		pdf = pdfquery.PDFQuery(transcript)
 	except:
 		return render_template('index.html')
-	conn = psycopg2.connect(
-		database=url.path[1:],
-		user=url.username,
-		password=url.password,
-		host=url.hostname,
-		port=url.port
-	)
-	curr = conn.cursor()
+	#conn = psycopg2.connect(
+		#database=url.path[1:],
+		#user=url.username,
+		#password=url.password,
+		#host=url.hostname,
+		#port=url.port
+	#)
+	#curr = conn.cursor()
 	pdf.load(0) # arg(s) are the pages to consider
 	label = pdf.pq('LTTextLineHorizontal:contains("Name: ")')
 	name = label.text()
@@ -101,15 +104,16 @@ def parse_transcript(transcript):
 	#print clas
 	student['courses'] = courses
 	studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
-	curr.execute("INSERT INTO Users VALUES (%s,%s,%s)",(student['name'],student['degree'],student['major']))
-	conn.commit()
-	curr.close()
-	conn.close()
+	#curr.execute("INSERT INTO Users VALUES (%s,%s,%s)",(student['name'],student['degree'],student['major']))
+	#conn.commit()
+	#curr.close()
+	#conn.close()
 	return '<html><head><title></title></head><body><h1>Your Progress</h2>'+studentinfo+'</body></html>'
 	#print student
 
 @app.route("/")
 def start():
+    netid = C.Authenticate()
     return render_template('index.html')
 
 @app.route("/",methods=["POST"])
