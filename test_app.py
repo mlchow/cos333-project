@@ -6,6 +6,7 @@
 import os,psycopg2,urlparse
 from flask import Flask, request, redirect
 from flask import render_template
+import pdfquery
 import CASClient
 #from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -40,7 +41,6 @@ os.environ['REQUEST_URI'] = '/'
 
 # Under MIT License
 
-import pdfquery
 import xml.etree.ElementTree as ET
 
 #import cgi
@@ -122,9 +122,9 @@ def parse_transcript(transcript):
 
 @app.route("/")
 def start():
-    #netid = C.Authenticate()
-    #if len(netid) > 10:
-     #   return redirect(netid)
+    netid = C.Authenticate()
+    if len(netid) > 10:
+        return redirect(netid)
     return render_template('index.html')
     #return "<html><body>"+os.getenv('HTTP_HOST','nope')+"</body></html>"
     #return redirect('https://fed.princeton.edu/cas/',code=302)
@@ -146,6 +146,6 @@ def upload_file():
 #    return username
 
 if __name__ == "__main__":
-    port = int(os.environ['PORT'])
-    app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000)
+    #port = int(os.environ['PORT'])
+    #app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=5000)

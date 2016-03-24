@@ -1,56 +1,18 @@
-# TODO: 
-# Error handling if upload non-transcript
-# updating in database
-# CAS Login
-
-import os,psycopg2,urlparse
-from flask import Flask, request, redirect
-from flask import render_template
-import CASClient
-#from flask.ext.sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-
-# http://blog.y3xz.com/blog/2012/08/16/flask-and-postgresql-on-heroku
-# connect to database
-
-C = CASClient.CASClient()
-os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
-os.environ['REQUEST_URI'] = '/'
-
-#urlparse.uses_netloc.append("postgres")
-#url_s = os.environ["DATABASE_URL"]
-#urlparse.uses_netloc.append("postgres")
-#url = urlparse.urlparse(url_s)
-
-#app.config['SQLALCHEMY_DATABASE_URI'] = url
-#db = SQLAlchemy(app)
-
-#class User(db.Model):
- #   id = db.Column(db.Integer, primary_key=True)
-  #  name = db.Column(db.String(80))
-   # email = db.Column(db.String(120), unique=True)
-
-    #def __init__(self, name, email):
-     #   self.name = name
-      #  self.email = email
-
-    #def __repr__(self):
-     #   return '<Name %r>' % self.name
-
-# Under MIT License
-
 import pdfquery
-import xml.etree.ElementTree as ET
-
-#import cgi
-#form = cgi.FieldStorage()
-#file = form.getvalue('transcript')
-#print transcript
 
 # must unencrypt transcript before using
 # instructions we can give to user: http://smallbusiness.chron.com/remove-encryption-pdf-file-44390.html
 # or http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html
+
+# WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
+def parse_course(course):
+    dep = course[0:2]
+    num = course[4:6]
+    grade_basis = course[8:10]
+    dis_req = course[-3:]
+    dis_req.strip()
+    if dis_req == "ONE":
+        dis_req == "NO"
 
 def parse_transcript(transcript):
     student = {}
@@ -119,33 +81,3 @@ def parse_transcript(transcript):
     #conn.close()
     return '<html><head><title></title></head><body><h1>Your Progress</h2>'+studentinfo+'</body></html>'
     #print student
-
-@app.route("/")
-def start():
-    #netid = C.Authenticate()
-    #if len(netid) > 10:
-     #   return redirect(netid)
-    return render_template('index.html')
-    #return "<html><body>"+os.getenv('HTTP_HOST','nope')+"</body></html>"
-    #return redirect('https://fed.princeton.edu/cas/',code=302)
-    #return render_template('index.html')
-
-@app.route("/",methods=["POST"])
-def upload_file():
-    if request.method == 'POST':
-        file = request.files['transcript']
-        if file:
-            return parse_transcript(file)
-        return render_template('index.html')
-
-#def hello():
-#    return "Hello world!"
-
-#@app.route("/user/<username>")
-#def user_profile(username):
-#    return username
-
-if __name__ == "__main__":
-    port = int(os.environ['PORT'])
-    app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000)
