@@ -4,7 +4,7 @@ from flask import render_template
 import CASClient
 from controller import parse_transcript
 
-app = Flask(__name__)
+from progressreport import app
 
 C = CASClient.CASClient()
 os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
@@ -23,7 +23,7 @@ def restart():
     if request.method == 'GET':
         ticket_from_cas = request.GET['ticket']
         netid = C.Authenticate2(ticket_from_cas)
-    return render_template('index.html',netid)
+    return render_template('templates/index.html',netid)
 
 @app.route("/",methods=["POST"])
 def upload_file():
@@ -31,7 +31,7 @@ def upload_file():
         file = request.files['transcript']
         if file:
             return parse_transcript(file)
-        return render_template('index.html')
+        return render_template('templates/index.html')
 
 if __name__ == "__main__":
     port = int(os.environ['PORT'])

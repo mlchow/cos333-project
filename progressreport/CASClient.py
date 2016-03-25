@@ -18,6 +18,7 @@ class CASClient:
       netid = self.Validate(ticket_from_cas)
       if netid != None:
          return netid
+      return ""
       # No valid ticket; redirect the browser to the login page to get one
       #return redirect(self.cas_url)
       #print 'Location: ' + login_url
