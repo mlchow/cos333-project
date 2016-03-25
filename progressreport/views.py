@@ -12,10 +12,17 @@ os.environ['REQUEST_URI'] = '/'
 
 @app.route("/")
 def start():
-    netid = C.Authenticate()
-    if len(netid) > 10:
-        return redirect(netid)
+    loginpage = C.Authenticate1()
+    #if len(netid) > 15:
+    return redirect(loginpage)
     #return '<html><body>' + netid + '</body></html>'
+    #return render_template('index.html',netid)
+
+@app.route("/",methods=["GET"])
+def restart():
+    if request.method == 'GET':
+        ticket_from_cas = request.GET['ticket']
+        netid = C.Authenticate2(ticket_from_cas)
     return render_template('index.html',netid)
 
 @app.route("/",methods=["POST"])
