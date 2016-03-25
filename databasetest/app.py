@@ -1,8 +1,15 @@
 from flask import Flask, render_template, request
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.dialects.postgresql import \
+    ARRAY, BIGINT, BIT, BOOLEAN, BYTEA, CHAR, CIDR, DATE, \
+    DOUBLE_PRECISION, ENUM, FLOAT, HSTORE, INET, INTEGER, \
+    INTERVAL, JSON, JSONB, MACADDR, NUMERIC, OID, REAL, SMALLINT, TEXT, \
+    TIME, TIMESTAMP, UUID, VARCHAR, INT4RANGE, INT8RANGE, NUMRANGE, \
+    DATERANGE, TSRANGE, TSTZRANGE, TSVECTOR
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/my_studentdb2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/user_db'
 db = SQLAlchemy(app)
 
 # Create our database model
@@ -11,17 +18,20 @@ class User(db.Model):
     netid = db.Column(db.String(80), primary_key=True)
     email = db.Column(db.String(120), unique=True)
     degree = db.Column(db.String(400))
-    interested_degree = db.Column(db.String(40))
-    interested_certificates = db.Column(db.String(40))
+    interested_degree = db.Column(ARRAY(db.String()))
+    interested_certificates = db.Column(ARRAY(db.String))
+    courses = db.Column(ARRAY(db.String))
     num_pdfs = db.Column(db.Integer)
 
-    def __init__(self, netid, email, degree, interested_degree, interested_certificates, num_pdfs):
+
+    def __init__(self, netid, email, degree, interested_degree, interested_certificates, num_pdfs, courses):
         self.netid = netid
         self.email = email
         self.degree = degree
         self.interested_certificates = interested_certificates
         self.interested_degree = interested_degree
         self.num_pdfs = num_pdfs
+        self.courses = courses
 
     def __repr__(self):
         return '<E-mail %r>' % self.email
@@ -30,6 +40,7 @@ class User(db.Model):
         return '<interested_degree %r>' % self.interested_degree
         return '<interested_certificates %r>' % self.interested_certificates
         return '<num_pdfs %r>' % self.num_pdfs
+        return '<courses %r>' % self.courses
 
 # Set "homepage" to index.html
 @app.route('/')
@@ -44,12 +55,15 @@ def prereg():
         email = request.form['email']
         netid = request.form['netid']
         degree = request.form['degree']
-        interested_degree = request.form['interested_degree']
-        interested_certificates = request.form['interested_certificates']
+        i_degree = []
+        i_certificate = []
+        interested_degree = i_degree.append(request.form['interested_degree'])
+        interested_certificates = i_certificate.append(request.form['interested_certificates'])
         num_pdfs = request.form['pdf']
+        courses = ['COS 126: Introduction to Computer Science', 'MOL 214: Introduction to Molecular Biology']
         # Check that email does not already exist (not a great query, but works)
         if not db.session.query(User).filter(User.netid == netid).count():
-            reg = User(netid, email, degree, interested_degree, interested_certificates, num_pdfs)
+            reg = User(netid, email, degree, interested_degree, interested_certificates, num_pdfs, courses)
             db.session.add(reg)
             db.session.commit()
             return render_template('success.html')
