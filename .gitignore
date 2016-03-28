@@ -7,3 +7,4 @@ aha.py
 progressreport/oldCASclient.py
 progressreport/oldviews.py
 progressreport/oldcontroller.py
+progressreport/*.pyc
