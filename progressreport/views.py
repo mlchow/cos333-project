@@ -6,6 +6,8 @@ from controller import parse_transcript
 
 app = Flask(__name__)
 
+import models
+
 #from progressreport import app
 
 #C = CASClient.CASClient()

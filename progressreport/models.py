@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import \
     TIME, TIMESTAMP, UUID, VARCHAR, INT4RANGE, INT8RANGE, NUMRANGE, \
     DATERANGE, TSRANGE, TSTZRANGE, TSVECTOR
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk'
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 

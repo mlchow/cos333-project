@@ -1,5 +1,5 @@
 import pdfquery
-import models
+#import models
 
 # must unencrypt transcript before using
 # instructions we can give to user: http://smallbusiness.chron.com/remove-encryption-pdf-file-44390.html
