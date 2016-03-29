@@ -1,21 +1,8 @@
-#import views
-from flask import Flask, render_template, request
-from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.mutable import Mutable
-from sqlalchemy.dialects.postgresql import \
-    ARRAY, BIGINT, BIT, BOOLEAN, BYTEA, CHAR, CIDR, DATE, \
-    DOUBLE_PRECISION, ENUM, FLOAT, HSTORE, INET, INTEGER, \
-    INTERVAL, JSON, JSONB, MACADDR, NUMERIC, OID, REAL, SMALLINT, TEXT, \
-    TIME, TIMESTAMP, UUID, VARCHAR, INT4RANGE, INT8RANGE, NUMRANGE, \
-    DATERANGE, TSRANGE, TSTZRANGE, TSVECTOR
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk'
-db = SQLAlchemy(app)
-
 # Create our database model
 class User(db.Model):
     __tablename__ = "users"
     netid = db.Column(db.String(80), primary_key=True)
+    #email = db.Column(db.String(120), unique=True)
     degree = db.Column(db.String(400))
     major = db.Column(db.String())
     interested_majors = db.Column(ARRAY(db.String()))
@@ -41,4 +28,3 @@ class User(db.Model):
         return '<interested_certificates %r>' % self.interested_certificates
         return '<num_pdfs %r>' % self.num_pdfs
         return '<courses %r>' % self.courses
-

@@ -1,4 +1,5 @@
 import pdfquery
+#import views
 #import models
 
 # must unencrypt transcript before using
