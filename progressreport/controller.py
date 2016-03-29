@@ -23,14 +23,6 @@ def parse_transcript(transcript):
         pdf = pdfquery.PDFQuery(transcript)
     except:
         return render_template('index.html')
-    #conn = psycopg2.connect(
-        #database=url.path[1:],
-        #user=url.username,
-        #password=url.password,
-        #host=url.hostname,
-        #port=url.port
-    #)
-    #curr = conn.cursor()
     pdf.load(0) # arg(s) are the pages to consider
     label = pdf.pq('LTTextLineHorizontal:contains("Name: ")')
     name = label.text()
