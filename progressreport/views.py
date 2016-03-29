@@ -36,11 +36,11 @@ def upload_file():
         netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
-            if add_user(studentinfo):
-                return render_template('templates/success.html',studentinfo[0])
-        return render_template('templates/index.html')
+            if add_user(studentinfo,netid):
+                return render_template('success.html',netid=studentinfo[0])
+        return render_template('index.html')
 
 if __name__ == "__main__":
     port = int(os.environ['PORT'])
     app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000)
+    #app.run(host='127.0.0.1', port=5000, debug=True)
