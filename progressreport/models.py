@@ -1,4 +1,4 @@
-from views import app
+#from views import app
 import psycopg2
 
 #    database=url.path[1:],
