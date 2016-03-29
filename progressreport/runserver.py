@@ -1,2 +1,2 @@
-from progressreport import app
+import app
 app.run(debug=True)
