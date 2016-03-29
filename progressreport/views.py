@@ -4,7 +4,9 @@ from flask import render_template
 import CASClient
 from controller import parse_transcript
 
-from progressreport import app
+app = Flask(__name__)
+
+#from progressreport import app
 
 #C = CASClient.CASClient()
 #os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
