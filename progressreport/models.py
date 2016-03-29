@@ -1,4 +1,4 @@
-import views
+#import views
 from flask import Flask, render_template, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.mutable import Mutable
