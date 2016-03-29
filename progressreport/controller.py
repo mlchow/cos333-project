@@ -65,21 +65,30 @@ def parse_transcript(transcript):
         if clas[3] == " ":
             courses.append(clas)
     #print clas
+    count_spf = 0
     label = pdf.pq('LTTextLineHorizontal:contains("SPF")')
     for lab in label("LTTextLineHorizontal"):                             
         top_corner = float(lab.attrib['y0'])
         bottom_corner = float(lab.attrib['y1'])
         clas = pdf.pq('LTTextLineHorizontal:in_bbox("%s, %s, %s, %s")' % (0, top_corner, 620, bottom_corner)).text()
         if clas[3] == " ":
+            count_spf = count_spf+1
             courses.append(clas)
     #print clas
     student['courses'] = courses
-    studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
-    for course in student['courses']:
-        studentinfo = studentinfo + course + '<br />'
+    #studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
+    #for course in student['courses']:
+    #    studentinfo = studentinfo + course + '<br />'
+    studentinfo = []
+    studentinfo.append(student['name'])
+    studentinfo.append(student['degree'])
+    studentinfo.append(student['major'])
+    studentinfo.append(student['courses'])
+    studentinfo.append(count_spf)
     #curr.execute("INSERT INTO Users VALUES (%s,%s,%s)",(student['name'],student['degree'],student['major']))
     #conn.commit()
     #curr.close()
     #conn.close()
-    return '<html><head><title></title></head><body><h1>Your Progress</h2>'+studentinfo+'</body></html>'
+    return studentinfo
+    #return '<html><head><title></title></head><body><h1>Your Progress</h2>'+studentinfo+'</body></html>'
     #print student

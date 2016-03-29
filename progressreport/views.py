@@ -3,6 +3,7 @@ from flask import Flask, request, redirect
 from flask import render_template
 import CASClient
 from controller import parse_transcript
+from models import add_user, search_users
 
 app = Flask(__name__)
 
@@ -32,8 +33,11 @@ def start():
 def upload_file():
     if request.method == 'POST':
         file = request.files['transcript']
+        netid = request.form['netid']
         if file:
-            return parse_transcript(file)
+            studentinfo = parse_transcript(file)
+            if add_user(studentinfo):
+                return render_template('templates/success.html',studentinfo[0])
         return render_template('templates/index.html')
 
 if __name__ == "__main__":

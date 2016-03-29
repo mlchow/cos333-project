@@ -15,8 +15,8 @@ db = SQLAlchemy(app)
 # Create our database model
 class User(db.Model):
     __tablename__ = "users"
-    netid = db.Column(db.String(80), primary_key=True)
-    degree = db.Column(db.String(400))
+    netid = db.Column(db.String(), primary_key=True)
+    degree = db.Column(db.String())
     major = db.Column(db.String())
     interested_majors = db.Column(ARRAY(db.String()))
     interested_certificates = db.Column(ARRAY(db.String()))
@@ -41,4 +41,27 @@ class User(db.Model):
         return '<interested_certificates %r>' % self.interested_certificates
         return '<num_pdfs %r>' % self.num_pdfs
         return '<courses %r>' % self.courses
+
+def search_users(netid):
+    netid = User.query.filter_by(netid=netid).first()
+    if netid is None:
+        return "New user"
+    else:
+        return "Existing user"
+
+def add_user(studentinfo):
+    if len(studentinfo != 5)
+        return False
+    netid = studentinfo[0]
+    if search_users(netid) == "New user":
+        degree = studentinfo[1]
+        major = studentinfo[2]
+        courses = studentinfo[3]
+        num_pdfs = studentinfo[4]
+        interested_majors = []
+        interested_certificates = []
+        new_user = User(netid,degree,major,interested_majors,interested_certificates,num_pdfs,courses)
+        db.session.add(new_user)
+        db.session.commit()
+    return False
 
