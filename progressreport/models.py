@@ -50,7 +50,7 @@ def search_users(netid):
         return "Existing user"
 
 def add_user(studentinfo):
-    if len(studentinfo != 5)
+    if len(studentinfo) != 5:
         return False
     netid = studentinfo[0]
     if search_users(netid) == "New user":
