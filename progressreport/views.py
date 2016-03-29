@@ -3,9 +3,10 @@ from flask import Flask, request, redirect
 from flask import render_template
 import CASClient
 from controller import parse_transcript
-from models import search_users
 
 app = Flask(__name__)
+
+from models import search_users
 
 #from progressreport import app
 
