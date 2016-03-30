@@ -28,8 +28,9 @@ def parse_course(course):
     else:
         grade,pm = s_obj[-1:][0]
         grade = grade+pm
-    ret.append(dep)
-    ret.append(num)
+    depnum = dep+num
+    ret.append(depnum)
+    #ret.append(num)
     ret.append(grade)
     #ret.append(dis_req)
     return ret
