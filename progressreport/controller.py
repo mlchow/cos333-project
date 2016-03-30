@@ -1,4 +1,6 @@
-import pdfquery
+import pdfquery, re
+
+grade_regex = re.compile("\s(A|B|C|D|F|P)(\+|-)?\s")
 #import views
 #import models
 
@@ -8,13 +10,29 @@ import pdfquery
 
 # WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
 def parse_course(course):
-    dep = course[0:2]
-    num = course[4:6]
-    grade_basis = course[8:10]
+    ret = []
+    dep = course[0:3]
+    num = course[4:7]
+    #grade_basis = course[8:10]
     dis_req = course[-3:]
-    dis_req.strip()
-    if dis_req == "ONE":
-        dis_req == "NO"
+    dis_req = dis_req.strip()
+    # NONE will show up as ONE be aware
+    #if course[-3:] == "ONE":
+        #dis_req == ""
+    # Writing Seminar
+    if course[-1:] == "W":
+        dis_req = "W"
+    s_obj = grade_regex.findall(course)
+    if len(s_obj) < 1:
+        grade = ""
+    else:
+        grade,pm = s_obj[-1:][0]
+        grade = grade+pm
+    ret.append(dep)
+    ret.append(num)
+    ret.append(grade)
+    #ret.append(dis_req)
+    return ret
 
 def parse_transcript(transcript):
     student = {}
@@ -29,7 +47,7 @@ def parse_transcript(transcript):
     label = pdf.pq('LTTextLineHorizontal:contains("Program: ")')
     degree = label.text()
     label = pdf.pq('LTTextLineHorizontal:contains("Plan: ")')
-    major = label.text()
+    major = label.text() # IF NO MAJOR, THIS IS JUST EMPTY
     #print name,degree,major
     i_name = name.index(" ")
     i_degree = degree.index(" ")
@@ -66,8 +84,11 @@ def parse_transcript(transcript):
         if clas[3] == " ":
             count_spf = count_spf+1
             courses.append(clas)
+    parsed_courses = []
+    for course in courses:
+        parsed_courses.append(parse_course(course))
     #print clas
-    student['courses'] = courses
+    student['courses'] = parsed_courses
     #studentinfo = student['name'] + '<br />' + student['degree'] + '<br />' + student['major'] + '<br />'
     #for course in student['courses']:
     #    studentinfo = studentinfo + course + '<br />'
