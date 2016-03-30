@@ -54,7 +54,8 @@ def parse_transcript(transcript):
     i_major = ""
     if major != "":
         i_major = major.index(" ")
-    student['name'] =  name[i_name+1:]
+    new_name = name[i_name+1:].split(",")
+    student['name'] =  new_name[1].strip() + " " + new_name[0].strip()
     student['degree'] = degree[i_degree+1:]
     student['major'] = major[i_major+1:]
     courses = []
