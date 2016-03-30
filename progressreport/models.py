@@ -31,14 +31,12 @@ def add_user(studentinfo,netid):
         degree = studentinfo[1]
         major = studentinfo[2]
         courses = str(studentinfo[3])
-        #print courses
         courses = courses.replace("[","{")
         courses = courses.replace("]","}")
-        #print studentinfo[3]
         num_pdfs = int(studentinfo[4]) # number of selected pdfs
         interested_majors = "{}"
         interested_certificates = "{}"
-        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,'{}',num_pdfs,name))
+        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,courses,num_pdfs,name))
         conn.commit()
     curr.close()
     conn.close()
