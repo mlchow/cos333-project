@@ -11,3 +11,7 @@ curr = conn.cursor()
 lines = fileinput.input()
 
 for line in lines:
+	comps = line.split(",")
+	course = comps[0]
+	area = comps[2]
+	typ = comps[3]
