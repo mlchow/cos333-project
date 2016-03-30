@@ -27,16 +27,18 @@ def add_user(studentinfo,netid):
         conn.close()
         return False
     if search_users(netid) == "New user":
+        name = studentinfo[0]
         degree = studentinfo[1]
         major = studentinfo[2]
         courses = str(studentinfo[3])
         #print courses
         courses = courses.replace("[","{")
         courses = courses.replace("]","}")
+        print courses
         num_pdfs = int(studentinfo[4]) # number of selected pdfs
         interested_majors = "{}"
         interested_certificates = "{}"
-        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,'{}',num_pdfs))
+        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,'{}',num_pdfs,name))
         conn.commit()
     curr.close()
     conn.close()
