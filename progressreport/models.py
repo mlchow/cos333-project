@@ -38,7 +38,7 @@ def add_user(studentinfo,netid):
         num_pdfs = int(studentinfo[4]) # number of selected pdfs
         interested_majors = "{}"
         interested_certificates = "{}"
-        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,'{}',num_pdfs,name))
+        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,'{}',num_pdfs,name))
         conn.commit()
     curr.close()
     conn.close()
