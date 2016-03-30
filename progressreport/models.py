@@ -34,7 +34,7 @@ def add_user(studentinfo,netid):
         #print courses
         courses = courses.replace("[","{")
         courses = courses.replace("]","}")
-        print courses
+        #print courses
         num_pdfs = int(studentinfo[4]) # number of selected pdfs
         interested_majors = "{}"
         interested_certificates = "{}"
