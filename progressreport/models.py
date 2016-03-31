@@ -53,7 +53,6 @@ def get_progress(netid):
         return None
     courses = courses[0]
     progress = []
-    # for now we don't report on grade ?
     for courseinfo in courses:
         #print courseinfo
         course = courseinfo[0]
