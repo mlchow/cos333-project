@@ -95,7 +95,10 @@ def show_progress(progress):
                     if grade != "P" and grade != "":
                         count_courses = count_courses+1
                     htmltoshow = htmltoshow + name + " " + grade + "<br />"
-        major_gpa = progress_dictionary[key]['grade'] / count_courses
+        if count_courses > 0:
+            major_gpa = progress_dictionary[key]['grade'] / count_courses
+        else:
+            major_gpa = "Unknown"
         htmltoshow = htmltoshow + "Major GPA: " + str(major_gpa) + "<br /><br />"
     return htmltoshow
 
@@ -132,7 +135,7 @@ def parse_transcript(transcript):
     try:
         pdf = pdfquery.PDFQuery(transcript)
     except:
-        return render_template('index.html')
+        return render_template('index.html') # CHANGE ERROR***
     pdf.load(0) # arg(s) are the pages to consider
     label = pdf.pq('LTTextLineHorizontal:contains("Name: ")')
     name = label.text()
