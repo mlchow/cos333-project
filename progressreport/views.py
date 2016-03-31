@@ -1,9 +1,9 @@
 import os,psycopg2,urlparse
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
 from controller import parse_transcript
-from models import search_users, add_user
+from models import search_users, add_user, get_progress
 
 app = Flask(__name__)
 
@@ -12,6 +12,7 @@ app = Flask(__name__)
 #C = CASClient.CASClient()
 #os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
 #os.environ['REQUEST_URI'] = '/'
+#netid = "" # bad security but useful for now
 
 @app.route("/")
 def start():
@@ -36,9 +37,23 @@ def upload_file():
         netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
-            if add_user(studentinfo,netid):
-                return render_template('success.html',netid=studentinfo[0])
+            if add_user(studentinfo,netid) != None:
+                #return render_template('success.html',netid=netid)
+                return "<html><body>" + str(get_progress(netid)) + '</body></html>'
+                #return redirect(url_for("success"))
         return render_template('index.html')
+        #str(get_progress(netid)) + '</body></html>'
+
+#@app.route("/see_progress",)
+#def see_progress(netid):
+    #if request.method == 'GET':
+        #return "<html><body>" + str(get_progress(netid)) + '</body></html>'
+
+#@app.route("/success",methods=["GET"])
+#def success(netid):
+    #if request.method == 'GET':
+     #   return redirect(url_for(("see_progress"netid)))
+    #return render_template('success.html',netid=netid)
 
 if __name__ == "__main__":
     port = int(os.environ['PORT'])
