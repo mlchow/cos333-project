@@ -2,7 +2,7 @@ import os,psycopg2,urlparse
 from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
-from controller import parse_transcript
+from controller import parse_transcript, show_progress
 from models import search_users, add_user, get_progress
 
 app = Flask(__name__)
@@ -39,7 +39,10 @@ def upload_file():
             studentinfo = parse_transcript(file)
             if add_user(studentinfo,netid) != None:
                 #return render_template('success.html',netid=netid)
-                return "<html><body>" + str(get_progress(netid)) + '</body></html>'
+                ret = get_progress(netid)
+                return "<html><body>"+show_progress(ret)+"</body></html>"
+                #return str(ret)
+                #return "<html><body>" + str(get_progress(netid)) + '</body></html>'
                 #return redirect(url_for("success"))
         return render_template('index.html')
         #str(get_progress(netid)) + '</body></html>'

@@ -1,12 +1,103 @@
-import pdfquery, re
+import pdfquery, re #, string
 
 grade_regex = re.compile("\s(A|B|C|D|F|P)(\+|-)?\s")
+#regex = re.compile('[%s]' % re.escape(string.punctuation))
+regex = re.compile('\'|\"')
 #import views
 #import models
 
 # must unencrypt transcript before using
 # instructions we can give to user: http://smallbusiness.chron.com/remove-encryption-pdf-file-44390.html
 # or http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html
+
+def convert_grade_to_numeric_GPA(grade):
+    if grade == "A":
+        return 4.0
+    elif grade == "A-":
+        return 3.7
+    elif grade == "B+":
+        return 3.3
+    elif grade == "B":
+        return 3.0
+    elif grade == "B-":
+        return 2.7
+    elif grade == "C+":
+        return 2.3
+    elif grade == "C":
+        return 2.0
+    elif grade == "C-":
+        return 1.7
+    elif grade == "D":
+        return 1.0
+    else:
+        return 0.0
+
+def show_progress(progress):
+    progress_dictionary = {}
+    for course in progress:
+        name,grade,reqs = course
+        name = regex.sub('',name)
+        grade = regex.sub('',grade)
+        if type(reqs[0]) != list:
+            major = reqs[0]
+            track = reqs[1]
+            major = regex.sub('',major)
+            track = regex.sub('',track)
+            #print major, track
+            if major in progress_dictionary:
+                major_dict = progress_dictionary[major]
+                if track in major_dict:
+                    track_list = major_dict[track]
+                    track_list.append((name,grade))
+                else:
+                    track_list = [(name,grade)]
+                progress_dictionary[major][track] = track_list
+            else:
+                major_dict = {}
+                major_dict[track] = [(name,grade)]
+                progress_dictionary[major] = major_dict
+                progress_dictionary[major]['grade'] = 0.0
+            if grade != "P":
+                curr_grade_total = progress_dictionary[major]['grade']
+                progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
+        else:
+            for req in reqs:
+                major = req[0]
+                track = req[1]
+                major = regex.sub('',major)
+                track = regex.sub('',track)
+                if major in progress_dictionary:
+                    major_dict = progress_dictionary[major]
+                    if track in major_dict:
+                        track_list = major_dict[track]
+                        track_list.append((name,grade))
+                    else:
+                        track_list = [(name,grade)]
+                    progress_dictionary[major][track] = track_list
+                else:
+                    major_dict = {}
+                    major_dict[track] = [(name,grade)]
+                    progress_dictionary[major] = major_dict
+                    progress_dictionary[major]['grade'] = 0.0
+                if grade != "P" and grade != "":
+                    curr_grade_total = progress_dictionary[major]['grade']
+                    progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
+    #print progress_dictionary
+    htmltoshow = ""
+    for key,value in progress_dictionary.iteritems():
+        htmltoshow = htmltoshow + key + "<br />"
+        count_courses = 0
+        for key2,value2 in value.iteritems():
+            if type(value2) == list:
+                htmltoshow = htmltoshow + key2 + "<br />"
+                for tup in value2:
+                    name,grade = tup
+                    if grade != "P" and grade != "":
+                        count_courses = count_courses+1
+                    htmltoshow = htmltoshow + name + " " + grade + "<br />"
+        major_gpa = progress_dictionary[key]['grade'] / count_courses
+        htmltoshow = htmltoshow + "Major GPA: " + str(major_gpa) + "<br /><br />"
+    return htmltoshow
 
 # WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
 def parse_course(course):
