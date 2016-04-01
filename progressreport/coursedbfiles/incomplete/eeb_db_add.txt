@@ -1,0 +1,28 @@
+EEB211,m,EEB,prerequisite
+EEB214,m,EEB,prerequisite
+MOL214,m,EEB,prerequisite
+EEB215,m,EEB,prerequisite
+MOL215,m,EEB,prerequisite
+MAT103,m,EEB,prerequisite
+MAT104,m,EEB,prerequisite
+MAT175,m,EEB,prerequisite
+CHM201,m,EEB,prerequisite
+CHM202,m,EEB,prerequisite
+PHY101,m,EEB,prerequisite
+PHY102,m,EEB,prerequisite
+ORF245,m,EEB,prerequisite
+PHY251,m,EEB,prerequisite
+ECO202,m,EEB,prerequisite
+POL345,m,EEB,prerequisite
+SOC301,m,EEB,prerequisite
+CHM303,m,EEB,prerequisite
+COS126,m,EEB,prerequisite
+MAT200,m,EEB,prerequisite
+MAT201,m,EEB,prerequisite
+MAT202,m,EEB,prerequisite
+
+Ecology and Conservation 
+Evolution
+Behavior and Physiology
+
+EEB3,m,EEB,
