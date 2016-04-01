@@ -44,8 +44,14 @@ for line in lines:
 	        	major_area = str(major_area)
 	        	major_area = major_area.replace("[","{")
 	        	major_area = major_area.replace("]","}")
-	        	curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,'{}',new_major,''))
-	        	conn.commit()
+	        	curr.execute("SELECT major_area FROM courses WHERE name = '"+course+"';")
+	        	maj_ar = curr.fetchone()
+	        	if maj_ar != None:
+	        		curr.execute("UPDATE courses SET certificate_area = %s WHERE name = %s;",(major_area,course))
+	        		conn.commit()
+	        	else:
+	        		curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,'{}',new_major,''))
+	        		conn.commit()
 	# if major
 	if comps[1] == 'm':
 		curr.execute("SELECT major_area FROM courses WHERE name = '"+course+"';")
@@ -71,8 +77,14 @@ for line in lines:
         	major_area = str(major_area)
 	        major_area = major_area.replace("[","{")
 	        major_area = major_area.replace("]","}")
-        	curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,new_major,'{}',''))
-        	conn.commit()
+	        curr.execute("SELECT certificate_area FROM courses WHERE name = '"+course+"';")
+	        maj_ar = curr.fetchone()
+	        if maj_ar != None:
+	        	curr.execute("UPDATE courses SET major_area = %s WHERE name = %s;",(major_area,course))
+	        	conn.commit()
+	        else:
+        		curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,new_major,'{}',''))
+        		conn.commit()
 
 curr.close()
 conn.close()
