@@ -59,7 +59,7 @@ def show_progress(progress):
                 major_dict[track] = [(name,grade)]
                 progress_dictionary[major] = major_dict
                 progress_dictionary[major]['grade'] = 0.0
-            if grade != "P":
+            if grade != "P" or grade != "":
                 curr_grade_total = progress_dictionary[major]['grade']
                 progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
         else:
@@ -81,7 +81,7 @@ def show_progress(progress):
                     major_dict[track] = [(name,grade)]
                     progress_dictionary[major] = major_dict
                     progress_dictionary[major]['grade'] = 0.0
-                if grade != "P" and grade != "":
+                if grade != "P" or grade != "":
                     curr_grade_total = progress_dictionary[major]['grade']
                     progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
     #print progress_dictionary
