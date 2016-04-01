@@ -38,6 +38,8 @@ def show_progress(progress):
         name,grade,reqs = course
         name = regex.sub('',name)
         grade = regex.sub('',grade)
+        if len(reqs) < 1:
+            continue
         if type(reqs[0]) != list:
             major = reqs[0]
             track = reqs[1]
