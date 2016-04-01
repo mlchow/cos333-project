@@ -1,11 +1,8 @@
 CHM201,m,CBE,mandatorygenericchem
 CHM202,m,CBE,mandatorygenericchem
-
 CHM303,m,CBE,organicchemreq
-
 MOL214,m,CBE,molrequirement
 MOL215,m,CBE,molrequirement
-
 CBE245,m,CBE,corerequirements
 CBE246,m,CBE,corerequirements
 CBE250,m,CBE,corerequirements
@@ -14,7 +11,6 @@ CBE346,m,CBE,corerequirements
 CBE441,m,CBE,corerequirements
 CBE442,m,CBE,corerequirements
 CBE454,m,CBE,corerequirements
-
 CHM304,m,CBE,advancedchemreq
 CHM304B,m,CBE,advancedchemreq
 CHM305,m,CBE,advancedchemreq
@@ -38,11 +34,9 @@ GEO363,m,CBE,advancedchemreq
 CHM331,m,CBE,advancedchemreq
 ENV331,m,CBE,advancedchemreq
 GEO418,m,CBE,advancedchemreq
-
 MAE305,m,CBE,mathreq
 MAT427,m,CBE,mathreq
 APC350,m,CBE,mathreq
-
 CBE418,m,CBE,bioengbiotechtrack
 ENE418,m,CBE,bioengbiotechtrack
 CBE423,m,CBE,bioengbiotechtrack
@@ -103,7 +97,6 @@ PSY406,m,CBE,bioengbiotechtrack
 PSY407,m,CBE,bioengbiotechtrack
 QCB511,m,CBE,bioengbiotechtrack
 CBE511,m,CBE,bioengbiotechtrack
-
 CBE260,m,CBE,entreandmanage
 EGR260,m,CBE,entreandmanage
 CEE344,m,CBE,entreandmanage
@@ -134,7 +127,6 @@ ORF335,m,CBE,entreandmanage
 ORF435,m,CBE,entreandmanage
 WWS373,m,CBE,entreandmanage
 CHV373,m,CBE,entreandmanage
-
 AST309,m,CBE,energyandenvironmental
 MAE308,m,CBE,energyandenvironmental
 PHY309,m,CBE,energyandenvironmental
@@ -208,7 +200,6 @@ MAE427,m,CBE,energyandenvironmental
 WWS306,m,CBE,energyandenvironmental
 ECO329,m,CBE,energyandenvironmental
 ENV319,m,CBE,energyandenvironmental
-
 CBE415,m,CBE,materialsandproduct
 CHM415,m,CBE,materialsandproduct
 CBE422,m,CBE,materialsandproduct
@@ -237,7 +228,6 @@ MSE301,m,CBE,materialsandproduct
 MSE302,m,CBE,materialsandproduct
 MSE531,m,CBE,materialsandproduct
 ELE531,m,CBE,materialsandproduct
-
 CBE422,m,CBE,optimizationdynamicsIT
 CBE445,m,CBE,optimizationdynamicsIT
 CBE448,m,CBE,optimizationdynamicsIT
@@ -260,7 +250,6 @@ ORF406,m,CBE,optimizationdynamicsIT
 ORF409,m,CBE,optimizationdynamicsIT
 ORF411,m,CBE,optimizationdynamicsIT
 ORF417,m,CBE,optimizationdynamicsIT
-
 CBE342,m,CBE,sciengfornewtech
 CBE501,m,CBE,sciengfornewtech
 CBE425,m,CBE,sciengfornewtech
