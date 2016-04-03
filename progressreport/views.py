@@ -1,4 +1,4 @@
-import os,psycopg2,urlparse,cgi
+import os,psycopg2,urlparse
 from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
@@ -8,7 +8,7 @@ import CASClient
 
 app = Flask(__name__)
 
-form = cgi.FieldStorage()
+#form = cgi.FieldStorage()
 
 #from progressreport import app
 
@@ -34,9 +34,9 @@ def start():
 @app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
     if request.method == 'GET' or request.method == 'HEAD':
-        ticket_from_cas = request.form['ticket']
-        nid = C.Authenticate2(ticket_from_cas)
-        return '<html><body>'+nid+'</body></html>'
+        #ticket_from_cas = request.form['ticket']
+        #nid = C.Authenticate2(ticket_from_cas)
+        #return '<html><body>'+nid+'</body></html>'
     if request.method == 'POST':
         file = request.files['transcript']
         netid = request.form['netid']
