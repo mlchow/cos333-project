@@ -31,7 +31,7 @@ def start():
     #    netid = C.Authenticate2(ticket_from_cas)
     #return render_template('templates/index.html',netid)
 
-@app.route("/welcome.html",methods=["POST"])
+@app.route("/welcome",methods=["POST"])
 def upload_file():
     print C.Authenticate2(form['ticket'].value)
     if request.method == 'POST':
