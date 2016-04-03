@@ -1,26 +1,27 @@
-import os,psycopg2,urlparse
+import os,psycopg2,urlparse,cgi
 from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress
 from models import search_users, add_user, get_progress
+import CASClient
 
 app = Flask(__name__)
 
+form = cgi.FieldStorage()
+
 #from progressreport import app
 
-#C = CASClient.CASClient()
-#os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
-#os.environ['REQUEST_URI'] = '/'
+C = CASClient.CASClient()
+os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
+os.environ['REQUEST_URI'] = '/welcome.html'
 #netid = "" # bad security but useful for now
 
 @app.route("/")
 def start():
-    #loginpage = C.Authenticate1()
-    #if len(netid) > 15:
-    #return redirect(loginpage)
-    #return '<html><body>' + netid + '</body></html>'
-    return render_template('index.html')
+    loginpage = C.Authenticate1()
+    return redirect(loginpage)
+    #return render_template('index.html')
 
 #@app.route("/",methods=["GET"])
 #def restart():
@@ -30,8 +31,9 @@ def start():
     #    netid = C.Authenticate2(ticket_from_cas)
     #return render_template('templates/index.html',netid)
 
-@app.route("/",methods=["POST"])
+@app.route("/welcome.html",methods=["POST"])
 def upload_file():
+    print C.Authenticate2(form['ticket'].value)
     if request.method == 'POST':
         file = request.files['transcript']
         netid = request.form['netid']
@@ -44,7 +46,7 @@ def upload_file():
                 #return str(ret)
                 #return "<html><body>" + str(get_progress(netid)) + '</body></html>'
                 #return redirect(url_for("success"))
-        return render_template('index.html')
+    return render_template('index.html')
         #str(get_progress(netid)) + '</body></html>'
 
 #@app.route("/see_progress",)
