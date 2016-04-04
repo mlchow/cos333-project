@@ -1,8 +1,16 @@
 Logic of handling courses
 
-GENERAL USE METHODS. Try NOT to put major-specific requirements within these methods, but rather define outside. That is, for "If AB, then require MAT103/104", don't put this in method itself. Instead, define it this way: 
+GENERAL USE METHODS. Do NOT to put major-specific requirements within these methods, but rather define outside. That is, for "If AB, then require MAT103/104", don't put this in method itself. Instead, define it this way: 
 if user.degreeType == 'AB':
 	requireAll(['MAT103','MAT104'])
+AND all track requirements, too:
+if user.majorTrack == 'literature':
+	requireKinSet(4,'literature')
+and so on.
+
+ADD requirement methods as needed.
+
+#####################################################
 
 
 ## Top-level requirements
@@ -25,8 +33,8 @@ requireKofLang(k,l)
 # a, b can be single courses or sets of courses
 requireAorB(a,b)
 
-# return True if course [set] taken by semester N, where N in 1-8
-require
+# return True if course [set] A taken by semester N, where N in 1-8
+requireAbyN(a,n)
 
 
 ## Single Course fulfillment logic
