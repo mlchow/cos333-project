@@ -35,9 +35,7 @@ def start():
 def upload_file():
     if request.method == 'GET' or request.method == 'HEAD':
         ticket_from_cas = request.args.get('ticket')
-        #ticket_from_cas = request.form['ticket']
         nid = C.Authenticate2(ticket_from_cas)
-        return '<html><body>'+nid+'</body></html>'
     if request.method == 'POST':
         file = request.files['transcript']
         netid = request.form['netid']
