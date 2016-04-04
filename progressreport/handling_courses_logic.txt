@@ -57,3 +57,10 @@ requireKofSet(2,'applications')
 requireKofSet(2,'systems')
 requireKofSet(2,'other')
 
+ORF REQUIREMENTS
+
+requireAll('corerequirements')
+requireKofSet(1, 'mathrequirement')
+requireKofSet(2, 'orfelectives')
+requireKofSet(6, 'electives')
+

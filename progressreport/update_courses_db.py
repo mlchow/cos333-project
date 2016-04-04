@@ -7,7 +7,9 @@
 
 # WILL JUST UPDATE WITH DUPLICATES _ BE AWARE _ ASSIGN MAJORS
 
-import psycopg2, fileinput
+import psycopg2, fileinput,re
+
+regex = re.compile('\'|\"')
 
 conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
 curr = conn.cursor()
@@ -15,76 +17,126 @@ curr = conn.cursor()
 lines = fileinput.input()
 
 for line in lines:
-	comps = line.split(",")
-	new_major = []
-	course = comps[0]
-	area = comps[2]
-	typ = comps[3].rstrip("\n")
-	new_major.append(area)
-	new_major.append(typ)
-	if comps[1] == 'c':
-		curr.execute("SELECT certificate_area FROM courses WHERE name = '"+course+"';")
-	    	major_area = curr.fetchone()
-	    	if major_area != None:
-	    		major_area = major_area[0] # a list of majors
-	    		if major_area[0] != list:
-    				empty_list.append(major_area)
-    				major_area = empty_list
-	    		if new_major not in major_area:
-	    			major_area.append(new_major)
-	    			major_area = str(major_area)
-	        		major_area = major_area.replace("[","{")
-	        		major_area = major_area.replace("]","}")
-	        		curr.execute("UPDATE courses SET certificate_area = %s WHERE name = %s;",(major_area,course))
-	        		conn.commit()
-	        else:
-	        	empty_list = []
-	        	empty_list.append(new_major)
-	        	major_area = empty_list
-	        	major_area = str(major_area)
-	        	major_area = major_area.replace("[","{")
-	        	major_area = major_area.replace("]","}")
-	        	curr.execute("SELECT major_area FROM courses WHERE name = '"+course+"';")
-	        	maj_ar = curr.fetchone()
-	        	if maj_ar != None:
-	        		curr.execute("UPDATE courses SET certificate_area = %s WHERE name = %s;",(major_area,course))
-	        		conn.commit()
-	        	else:
-	        		curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,'{}',new_major,''))
-	        		conn.commit()
-	# if major
-	if comps[1] == 'm':
-		curr.execute("SELECT major_area FROM courses WHERE name = '"+course+"';")
-    	major_area = curr.fetchone()
-    	if major_area != None:
-    		major_area = major_area[0] # a list of majors
-    		empty_list = []
-    		if major_area[0] != list:
-    			empty_list.append(major_area)
-    			major_area = empty_list
-    		if new_major not in major_area:
-    			major_area.append(new_major)
-    			major_area = str(major_area)
-        		major_area = major_area.replace("[","{")
-        		major_area = major_area.replace("]","}")
-        		#print major_area
-        		curr.execute("UPDATE courses SET major_area = %s WHERE name = %s;",(major_area,course))
-        		conn.commit()
+    if line == "":
+        continue
+    comps = line.split(",")
+    if len(comps) != 4:
+        continue
+    new_major = []
+    course = comps[0]
+    area = comps[2]
+    typ = comps[3].rstrip("\n")
+    new_major.append(area)
+    new_major.append(typ)
+    new_major = str(new_major)
+    new_major = new_major.replace("[","{")
+    new_major = new_major.replace("]","}")
+    new_major = regex.sub("",new_major)
+    if comps[1] == 'c':
+        curr.execute("SELECT certificate_area FROM courses WHERE name = '"+course+"';")
+        major_area = curr.fetchone()
+        if major_area != None:
+            major_area = major_area[0]
+            major_area = str(major_area)
+            major_area = major_area.replace("[","{")
+            major_area = major_area.replace("]","}")
+            major_area = regex.sub("",major_area)
+            print major_area
+            if major_area[1] != "{" and len(major_area) > 2:
+                major_area = "{" + major_area + "}"
+            print major_area, new_major
+            curr.execute("UPDATE courses SET certificate_area = %s::text[] || %s::text[][] WHERE name = %s;",(new_major,major_area,course))
+            #if major_area[0] == list:
+                #major_area = major_area[0]
+            #curr.execute("array_append(%s,%s);",(major_area,new_major))
+            #major_area = curr.fetchone()
+            #print major_area
+            conn.commit()
+           # major_area = major_area[0] # a list of majors
+           # empty_list = []
+           # if len(major_area) < 1:
+           #     continue
+           # if major_area[0] != list:
+            #    empty_list.append(major_area)
+            #    major_area = empty_list
+            #if new_major not in major_area:
+             #   major_area.append(new_major)
+             #   major_area = str(major_area)
+             #   major_area = major_area.replace("[","{")
+             #   major_area = major_area.replace("]","}")
+             #   major_area = regex.sub("",major_area)
+             #   print major_area
+              #  curr.execute("UPDATE courses SET major_area = %s WHERE name = %s;",(major_area,course))
+             #   conn.commit()
         else:
-        	empty_list = []
-        	empty_list.append(new_major)
-        	major_area = empty_list
-        	major_area = str(major_area)
-	        major_area = major_area.replace("[","{")
-	        major_area = major_area.replace("]","}")
-	        curr.execute("SELECT certificate_area FROM courses WHERE name = '"+course+"';")
-	        maj_ar = curr.fetchone()
-	        if maj_ar != None:
-	        	curr.execute("UPDATE courses SET major_area = %s WHERE name = %s;",(major_area,course))
-	        	conn.commit()
-	        else:
-        		curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,new_major,'{}',''))
-        		conn.commit()
+            #empty_list = []
+            #empty_list.append(new_major)
+            #major_area = empty_list
+            #major_area = str(major_area)
+            major_area = new_major
+            #major_area = regex.sub("",major_area)
+            print major_area
+            curr.execute("SELECT major_area FROM courses WHERE name = '"+course+"';")
+            maj_ar = curr.fetchone()
+            if maj_ar != None:
+                curr.execute("UPDATE courses SET certificate_area = %s WHERE name = %s;",(major_area,course))
+                conn.commit()
+            else:
+                curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,'{}',major_area,''))
+                conn.commit()
+    # if major
+    if comps[1] == 'm':
+        curr.execute("SELECT major_area FROM courses WHERE name = '"+course+"';")
+        major_area = curr.fetchone()
+        if major_area != None:
+            major_area = major_area[0]
+            major_area = str(major_area)
+            major_area = major_area.replace("[","{")
+            major_area = major_area.replace("]","}")
+            major_area = regex.sub("",major_area)
+            print major_area
+            if major_area[1] != "{" and len(major_area) > 2:
+                major_area = "{" + major_area + "}"
+            print major_area, new_major
+            curr.execute("UPDATE courses SET major_area = %s::text[] || %s::text[][] WHERE name = %s;",(new_major,major_area,course))
+            #if major_area[0] == list:
+                #major_area = major_area[0]
+            #curr.execute("array_append(%s,%s);",(major_area,new_major))
+            #major_area = curr.fetchone()
+            #print major_area
+            conn.commit()
+           # major_area = major_area[0] # a list of majors
+           # empty_list = []
+           # if len(major_area) < 1:
+           #     continue
+           # if major_area[0] != list:
+            #    empty_list.append(major_area)
+            #    major_area = empty_list
+            #if new_major not in major_area:
+             #   major_area.append(new_major)
+             #   major_area = str(major_area)
+             #   major_area = major_area.replace("[","{")
+             #   major_area = major_area.replace("]","}")
+             #   major_area = regex.sub("",major_area)
+             #   print major_area
+              #  curr.execute("UPDATE courses SET major_area = %s WHERE name = %s;",(major_area,course))
+             #   conn.commit()
+        else:
+            #empty_list = []
+            #empty_list.append(new_major)
+            #major_area = empty_list
+            #major_area = str(major_area)
+            major_area = new_major
+            #major_area = regex.sub("",major_area)
+            print major_area
+            curr.execute("SELECT certificate_area FROM courses WHERE name = '"+course+"';")
+            maj_ar = curr.fetchone()
+            if maj_ar != None:
+                curr.execute("UPDATE courses SET major_area = %s WHERE name = %s;",(major_area,course))
+                conn.commit()
+            else:
+                curr.execute("INSERT INTO courses VALUES (%s,%s,%s,%s)",(course,major_area,'{}',''))
+                conn.commit()
 
 curr.close()
 conn.close()
