@@ -1,0 +1,6 @@
+CHM201,m,MOL,prerequisite
+CHM207,m,MOL,prerequisite
+CHM202,m,MOL,prerequisite
+CHM303,m,MOL,requirement
+CHM304,m,MOL,requirement
+CHM304B,m,MOL,requirement
