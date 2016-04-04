@@ -1,0 +1,9 @@
+CHI,m,EAS,prerequisite
+KOR,m,EAS,prerequisite
+JAP,m,EAS,prerequisite
+EAS2,m,EAS,prerequisite
+EAS3,m,EAS,prerequisite
+EAS4,m,EAS,prerequisite
+EAS5,m,EAS,prerequisite
+
+EAS

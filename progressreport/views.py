@@ -21,7 +21,7 @@ os.environ['REQUEST_URI'] = '/welcome.html'
 def start():
     loginpage = C.Authenticate1()
     return redirect(loginpage)
-    #return render_template('index.html')
+    #return render_template('index_bs.html')
 
 #@app.route("/",methods=["GET"])
 #def restart():
@@ -48,7 +48,7 @@ def upload_file():
                 #return str(ret)
                 #return "<html><body>" + str(get_progress(netid)) + '</body></html>'
                 #return redirect(url_for("success"))
-    return render_template('index.html')
+    return render_template('index_bs.html')
         #str(get_progress(netid)) + '</body></html>'
 
 #@app.route("/see_progress",)
