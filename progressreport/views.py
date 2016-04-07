@@ -12,17 +12,17 @@ app = Flask(__name__)
 
 #from progressreport import app
 
-# C = CASClient.CASClient()
-# os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
-# os.environ['REQUEST_URI'] = '/welcome.html'
+C = CASClient.CASClient()
+os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
+os.environ['REQUEST_URI'] = '/welcome.html'
 
 #netid = "" # bad security but useful for now
 
 @app.route("/")
 def start():
-    # loginpage = C.Authenticate1()
-    # return redirect(loginpage)
-    return render_template('index_bs.html')
+    loginpage = C.Authenticate1()
+    return redirect(loginpage)
+    # return render_template('index_bs.html')
 
 #@app.route("/",methods=["GET"])
 #def restart():
@@ -32,11 +32,11 @@ def start():
     #    netid = C.Authenticate2(ticket_from_cas)
     #return render_template('templates/index.html',netid)
 
-@app.route("/",methods=["POST","GET","HEAD"])
+@app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
-    # if request.method == 'GET' or request.method == 'HEAD':
-    #     ticket_from_cas = request.args.get('ticket')
-    #     nid = C.Authenticate2(ticket_from_cas)
+    if request.method == 'GET' or request.method == 'HEAD':
+        ticket_from_cas = request.args.get('ticket')
+        nid = C.Authenticate2(ticket_from_cas)
     if request.method == 'POST':
         file = request.files['transcript']
         netid = request.form['netid']
@@ -75,6 +75,6 @@ def upload_file():
     #return render_template('success.html',netid=netid)
 
 if __name__ == "__main__":
-    # port = int(os.environ['PORT'])
-    # app.run(host='0.0.0.0', port=port)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ['PORT'])
+    app.run(host='0.0.0.0', port=port)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
