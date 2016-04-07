@@ -39,18 +39,18 @@ def upload_file():
         nid = C.Authenticate2(ticket_from_cas)
     if request.method == 'POST':
         file = request.files['transcript']
-        #netid = request.form['netid']
+        netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
-            if add_user(studentinfo,nid) != None:
+            if add_user(studentinfo,netid) != None:
                 #return render_template('success.html',netid=netid)
-                ret = get_progress(nid)
+                ret = get_progress(netid)
 
                 majors_completed = get_major_by_courses(ret)
                 majors_gpa = get_major_by_gpa(ret)
 
                 d = {
-                    'netid': nid,
+                    'netid': netid,
                     'majors_completed': majors_completed,
                     'majors_gpa': majors_gpa
                 }
