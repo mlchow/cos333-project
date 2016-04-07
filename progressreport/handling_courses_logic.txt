@@ -64,3 +64,12 @@ requireKofSet(1, 'mathrequirement')
 requireKofSet(2, 'orfelectives')
 requireKofSet(6, 'electives')
 
+PSY REQUIREMENTS
+requireAll('prerequisites')
+requireAll('requirement')
+requireKofSet(1, 'statistics')
+requireKofSet(2, '200requirement')
+requireKofSet(3, '300requirement')
+requireKofSet(1, '400requirement')
+requireKofSet(1, 'generalfield')
+
