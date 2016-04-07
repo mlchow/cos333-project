@@ -5,8 +5,11 @@ import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa
 from models import search_users, add_user, get_progress
 import CASClient
+from werkzeug.contrib.cache import SimpleCache
 
 app = Flask(__name__)
+
+cache = SimpleCache()
 
 #form = cgi.FieldStorage()
 
@@ -37,9 +40,17 @@ def upload_file():
     if request.method == 'GET' or request.method == 'HEAD':
         ticket_from_cas = request.args.get('ticket')
         nid = C.Authenticate2(ticket_from_cas)
+        if nid == "":
+            return "<html><body>Inaccurate netid</body></html>"
+        cache.set('netid',nid)
     if request.method == 'POST':
         file = request.files['transcript']
-        netid = request.form['netid']
+        netid = cache.get('netid')
+        if netid is None:
+            loginpage = C.Authenticate1()
+            return redirect(loginpage)
+        #netid = "iingato"
+        #netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
             if add_user(studentinfo,netid) != None:
@@ -77,4 +88,4 @@ def upload_file():
 if __name__ == "__main__":
     port = int(os.environ['PORT'])
     app.run(host='0.0.0.0', port=port)
-    # app.run(host='127.0.0.1', port=5000, debug=True)
+    #app.run(host='127.0.0.1', port=5000, debug=True)
