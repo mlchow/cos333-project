@@ -32,7 +32,52 @@ def convert_grade_to_numeric_GPA(grade):
     else:
         return 0.0
 
-def show_progress(progress):
+# get all eligible majors; 
+# def getMajors(progress):
+#     # code
+#     return None
+
+# returns majors and data in order of number of courses completed.
+def get_major_by_courses(progress):
+    progress_dictionary = show_progress(progress)
+    # sort by major_gpa
+    by_courses = []
+
+    while len(progress_dictionary) > 0:
+        most = 0
+        best_item = None
+        for key,val in progress_dictionary.iteritems():
+            if progress_dictionary[key]['num_courses'] > most:
+                most = progress_dictionary[key]['num_courses']
+                best_item = (key,progress_dictionary[key])
+        if most <= 0:
+            break
+        by_courses.append(best_item)
+        del progress_dictionary[best_item[0]]
+
+    return by_courses
+
+# returns majors and data by major GPA.
+def get_major_by_gpa(progress):
+    progress_dictionary = show_progress(progress)
+    # sort by major_gpa
+    by_major = []
+
+    while len(progress_dictionary) > 0:
+        highest = 0
+        best_item = []
+        for key,val in progress_dictionary.iteritems():
+            if progress_dictionary[key]['grade'] > highest:
+                highest = progress_dictionary[key]['grade']
+                best_item = (key,progress_dictionary[key])
+        if highest <= 0:
+            break
+        by_major.append(best_item)
+        del progress_dictionary[best_item[0]]
+
+    return by_major
+
+def old_show_progress(progress):
     progress_dictionary = {}
     for course in progress:
         name,grade,reqs = course
@@ -85,6 +130,7 @@ def show_progress(progress):
                     curr_grade_total = progress_dictionary[major]['grade']
                     progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
     #print progress_dictionary
+
     htmltoshow = ""
     for key,value in progress_dictionary.iteritems():
         htmltoshow = htmltoshow + key + "<br />"
@@ -103,6 +149,77 @@ def show_progress(progress):
             major_gpa = "Unknown"
         htmltoshow = htmltoshow + "Major GPA: " + str(major_gpa) + "<br /><br />"
     return htmltoshow
+
+def show_progress(progress):
+    progress_dictionary = {}
+    for course in progress:
+        name,grade,reqs = course
+        name = regex.sub('',name)
+        grade = regex.sub('',grade)
+        if len(reqs) < 1:
+            continue
+        if type(reqs[0]) != list:
+            major = reqs[0]
+            track = reqs[1]
+            major = regex.sub('',major)
+            track = regex.sub('',track)
+            #print major, track
+            if major in progress_dictionary:
+                major_dict = progress_dictionary[major]
+                if track in major_dict:
+                    track_list = major_dict[track]
+                    track_list.append((name,grade))
+                else:
+                    track_list = [(name,grade)]
+                progress_dictionary[major][track] = track_list
+            else:
+                major_dict = {}
+                major_dict[track] = [(name,grade)]
+                progress_dictionary[major] = major_dict
+                progress_dictionary[major]['grade'] = 0.0
+            if grade != "P" or grade != "":
+                curr_grade_total = progress_dictionary[major]['grade']
+                progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
+        else:
+            for req in reqs:
+                major = req[0]
+                track = req[1]
+                major = regex.sub('',major)
+                track = regex.sub('',track)
+                if major in progress_dictionary:
+                    major_dict = progress_dictionary[major]
+                    if track in major_dict:
+                        track_list = major_dict[track]
+                        track_list.append((name,grade))
+                    else:
+                        track_list = [(name,grade)]
+                    progress_dictionary[major][track] = track_list
+                else:
+                    major_dict = {}
+                    major_dict[track] = [(name,grade)]
+                    progress_dictionary[major] = major_dict
+                    progress_dictionary[major]['grade'] = 0.0
+                if grade != "P" or grade != "":
+                    curr_grade_total = progress_dictionary[major]['grade']
+                    progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
+    # print progress_dictionary
+    
+    for key,val in progress_dictionary.iteritems():
+        # just get the major GPA and append to the major item
+        count_courses = 0
+        for key2,val2 in val.iteritems():
+            if type(val2) == list:
+                for tup in val2:
+                    name,grade = tup
+                    if grade != "P" and grade != "":
+                        count_courses += 1
+        if count_courses > 0:
+            major_gpa = progress_dictionary[key]['grade'] / count_courses
+            progress_dictionary[key]['grade'] = "%.2f" % major_gpa
+        else:
+            progress_dictionary[key]['grade'] = 'Unknown'
+        progress_dictionary[key]['num_courses'] = count_courses
+    return progress_dictionary
 
 # WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
 def parse_course(course):

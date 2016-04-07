@@ -121,6 +121,52 @@ aside {
     background-color: transparent;
 }
 
+/* Another type of header */
+.navbar-other {
+    border-color: rgba(34,34,34,.05);
+    font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+    background-color: #000;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.navbar-other .navbar-header .navbar-brand {
+    text-transform: uppercase;
+    font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+    font-weight: 700;
+    color: #f05f40;
+}
+
+.navbar-other .navbar-header .navbar-brand:hover,
+.navbar-other .navbar-header .navbar-brand:focus {
+    color: #eb3812;
+}
+
+.navbar-other .nav > li>a,
+.navbar-other .nav>li>a:focus {
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 700;
+    color: #222;
+}
+
+.navbar-other .nav > li>a:hover,
+.navbar-other .nav>li>a:focus:hover {
+    color: #f05f40;
+}
+
+.navbar-other .nav > li.active>a,
+.navbar-other .nav>li.active>a:focus {
+    color: #f05f40!important;
+    background-color: black;
+}
+
+.navbar-other .nav > li.active>a:hover,
+.navbar-other .nav>li.active>a:focus:hover {
+    background-color: black;
+}
+
 @media(min-width:768px) {
     .navbar-default {
         border-color: rgba(255,255,255,.3);
