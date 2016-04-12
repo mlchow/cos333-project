@@ -41,11 +41,12 @@ def upload_file():
         ticket_from_cas = request.args.get('ticket')
         nid = C.Authenticate2(ticket_from_cas)
         if nid == "":
-            return "<html><body>Inaccurate netid</body></html>"
+           return "<html><body>Invalid netid</body></html>"
         cache.set('netid',nid)
     if request.method == 'POST':
         file = request.files['transcript']
         netid = cache.get('netid')
+        #netid = "iingato"
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
