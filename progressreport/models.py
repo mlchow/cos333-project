@@ -47,12 +47,13 @@ def get_progress(netid):
     except:
         return None
     curr = conn.cursor()
-    # if user's progress is stored and does not need to be updated
-    #curr.execute("SELECT fulfilled FROM users WHERE netid = '"+netid+"';")
-    #prog = curr.fetchone()
-    #prog = prog[0]
-    #if prog == None or prog == []:
-        # if user's progress is not already stored or needs to be updated
+    curr.execute("SELECT fulfilled FROM users WHERE netid ='"+netid+"';")
+    progress_so_far = curr.fetchone()
+    if progress_so_far != None:
+        #print progress_so_far
+        curr.close()
+        conn.close()
+        return progress_so_far[0]
     curr.execute("SELECT courses FROM users WHERE netid = '"+netid+"';")
     courses = curr.fetchone()
     if courses == None:
@@ -61,6 +62,7 @@ def get_progress(netid):
         return None
     courses = courses[0]
     progress = []
+    progress_to_save = []
     for courseinfo in courses:
             #print courseinfo
         course = courseinfo[0]
@@ -127,11 +129,15 @@ def get_progress(netid):
         for index in indices_to_del:
             del el[index]
         progress.append((course,grade,el))
+        #curr.execute("UPDATE users SET fulfilled = %s::text[] || %s::text[][] WHERE name = %s;",(,,netid))
+        if len(el) >= 1:
+            progress_to_save.append((course,grade,el))
         #save_progress(netid,progress)
+    save_progress(netid,progress_to_save)
     #print progress
     curr.close()
     conn.close()
-    return progress
+    return progress_to_save
     #else:
         #progress = []
         #for tup in re.finditer(regex2,prog):
@@ -149,9 +155,18 @@ def save_progress(netid,progress):
     except:
         return
     curr = conn.cursor()
-    progress = str(progress)
-    progress = regex.sub("",progress)
-    curr.execute("UPDATE users SET fulfilled = %s WHERE netid = %s;", (progress,netid))
+    new_progress = []
+    for course,grade,el in progress:
+        #print grade
+        for maj, track in el:
+            new_progress.append([course,grade,maj,track])
+    new_progress = str(new_progress)
+    new_progress = regex.sub("",new_progress)
+    new_progress = new_progress.replace("[","{")
+    new_progress = new_progress.replace("]","}")
+    #print new_progress
+    #new_progress = "{{COS126,A-,AST,recommended},{COS126,A-,COS,prerequisite}}"
+    curr.execute("UPDATE users SET fulfilled = %s::text[][] WHERE netid = %s;", (new_progress,netid))
     conn.commit()
     curr.close()
     conn.close()

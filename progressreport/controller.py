@@ -150,7 +150,7 @@ def old_show_progress(progress):
         htmltoshow = htmltoshow + "Major GPA: " + str(major_gpa) + "<br /><br />"
     return htmltoshow
 
-def show_progress(progress):
+def late_show_progress(progress):
     progress_dictionary = {}
     for course in progress:
         name,grade,reqs = course
@@ -177,7 +177,7 @@ def show_progress(progress):
                 major_dict[track] = [(name,grade)]
                 progress_dictionary[major] = major_dict
                 progress_dictionary[major]['grade'] = 0.0
-            if grade != "P" or grade != "":
+            if grade != "P" and grade != "" and grade != "None":
                 curr_grade_total = progress_dictionary[major]['grade']
                 progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
         else:
@@ -199,7 +199,7 @@ def show_progress(progress):
                     major_dict[track] = [(name,grade)]
                     progress_dictionary[major] = major_dict
                     progress_dictionary[major]['grade'] = 0.0
-                if grade != "P" or grade != "":
+                if grade != "P" and grade != "" and grade != "None":
                     curr_grade_total = progress_dictionary[major]['grade']
                     progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
     # print progress_dictionary
@@ -211,7 +211,50 @@ def show_progress(progress):
             if type(val2) == list:
                 for tup in val2:
                     name,grade = tup
-                    if grade != "P" and grade != "":
+                    if grade != "P" and grade != "" and grade != "None":
+                        count_courses += 1
+        if count_courses > 0:
+            major_gpa = progress_dictionary[key]['grade'] / count_courses
+            progress_dictionary[key]['grade'] = "%.2f" % major_gpa
+        else:
+            progress_dictionary[key]['grade'] = 'Unknown'
+        progress_dictionary[key]['num_courses'] = count_courses
+    return progress_dictionary
+
+def show_progress(progress):
+    progress_dictionary = {}
+    for course in progress:
+        name = course[0]
+        grade = course[1]
+        major = course[2]
+        track = course[3]
+        name = regex.sub('',name)
+        grade = regex.sub('',grade)
+        if major in progress_dictionary:
+            major_dict = progress_dictionary[major]
+            if track in major_dict:
+                track_list = major_dict[track]
+                track_list.append((name,grade))
+            else:
+                track_list = [(name,grade)]
+            progress_dictionary[major][track] = track_list
+        else:
+            major_dict = {}
+            major_dict[track] = [(name,grade)]
+            progress_dictionary[major] = major_dict
+            progress_dictionary[major]['grade'] = 0.0
+        if grade != "P" and grade != "" and grade != "None":
+            curr_grade_total = progress_dictionary[major]['grade']
+            progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
+    # print progress_dictionary
+    for key,val in progress_dictionary.iteritems():
+        # just get the major GPA and append to the major item
+        count_courses = 0
+        for key2,val2 in val.iteritems():
+            if type(val2) == list:
+                for tup in val2:
+                    name,grade = tup
+                    if grade != "P" and grade != "" and grade != "None":
                         count_courses += 1
         if count_courses > 0:
             major_gpa = progress_dictionary[key]['grade'] / count_courses
@@ -237,7 +280,7 @@ def parse_course(course):
         dis_req = "W"
     s_obj = grade_regex.findall(course)
     if len(s_obj) < 1:
-        grade = ""
+        grade = "None"
     else:
         grade,pm = s_obj[-1:][0]
         grade = grade+pm
