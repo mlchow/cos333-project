@@ -92,7 +92,7 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['transcript']
         netid = cache.get('netid')
-        netid = "iingato"
+        #netid = "iingato"
         #cache.set('netid',netid)
         if netid is None:
             loginpage = C.Authenticate1()
