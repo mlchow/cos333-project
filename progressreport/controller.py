@@ -223,6 +223,8 @@ def late_show_progress(progress):
 
 def show_progress(progress):
     progress_dictionary = {}
+    if progress == None:
+        return progress_dictionary
     for course in progress:
         name = course[0]
         grade = course[1]

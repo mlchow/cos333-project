@@ -204,6 +204,49 @@
         </div>
     </section>
 
+    <!-- Certificates by Most Courses Completed  -->
+
+    <section class="certificates">
+        <div class="col-sm-6" id="certificates_completed">
+            <h4>
+              <b>Certificates by Most Courses Completed</b> 
+              <button type="button" onclick="showCompleted()" id="show-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+              <button type="button" onclick="hideCompleted()" id="hide-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+            </h4>
+
+            <div class="panel-group" id="certificates_completed" role="tablist" aria-multiselectable="true">
+            {% for certificate in d.certificates_completed %}
+              <div class="panel panel-default major-board" id="completed-{{certificate.0}}">
+                <div class="panel-heading" role="tab" id="completed-heading-{{certificate.0}}">
+                  <h4 class="panel-title">
+                    <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{certificate.0}}" aria-expanded="true" aria-controls="completed-collapse-{{certificate.0}}">
+                    <b>{{certificate.0}}</b>
+                    </a>
+                    <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                    <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+                  </h4>
+                </div>
+                <div id="completed-collapse-{{certificate.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{certificate.0}}">
+                  <div class="panel-body">
+                    <table class="table table-condensed table-bordered">
+                    {% for req in certificate.1 %}
+                    {% if req != "grade" and req != "num_courses" %}
+                      <tr class="info">
+                        <th colspan="2">{{req}}</th>
+                      </tr>
+                      {% for c in certificate.1[req] %}
+                        <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                      {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    </table>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+    </section>
+
     <!--<div id="overlay">
      <div>
           <p>Content you want the user to see goes here.</p>

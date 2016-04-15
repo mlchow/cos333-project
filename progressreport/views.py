@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa
-from models import search_users, add_user, get_progress
+from models import search_users, add_user, get_progress, get_progress_certificates
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 
@@ -57,14 +57,17 @@ def upload_file():
             if add_user(studentinfo,netid) != None:
                 #return render_template('success.html',netid=netid)
                 ret = get_progress(netid)
+                ret_certs = get_progress_certificates(netid)
 
                 majors_completed = get_major_by_courses(ret)
                 majors_gpa = get_major_by_gpa(ret)
+                certificates_completed = get_major_by_courses(ret_certs)
 
                 d = {
                     'netid': netid,
                     'majors_completed': majors_completed,
-                    'majors_gpa': majors_gpa
+                    'majors_gpa': majors_gpa,
+                    'certificates_completed': certificates_completed
                 }
                 return render_template('success_bs.html',d=d)
 
