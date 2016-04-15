@@ -1,7 +1,7 @@
 # open db connection
 # read in lines from std in
 
-# form is majororcertificatename,m_or_c,track[if none put " "],number_courses_needed,can_be_substituted by[opt]
+# form is majororcertificatename,m_or_c,track (if none put general),number_courses_needed,can_be_substituted by[opt]
 
 import psycopg2, fileinput,re
 

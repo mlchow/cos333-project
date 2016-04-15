@@ -7,7 +7,7 @@ def search_users(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
     except:
-        return "Existing User"
+        return "Connection issue"
     curr = conn.cursor()
     curr.execute("SELECT netid FROM users WHERE netid = '"+netid+"';")
     netid = curr.fetchone()
@@ -15,7 +15,7 @@ def search_users(netid):
     conn.close()
     return netid
 
-def add_user(studentinfo,netid):
+def add_user(studentinfo,netid, flag):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
     except:
@@ -25,7 +25,37 @@ def add_user(studentinfo,netid):
         curr.close()
         conn.close()
         return None
-    if search_users(netid) == None:
+    nettry = search_users(netid)
+    # reset progress
+    if nettry != None and flag == True:
+        name = studentinfo[0]
+        degree = studentinfo[1]
+        major = studentinfo[2]
+        courses = str(studentinfo[3])
+        courses = courses.replace("[","{")
+        courses = courses.replace("]","}")
+        num_pdfs = int(studentinfo[4]) # number of selected pdfs
+        interested_majors, interested_certificates = get_major_certificate_interests(netid)
+        if interested_majors == None:
+            interested_majors = "{}"
+        else:
+            interested_majors = str(interested_majors)
+            interested_majors = interested_majors.replace("[","{")
+            interested_majors = interested_majors.replace("]","}")
+        if interested_certificates == None:
+            interested_certificates = "{}"
+        else:
+            interested_certificates = str(interested_certificates)
+            interested_certificates = interested_certificates.replace("[","{")
+            interested_certificates = interested_certificates.replace("]","}")
+        fulfilled = "{}"
+        fulfilledcerts = "{}"
+        curr.execute("DELETE FROM users WHERE netid ='"+netid+"';")
+        conn.commit()
+        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,courses,num_pdfs,name,fulfilled,fulfilledcerts))
+        conn.commit()
+    # new user
+    if nettry == None:
         name = studentinfo[0]
         degree = studentinfo[1]
         major = studentinfo[2]
@@ -35,7 +65,9 @@ def add_user(studentinfo,netid):
         num_pdfs = int(studentinfo[4]) # number of selected pdfs
         interested_majors = "{}"
         interested_certificates = "{}"
-        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,courses,num_pdfs,name))
+        fulfilled = "{}"
+        fulfilledcerts = "{}"
+        curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,courses,num_pdfs,name,fulfilled,fulfilledcerts))
         conn.commit()
     curr.close()
     conn.close()
@@ -49,7 +81,8 @@ def get_progress(netid):
     curr = conn.cursor()
     curr.execute("SELECT fulfilled FROM users WHERE netid ='"+netid+"';")
     progress_so_far = curr.fetchone()
-    if progress_so_far[0] != None:
+    #print progress_so_far
+    if progress_so_far != None and progress_so_far[0] != None and len(progress_so_far[0]) >= 1:
         #print progress_so_far
         curr.close()
         conn.close()
@@ -161,7 +194,7 @@ def get_progress_certificates(netid):
     progress_so_far = curr.fetchone()
     #print "in"
     #print progress_so_far
-    if progress_so_far[0] != None:
+    if progress_so_far != None and progress_so_far[0] != None and len(progress_so_far[0]) >= 1:
         #print progress_so_far
         curr.close()
         conn.close()
@@ -313,4 +346,70 @@ def save_progress_certificates(netid,progress):
     curr.close()
     conn.close()
     return ret
+
+def get_major_certificate_interests(netid):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return None
+    curr = conn.cursor()
+    curr.execute("SELECT interested_majors FROM users WHERE netid = '"+netid+"';")
+    intmajors = curr.fetchone()
+    curr.execute("SELECT interested_certificates FROM users WHERE netid = '"+netid+"';")
+    intcerts = curr.fetchone()
+    if intmajors == None and intcerts == None:
+        return None
+    if intmajors != None:
+        intmajors = intmajors[0]
+    if intcerts != None:
+        intcerts = intcerts[0]
+    return (intmajors,intcerts)
+
+def save_major_and_certificate_interests(netid,majcert):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return
+    curr = conn.cursor()
+    curr.execute("SELECT name FROM majors_to_courses;")
+    majindb = list(curr.fetchall())
+    curr.execute("SELECT name FROM certificates_to_courses;")
+    certindb = list(curr.fetchall())
+    majors = []
+    certificates = []
+    #print majorsindb
+    #print certsindb
+    majorsindb = []
+    certsindb = []
+    for ma in majindb:
+        ma = ma[0]
+        ma = regex.sub("",ma)
+        majorsindb.append(ma)
+    for ma in certindb:
+        ma = ma[0]
+        ma = regex.sub("",ma)
+        certsindb.append(ma)
+    #print majorsindb
+    #print certsindb
+    for el in majcert:
+        el = str(el)
+        el = regex.sub("",el)
+        #print el
+        if el in majorsindb:
+            majors.append(el)
+        else:
+            certificates.append(el)
+    majors = str(majors)
+    majors = regex.sub("",majors)
+    majors = majors.replace("[","{")
+    majors = majors.replace("]","}")
+    certificates = str(certificates)
+    certificates = regex.sub("",certificates)
+    certificates = certificates.replace("[","{")
+    certificates = certificates.replace("]","}")
+    curr.execute("UPDATE users SET interested_majors = %s::text[] WHERE netid = %s;", (majors,netid))
+    conn.commit()
+    curr.execute("UPDATE users SET interested_certificates = %s::text[] WHERE netid = %s;", (certificates,netid))
+    conn.commit()
+    curr.close()
 
