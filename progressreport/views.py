@@ -75,7 +75,7 @@ def upload_file():
         #nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
-        if netid == nid:
+        if netid:
             ret = get_progress(netid)
             ret_certs = get_progress_certificates(netid)
 

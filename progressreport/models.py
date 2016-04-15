@@ -10,7 +10,7 @@ def search_users(netid):
         return "Connection issue"
     curr = conn.cursor()
     curr.execute("SELECT netid FROM users WHERE netid = '"+netid+"';")
-    netid = curr.fetchone()
+    netid = curr.fetchone()[0]
     curr.close()
     conn.close()
     return netid
