@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa
-from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests
+from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 import json
@@ -35,6 +35,15 @@ def start():
    #     # RETURNS "yes NETID"
     #    netid = C.Authenticate2(ticket_from_cas)
     #return render_template('templates/index.html',netid)
+
+@app.route("/viewcourse",methods=["POST"])
+def view_course():
+    if request.method == 'POST':
+        course = request.get_json()['coursename']
+        netid = cache.get('netid')
+        interested_majors,interested_certificates,others = get_course_value(netid,course)
+        #print interested_majors,interested_certificates,others
+        return json.dumps({'status':'OK','interested_majors':interested_majors,'interested_certificates':interested_certificates,'others':others})
 
 @app.route("/updatetranscript",methods=["POST"])
 def update_transcript():
