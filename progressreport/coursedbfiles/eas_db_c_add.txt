@@ -1,0 +1,16 @@
+CHI1,c,EAS,language
+CHI2,c,EAS,language
+CHI3,c,EAS,language
+CHI4,c,EAS,language
+JAP1,c,EAS,language
+JAP2,c,EAS,language
+JAP3,c,EAS,language
+JAP4,c,EAS,language
+KOR1,c,EAS,language
+KOR2,c,EAS,language
+KOR3,c,EAS,language
+KOR4,c,EAS,language
+EAS2,c,EAS,content
+EAS1,c,EAS,content
+EAS3,c,EAS,content
+EAS4,c,EAS,content
