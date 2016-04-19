@@ -1,0 +1,2 @@
+CWR2,c,CWR,prerequisite
+CWR3,c,CWR,requirement

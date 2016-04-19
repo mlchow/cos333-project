@@ -1,0 +1,3 @@
+AMS101,c,AMS,prerequisite
+AMS3,c,AMS,requirement
+AMS4,c,AMS,requirement
