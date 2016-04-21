@@ -4,6 +4,16 @@
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
 }*/
 $(function() {
+    $('#logout-button').click(function() {
+        $.ajax({
+            url: '/logout',
+            type: 'GET',
+            async: true,
+            success: function(data) {
+                window.location.reload(true);
+            }
+        });
+    });
     $('#submit-my-board').click(function() {
     	var lis = []
     	$('#my-board-content').children('div').each(function() {
@@ -20,9 +30,24 @@ $(function() {
             url: '/updateinterests',
             data: encoded,
             type: 'POST',
-            async: true,
             contentType: "application/json; charset=utf-8",
  			dataType: "text"
+        });
+        $.ajax({
+            url: '/suggestcourses',
+            data: encoded,
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            type: 'POST',
+            success: function(data) {
+                var data = JSON.parse(data)
+                var suggested_courses = data['suggested_courses']
+                var txt = "Courses we would recommend for you... <br />"
+                for (i = 0; i < suggested_courses.length; i++) {
+                    txt = txt + suggested_courses[i][0] + "<br />"
+                }
+                $("#suggested_courses").html(txt)
+            }
         });
     });
     $('#main > button#re-upload-trans').click(function() {
@@ -73,7 +98,7 @@ $(function() {
 	 				console.log(data)*/
 	 				var data = JSON.parse(data)
 	 				var int_maj = data['interested_majors']
-	 				var html = $("#overlay").html() + "<br />" + name + " is currently fulfilling requirements in the following areas for you...<br />"
+	 				var html = "<br />" + name + " is currently fulfilling requirements in the following areas for you...<br />"
 	 				if (int_maj != undefined){
 	 					for (i=0;i<int_maj.length;i++)
 	 						html = html + "<b>" + int_maj[i] + "</b><br />"

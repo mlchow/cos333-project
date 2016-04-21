@@ -3,6 +3,126 @@ import psycopg2, re
 regex = re.compile('\'|\"')
 #regex2 = re.compile('\( ([^\)]*,) ([^\)]*,) ([^\)]*) \)')
 
+# USES A WEIGHTING SCHEMA, then suggests top 5 courses - insert some randomness
+def suggestcourses(netid):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return None
+    curr = conn.cursor()
+
+    # GET INTERESTED MAJORS AND CERTIFICATES
+
+    curr.execute("SELECT interested_majors FROM users WHERE netid = '"+netid+"';")
+    intmajors = curr.fetchone()
+    if intmajors != None:
+        intmajors = intmajors[0]
+    curr.execute("SELECT interested_certificates FROM users WHERE netid = '"+netid+"';")
+    intcerts = curr.fetchone()
+    if intcerts != None:
+        intcerts = intcerts[0]
+
+    # GET COURSES THAT FULFILL THINGS IN MAJORS/CERTIFICATES
+
+    potential_maj_courses = []
+    if intmajors != None:
+        for maj in intmajors:
+            curr.execute("SELECT coursetrack FROM majors_to_courses WHERE name = '"+maj+"';")
+            nec = curr.fetchone()
+            if nec != None:
+                if type(nec[0][0]) == list:
+                    for el in nec[0]:
+                        potential_maj_courses.append(el)
+                else:
+                    potential_maj_courses.append(nec[0])
+                
+    potential_cert_courses = []
+    if intcerts != None:
+        for maj in intcerts:
+            curr.execute("SELECT coursetrack FROM certificates_to_courses WHERE name = '"+maj+"';")
+            nec = curr.fetchone()
+            if nec != None:
+                if type(nec[0][0]) == list:
+                    for el in nec[0]:
+                        potential_cert_courses.append(el)
+                else:
+                    potential_cert_courses.append(nec[0])
+
+    # GET FULFILLED COURSES IN MAJORS / CERTIFICATES
+    curr.execute("SELECT fulfilled FROM users WHERE netid = '"+netid+"';")
+    maj = curr.fetchone()
+    if maj == None:
+        fulfilledmajors = []
+    else:
+        fulfilledmajors = maj[0]
+    curr.execute("SELECT fulfilledcerts FROM users WHERE netid = '"+netid+"';")
+    maj = curr.fetchone()
+    if maj == None:
+        fulfilledcerts = []
+    else:
+        fulfilledcerts = maj[0]
+    # combine
+    allfulfilledcourses = fulfilledmajors+fulfilledcerts
+    fulfilledcourses = []
+    trackinfo = []
+    for f in allfulfilledcourses:
+        fulfilledcourses.append(f[0]) # just the course name
+        trackinfo.append((f[2],f[3]))
+
+    # SORT / REMOVE COURSES THAT HAVE ALREADY BEEN TAKEN OR ARE NOT 6 characters / THEN WEIGHT BY HOW MANY TIMES APPEARS / IF PREREQUISITE
+
+    potential_courses = sorted((potential_maj_courses+potential_cert_courses),key=lambda majtra: (majtra[0], majtra[1]))
+    new_potential_courses = []
+    lst_course = ""
+    lst_track = ""
+    count = 1
+    alltracks = []
+
+    for coursetrack in potential_courses:
+        course = coursetrack[0]
+        if len(course) != 6:
+            continue
+        track = coursetrack[1]
+        if course not in fulfilledcourses:
+            if course == lst_course and track == lst_track:
+                count = count + 1
+            elif course == lst_course:
+                alltracks.append(track)
+                count = count + 1
+                # weight prerequisites higher
+                if track == "prerequisite":
+                    count = count + 1
+            else:
+                new_potential_courses.append((lst_course,alltracks,count))
+                lst_course = course
+                lst_track = track
+                count = 1
+                alltracks = []
+
+    new_potential_courses = sorted(new_potential_courses,key=lambda cs: cs[2],reverse=True)
+    #print new_potential_courses
+
+    # GET MAJOR/CERTIFICATES REQUIREMENTS (IF EXIST IN DB) / DELETE IF FULFILLED / ADD ADDITIONAL WEIGHTING, then sort by that
+
+    #total_maj_reqs_needed = []
+    #if intmajors != None:
+        #for maj in intmajors:
+            #curr.execute("SELECT track_reqs FROM majors WHERE name = '"+maj+"';")
+            #nec = curr.fetchone()
+            #if nec != None:
+             #   total_maj_reqs_needed.append((maj,nec[0]))
+   # total_cert_reqs_needed = []
+    #if intcerts != None:
+     #   for maj in intcerts:
+      #      curr.execute("SELECT track_reqs FROM certificates WHERE name = '"+maj+"';")
+       #     nec = curr.fetchone()
+       #     if nec != None:
+        #        total_cert_reqs_needed.append((maj,nec[0]))
+
+    curr.close()
+    conn.close()
+    return new_potential_courses[0:5]
+
 def get_course_value(netid,course):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')

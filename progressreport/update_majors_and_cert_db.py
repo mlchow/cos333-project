@@ -1,7 +1,8 @@
 # open db connection
 # read in lines from std in
 
-# form is majororcertificatename,m_or_c,track (if none put general),number_courses_needed,can_be_substituted by[opt]
+# form is majororcertificatename,m_or_c,track (if none put general),number_courses_needed,can_be_substituted by/additional info, etc[opt] - any_dcount stands for any does and is double countable
+# OVERALL,majororcertificatename,m_or_c,total_num_coursesneeded,num_pdfs_allowed
 
 import psycopg2, fileinput,re
 
@@ -18,6 +19,21 @@ for line in lines:
     comps = line.split(",")
     if len(comps) < 4:
       continue
+    if len(comps) == 5 and comps[0] == "OVERALL":
+        name = comps[1]
+        total = comps[3]
+        pdfs = comps[4]
+        if comps[2] == "m":
+            curr.execute("UPDATE majors SET total_num_courses_needed = %s WHERE name = %s;",(total,name))
+            conn.commit()
+            curr.execute("UPDATE majors SET num_pdfs_allowed = %s WHERE name = %s;",(pdfs,name))
+            conn.commit()
+        else:
+            curr.execute("UPDATE certificates SET total_num_courses_needed = %s WHERE name = %s;",(total,name))
+            conn.commit()
+            curr.execute("UPDATE certificates SET num_pdfs_allowed = %s WHERE name = %s;",(pdfs,name))
+            conn.commit()
+        continue
     name = comps[0]
     track = comps[2]
     num_courses_need = comps[3].rstrip("\n")

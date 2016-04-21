@@ -7,10 +7,16 @@ form = cgi.FieldStorage()
 class CASClient:
    def __init__(self):
       self.cas_url = 'https://fed.princeton.edu/cas/'
+   #login
    def Authenticate1(self):
       login_url = self.cas_url + 'login' \
             + '?service=' + urllib.quote(self.ServiceURL())
       return login_url
+   #logout
+   def Authenticate1out(self):
+      logout_url = self.cas_url + 'logout' \
+            + '?service=' + urllib.quote('http://' + os.environ['HTTP_HOST'])
+      return logout_url
    def Authenticate2(self,ticket_from_cas):
       # If the request contains a login ticket, try to validate it
       #form['ticket'].value

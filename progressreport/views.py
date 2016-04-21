@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa
-from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value
+from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 import json
@@ -27,6 +27,16 @@ def start():
     loginpage = C.Authenticate1()
     return redirect(loginpage)
     # return render_template('index_bs.html')
+
+@app.route("/logout",methods=["GET","POST"])
+def end():
+    logoutpage = C.Authenticate1out()
+    return redirect(logoutpage)
+
+@app.route("/suggestcourses", methods=["POST","GET"])
+def suggest_courses():
+    netid = cache.get('netid')
+    return json.dumps({'status':'OK','suggested_courses': suggestcourses(netid)})
 
 #@app.route("/",methods=["GET"])
 #def restart():
@@ -93,11 +103,14 @@ def upload_file():
             majors_completed = get_major_by_courses(ret)
             majors_gpa = get_major_by_gpa(ret)
             certificates_completed = get_major_by_courses(ret_certs)
+            major_interests,certificate_interests = get_major_certificate_interests(netid)
             d = {
                 'netid': netid,
                 'majors_completed': majors_completed,
                 'majors_gpa': majors_gpa,
-                'certificates_completed': certificates_completed
+                'certificates_completed': certificates_completed,
+                'major interests': major_interests,
+                'certificate interests': certificate_interests
             }
             return render_template('success_bs.html',d=d)
     if request.method == 'POST':
