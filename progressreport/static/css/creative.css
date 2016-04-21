@@ -125,7 +125,7 @@ aside {
 .navbar-other {
     border-color: rgba(34,34,34,.05);
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
-    background-color: #000;
+    background-color: #fff;
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;
@@ -159,12 +159,12 @@ aside {
 .navbar-other .nav > li.active>a,
 .navbar-other .nav>li.active>a:focus {
     color: #f05f40!important;
-    background-color: black;
+    background-color: 9d9d9d;
 }
 
 .navbar-other .nav > li.active>a:hover,
 .navbar-other .nav>li.active>a:focus:hover {
-    background-color: black;
+    background-color: 9d9d9d;
 }
 
 @media(min-width:768px) {
@@ -179,7 +179,7 @@ aside {
 
     .navbar-default .navbar-header .navbar-brand:hover,
     .navbar-default .navbar-header .navbar-brand:focus {
-        color: #fff;
+        color: #9d9d9d;
     }
 
     .navbar-default .nav > li>a,
