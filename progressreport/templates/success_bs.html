@@ -62,9 +62,6 @@
                     <li> 
                         <a class="page-scroll" href="#main">Top</a>
                     </li>
-                   <!--  <li>
-                        <a class="page-scroll" href="#main">Get Started</a>
-                    </li> -->
                     <li>
                         <a class="page-scroll" href="#about">About</a>
                     </li>
@@ -72,7 +69,7 @@
                         <a class="page-scroll" href="#contact">Contact</a>
                     </li>
                     <li>
-                        <button type="button" id="logout-button">Logout</button>
+                        <a onclick="logout()">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -93,30 +90,49 @@
     </header> -->
 
     <section id="main">
-            <form enctype="multipart/form-data" id="re-upload-transcript">
-            <!-- <fieldset class="form-group">
-                <label for="netid">NetID</label>
-                <input type="text" class="form-control" name="netid" placeholder="Enter netID">
-            </fieldset> -->
-            <p>Re-upload your transcript to update your progress.</p>
-            <fieldset class="form-group">
-                <label for="transcript">Transcript</label>
-                <small class="text-muted">Your data is safe with us. We will store only the data you provide, etc....</small>
-                <input type="file" accept=".pdf" class="form-control-file" name="transcript" id="latest_transcript">
-                <small class="text-muted">You must <a href='http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html'>unencrypt</a> your transcript first to let us see it.</small>
-            </fieldset>
-            <!-- <input type="text" name="netid"></input>
-            <input type="file" accept=".pdf" name="transcript"></input>
-            <input type="submit" name="Submit"></input> -->
-            </form>
-            <button id="re-upload-trans" type="submit" class="btn btn-primary" name="Submit">Update</button>
         <div class="container">
-            <h1>{{d.netid}}</h1>
-            <h5>Select a major to pin it to your board.</h5>
-            
-            <!-- My Board -->
 
-            <div class="container">
+        <!-- Re-upload Transcript -->
+
+
+        
+
+        <div class="container">
+        
+            <h1>{{d.netid}}</h1>
+            <button type="button" class="btn btn-default btn-md" data-toggle="collapse" data-target="#reupload-transcript">
+            <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Re-upload Transcript
+            </button>
+            <h5>Select a major or certificate to pin it to your board.</h5>
+
+        <div class="row">
+            
+            <div id="reupload-transcript" class="collapse well well-lg">
+                <form enctype="multipart/form-data" id="re-upload-transcript">
+                <!-- <fieldset class="form-group">
+                    <label for="netid">NetID</label>
+                    <input type="text" class="form-control" name="netid" placeholder="Enter netID">
+                </fieldset> -->
+                <h4>Re-upload your transcript to update your progress.</h4>
+                <fieldset class="form-group">
+                    <label for="transcript">Transcript</label>
+                    <small class="text-muted">Your data is safe with us.</small>
+                    <input type="file" accept=".pdf" class="form-control-file" name="transcript" id="latest_transcript">
+                    <small class="text-muted">You must <a href='http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html'>unencrypt</a> your transcript first to let us see it.</small>
+                </fieldset>
+                <!-- <input type="text" name="netid"></input>
+                <input type="file" accept=".pdf" name="transcript"></input>
+                <input type="submit" name="Submit"></input> -->
+                </form>
+                <button id="re-upload-trans" type="submit" class="btn btn-primary" name="Submit">Update</button>
+                <br>
+            </div> <!-- end transcript div -->
+            <br>
+        </div> <!-- end header row -->
+            
+        <div class="row">
+            <!-- My Board -->
+            
             <div class="panel panel-primary" id="my-board">
               <div class="panel-heading">
                 <h3 class="panel-title">My Board</h3>
@@ -126,7 +142,6 @@
                 <!-- append courses here -->
                 </div>
                 <hr>
-                <!-- <h4 id="my-board-count">Number of Courses:</h4> -->
                 <button type="button" class="btn btn-info" id="submit-my-board">Submit</button>
               </div>
             </div>
@@ -174,74 +189,126 @@
                     </table>
                   </div>
                 </div>
+        </div> <!-- end my board row -->
+
+        <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a data-toggle="tab" href="#view-majors"><h4>Choose Majors</h4></a></li>
+            <li><a data-toggle="tab" href="#view-certificates"><h4>Choose Certificates</h4></a></li>
+        </ul>
+        <br>
+
+        <div class="tab-content">
+
+        <!-- Majors by # Courses Completed -->
+
+        <div class="tab-pane fade in active" id="view-majors">
+        <div class="row">
+        <div class="col-sm-6" id="completed">
+
+        <h4>
+          <b>Majors by Most Courses Completed</b> 
+          <button type="button" onclick="showCompleted()" id="show-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+          <button type="button" onclick="hideCompleted()" id="hide-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+        </h4>
+
+        <div class="panel-group" id="completed" role="tablist" aria-multiselectable="true">
+        {% for major in d.majors_completed %}
+          <div class="panel panel-info major-board" id="completed-{{major.0}}">
+            <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
+              <h4 class="panel-title">
+                <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
+                <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                </a>
+                <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+              </h4>
+            </div>
+            <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
+              <div class="panel-body">
+                <table class="table table-condensed table-bordered">
+                {% for req in major.1 %}
+                {% if req != "grade" and req != "num_courses" %}
+                  <tr class="info">
+                    <th colspan="2">{{req}}</th>
+                  </tr>
+                  {% for c in major.1[req] %}
+                    <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                  {% endfor %}
+                {% endif %}
+                {% endfor %}
+                </table>
               </div>
-            {% endfor %}
             </div>
-
-            </div>
-
-            <!-- Majors by Major GPA -->
-
-            <div class="col-sm-6" id="gpa">
-
-            <h4>
-              <b>Majors by Highest Major GPA</b> 
-              <button type="button" onclick="showGpa()" id="show-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-              <button type="button" onclick="hideGpa()" id="hide-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
-            </h4>
-            <!-- <button type="button" id="show-gpa" class="btn btn-info btn-sm">Show All</button> -->
-
-            <div class="panel-group" id="gpa" role="tablist" aria-multiselectable="true">
-            {% for major in d.majors_gpa %}
-              <div class="panel panel-default major-board" id="gpa-{{major.0}}">
-                <div class="panel-heading" role="tab" id="gpa-heading-{{major.0}}">
-                  <h4 class="panel-title">
-                    <a id="expansion" role="button" data-toggle="collapse" data-parent="#gpa" href="#gpa-collapse-{{major.0}}" aria-expanded="true" aria-controls="gpa-collapse-{{major.0}}">
-                    <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
-                    </a>
-                    <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
-                    <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
-                  </h4>
-                </div>
-                <div id="gpa-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="gpa-heading-{{major.0}}">
-                  <div class="panel-body">
-                    <table class="table table-condensed table-bordered">
-                    {% for req in major.1 %}
-                    {% if req != "grade" and req != "num_courses" %}
-                      <tr class="info">
-                        <th colspan="2">{{req}}</th>
-                      </tr>
-                      {% for c in major.1[req] %}
-                        <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
-                      {% endfor %}
-                    {% endif %}
-                    {% endfor %}
-                    </table>
-                  </div>
-                </div>
-              </div>
-            {% endfor %}
-            </div>
-            
-            </div>
-
-            </div> 
-
+          </div>
+        {% endfor %}
         </div>
 
-    <!-- Certificates by Most Courses Completed  -->
+        </div> <!-- end col -->
 
-    <div class="certificates">
+        <!-- Majors by Major GPA -->
+
+        <div class="col-sm-6" id="gpa">
+
+        <h4>
+          <b>Majors by Highest Major GPA</b> 
+          <button type="button" onclick="showGpa()" id="show-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+          <button type="button" onclick="hideGpa()" id="hide-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+        </h4>
+        <!-- <button type="button" id="show-gpa" class="btn btn-info btn-sm">Show All</button> -->
+
+        <div class="panel-group" id="gpa" role="tablist" aria-multiselectable="true">
+        {% for major in d.majors_gpa %}
+          <div class="panel panel-info major-board" id="gpa-{{major.0}}">
+            <div class="panel-heading" role="tab" id="gpa-heading-{{major.0}}">
+              <h4 class="panel-title">
+                <a id="expansion" role="button" data-toggle="collapse" data-parent="#gpa" href="#gpa-collapse-{{major.0}}" aria-expanded="true" aria-controls="gpa-collapse-{{major.0}}">
+                <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                </a>
+                <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+              </h4>
+            </div>
+            <div id="gpa-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="gpa-heading-{{major.0}}">
+              <div class="panel-body">
+                <table class="table table-condensed table-bordered">
+                {% for req in major.1 %}
+                {% if req != "grade" and req != "num_courses" %}
+                  <tr class="info">
+                    <th colspan="2">{{req}}</th>
+                  </tr>
+                  {% for c in major.1[req] %}
+                    <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                  {% endfor %}
+                {% endif %}
+                {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+        
+        </div> <!-- end col -->
+
+        </div>  <!-- end row  -->
+        </div> <!-- end container for majors -->
+
+
+        <!-- Certificates by Most Courses Completed  -->
+
+        <div class="tab-pane fade" id="view-certificates">
+        <div class="row">
+
         <div class="col-sm-6" id="certificates_completed">
             <h4>
               <b>Certificates by Most Courses Completed</b> 
-              <button type="button" onclick="showCompleted()" id="show-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-              <button type="button" onclick="hideCompleted()" id="hide-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+              <button type="button" onclick="showCertCompleted()" id="show-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+              <button type="button" onclick="hideCertCompleted()" id="hide-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
             </h4>
 
             <div class="panel-group" id="certificates_completed" role="tablist" aria-multiselectable="true">
             {% for certificate in d.certificates_completed %}
-              <div class="panel panel-default major-board" id="completed-{{certificate.0}}">
+              <div class="panel panel-warning major-board" id="completed-{{certificate.0}}">
                 <div class="panel-heading" role="tab" id="completed-heading-{{certificate.0}}">
                   <h4 class="panel-title">
                     <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{certificate.0}}" aria-expanded="true" aria-controls="completed-collapse-{{certificate.0}}">
@@ -269,9 +336,17 @@
                 </div>
               </div>
             {% endfor %}
-            </div>
-        </div>
+            </div> <!-- end panel group -->
+        </div> <!-- end col -->
+
+        </div> <!-- end row -->
+        </div> <!-- end container for certificates-->
+
+        </div> <!-- end tab content -->
+
+        </div> <!-- end container for board + major  + certif -->
     </section>
+
 
     <div id="overlay">
         <button type="button" class="btn btn-info" id="exit_view_course"></button>
@@ -289,7 +364,7 @@
         </div>
     </section>
 
-    <aside class="bg-dark">
+    <aside class="bg-dark" id="contact">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
