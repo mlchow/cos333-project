@@ -16,17 +16,17 @@ cache = SimpleCache()
 
 #from progressreport import app
 
-# C = CASClient.CASClient()
-# os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
-# os.environ['REQUEST_URI'] = '/welcome.html'
+C = CASClient.CASClient()
+os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
+os.environ['REQUEST_URI'] = '/welcome.html'
 
 #netid = "" # bad security but useful for now
 
 @app.route("/")
 def start():
-    # loginpage = C.Authenticate1()
-    # return redirect(loginpage)
-    return render_template('index_bs.html')
+    loginpage = C.Authenticate1()
+    return redirect(loginpage)
+    # return render_template('index_bs.html')
 
 #@app.route("/",methods=["GET"])
 #def restart():
@@ -74,16 +74,16 @@ def update_interests():
         #print majors
         #return render_template('index_bs.html')
 
-@app.route("/",methods=["POST","GET","HEAD"])
+@app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
     if request.method == 'GET' or request.method == 'HEAD':
-        # ticket_from_cas = request.args.get('ticket')
-        # nid = C.Authenticate2(ticket_from_cas)
-        # if nid == "" or None:
-        #     nid = cache.get('netid')
-        # if nid == "":
-        #     return "<html><body>Invalid netid</body></html>"
-        nid = "iingato"
+        ticket_from_cas = request.args.get('ticket')
+        nid = C.Authenticate2(ticket_from_cas)
+        if nid == "" or None:
+            nid = cache.get('netid')
+        if nid == "":
+            return "<html><body>Invalid netid</body></html>"
+        # nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
         if netid:
@@ -103,12 +103,12 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['transcript']
         netid = cache.get('netid')
-        #netid = "iingato"
-        #cache.set('netid',netid)
-        # if netid is None:
-        #     loginpage = C.Authenticate1()
-        #     return redirect(loginpage)
-        netid = "iingato"
+        # netid = "iingato"
+        # cache.set('netid',netid)
+        if netid is None:
+            loginpage = C.Authenticate1()
+            return redirect(loginpage)
+        # netid = "iingato"
         # netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
@@ -148,6 +148,6 @@ def upload_file():
     #return render_template('success.html',netid=netid)
 
 if __name__ == "__main__":
-    # port = int(os.environ['PORT'])
-    # app.run(host='0.0.0.0', port=port)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ['PORT'])
+    app.run(host='0.0.0.0', port=port)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
