@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Progress Report</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="../static/css/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/creative.css" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-other navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-other">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Progress Report</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li> 
+                        <a class="page-scroll" href="#main">Top</a>
+                    </li>
+                   <!--  <li>
+                        <a class="page-scroll" href="#main">Get Started</a>
+                    </li> -->
+                    <li>
+                        <a class="page-scroll" href="#about">About</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <section id="main">
+        <div class="container">
+            <h1>Welcome, {{d.netid}}!</h1>
+            <!-- <h5>Select a major to pin it to your board.</h5> -->
+            
+            <!-- My Board -->
+
+            <div class="container">
+            <div class="panel panel-primary" id="my-board">
+              <div class="panel-heading">
+                <h3 class="panel-title"><b>My Board</b>
+                <button type="button" class="btn btn-default btn-sm" id="my-board-update">Update Transcript</button></h3>
+              </div>
+              <div class="panel-body">
+
+
+                <div class="panel-group" id="my-board-content" role="tablist" aria-multiselectable="true">
+                {% for major in d.user_majors %}
+                  <div class="panel panel-default major-board" id="major-{{major.0}}">
+                    <div class="panel-heading" role="tab" id="major-heading-{{major.0}}">
+                      <h4 class="panel-title">
+                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#my-board-content" href="#major-collapse" aria-expanded="true" aria-controls="major-collapse"><b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i></a>
+                      </h4>
+                    </div>
+                    <div id="major-collapse" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="major-heading-{{major.0}}">
+                      <div class="panel-body">
+                      <table class="table table-condensed table-bordered">
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                          <tr class="info">
+                            <th colspan="2">{{req}}</th>
+                          </tr>
+                          {% for c in major.1[req] %}
+                            <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                          {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                </div>
+
+                <hr>
+
+                <!-- <h4 id="my-board-count">Number of Courses:</h4> -->
+                <button type="button" class="btn btn-info" id="submit-my-board" onclick="submitMyBoard()">Submit</button>
+
+              </div> <!-- end of outer panel body -->
+            </div>
+            </div>
+
+            <!-- Majors by # Courses Completed -->
+
+            <!--<div class="row">
+            <div class="col-sm-6" id="completed">
+
+            <h4>
+              <b>Majors by Most Courses Completed</b> 
+              <button type="button" onclick="showCompleted()" id="show-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+              <button type="button" onclick="hideCompleted()" id="hide-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+            </h4>
+
+ 
+            <div class="panel-group" id="completed" role="tablist" aria-multiselectable="true">
+            {% for major in d.majors_completed %}
+              <div class="panel panel-default major-board" id="completed-{{major.0}}">
+                <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
+                  <h4 class="panel-title">
+                    <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
+                    <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                    </a>
+                    <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                    <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+                  </h4>
+                </div>
+                <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
+                  <div class="panel-body">
+                    <table class="table table-condensed table-bordered">
+                    {% for req in major.1 %}
+                    {% if req != "grade" and req != "num_courses" %}
+                      <tr class="info">
+                        <th colspan="2">{{req}}</th>
+                      </tr>
+                      {% for c in major.1[req] %}
+                        <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                      {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    </table>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+
+            </div>
+
+
+            <div class="col-sm-6" id="gpa">
+
+            <h4>
+              <b>Majors by Highest Major GPA</b> 
+              <button type="button" onclick="showGpa()" id="show-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+              <button type="button" onclick="hideGpa()" id="hide-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+            </h4>
+
+            <div class="panel-group" id="gpa" role="tablist" aria-multiselectable="true">
+            {% for major in d.majors_gpa %}
+              <div class="panel panel-default major-board" id="gpa-{{major.0}}">
+                <div class="panel-heading" role="tab" id="gpa-heading-{{major.0}}">
+                  <h4 class="panel-title">
+                    <a id="expansion" role="button" data-toggle="collapse" data-parent="#gpa" href="#gpa-collapse-{{major.0}}" aria-expanded="true" aria-controls="gpa-collapse-{{major.0}}">
+                    <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                    </a>
+                    <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                    <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+                  </h4>
+                </div>
+                <div id="gpa-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="gpa-heading-{{major.0}}">
+                  <div class="panel-body">
+                    <table class="table table-condensed table-bordered">
+                    {% for req in major.1 %}
+                    {% if req != "grade" and req != "num_courses" %}
+                      <tr class="info">
+                        <th colspan="2">{{req}}</th>
+                      </tr>
+                      {% for c in major.1[req] %}
+                        <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                      {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    </table>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+            
+            </div>
+
+            </div>  -->
+
+        </div>
+    </section>
+
+    <section class="bg-primary" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">About This Project</h2>
+                    <hr class="light">
+                    <p class="text-faded">It's not easy to compare majors and certificates, figure out how much progress you've made, or start planning how to fit all of your courses into your four years at Princeton. That's why we're building a web platform that lets students start planning their Princeton experience as soon as they walk onto campus.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside class="bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">About Us</h2>
+                    <hr class="primary">
+                    <p>We're a group of students taking COS-333.</p>
+                    <p>Members: Allison Chang, Marisa Chow, Isabelle Ingato, Andrew Kim</p>
+                </div>
+               <!--  <div class="col-lg-4 col-lg-offset-2 text-center">
+                    <i class="fa fa-phone fa-3x wow bounceIn"></i>
+                    <p>123-456-6789</p>
+                </div> -->
+                <div class="col-lg-4 text-center">
+                    <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
+                    <p><a href="mailto:email@princeton.edu">email@princeton.edu</a></p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- jQuery -->
+    <script src="../static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="../static/js/jquery.easing.min.js"></script>
+    <script src="../static/js/jquery.fittext.js"></script>
+    <script src="../static/js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/js/creative.js"></script>
+
+    <!-- My JS -->
+    
+</body>
+
+</html>

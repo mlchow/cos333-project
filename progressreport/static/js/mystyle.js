@@ -6,7 +6,6 @@ $( document ).ready(function() {
 });
 
 function showCompleted() {
-	console.log("show completed")
 	$("#completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("out")
 		$(obj).addClass("in")
@@ -14,7 +13,6 @@ function showCompleted() {
 }
 
 function hideCompleted() {
-	console.log("hide completed")
 	$("#completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
 		$(obj).addClass("out")
@@ -22,7 +20,6 @@ function hideCompleted() {
 }
 
 function showGpa() {
-	console.log("show gpa")
 	$("#gpa").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("out")
 		$(obj).addClass("in")
@@ -30,8 +27,21 @@ function showGpa() {
 }
 
 function hideGpa() {
-	console.log("hide gpa")
 	$("#gpa").find(".panel-collapse").each(function(i,obj) {
+		$(obj).removeClass("in")
+		$(obj).addClass("out")
+	});
+}
+
+function showCertCompleted() {
+	$("#certificates_completed").find(".panel-collapse").each(function(i,obj) {
+		$(obj).removeClass("out")
+		$(obj).addClass("in")
+	});
+}
+
+function hideCertCompleted() {
+	$("#certificates_completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
 		$(obj).addClass("out")
 	});

@@ -108,8 +108,8 @@ def upload_file():
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
-        #netid = "iingato"
-        #netid = request.form['netid']
+        # netid = "iingato"
+        # netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
             if add_user(studentinfo,netid,False) != None:
@@ -148,6 +148,6 @@ def upload_file():
     #return render_template('success.html',netid=netid)
 
 if __name__ == "__main__":
-    #port = int(os.environ['PORT'])
-    #app.run(host='0.0.0.0', port=port)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ['PORT'])
+    app.run(host='0.0.0.0', port=port)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
