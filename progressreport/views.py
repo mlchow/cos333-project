@@ -93,7 +93,7 @@ def upload_file():
             nid = cache.get('netid')
         if nid == "":
             return "<html><body>Invalid netid</body></html>"
-        # nid = "iingato"
+        #nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
         if netid:
@@ -103,14 +103,24 @@ def upload_file():
             majors_completed = get_major_by_courses(ret)
             majors_gpa = get_major_by_gpa(ret)
             certificates_completed = get_major_by_courses(ret_certs)
+
             major_interests,certificate_interests = get_major_certificate_interests(netid)
+            majors_of_interest = []
+            certificates_of_interest = []
+            for maj in majors_completed:
+                if maj[0] in major_interests:
+                    majors_of_interest.append(maj)
+            for cert in certificates_completed:
+                if cert[0] in certificate_interests:
+                    certificates_of_interest.append(cert)
+
             d = {
                 'netid': netid,
                 'majors_completed': majors_completed,
                 'majors_gpa': majors_gpa,
                 'certificates_completed': certificates_completed,
-                'major interests': major_interests,
-                'certificate interests': certificate_interests
+                'interested_majors': majors_of_interest,
+                'interested_certificates': certificates_of_interest
             }
             return render_template('success_bs.html',d=d)
     if request.method == 'POST':
@@ -133,12 +143,27 @@ def upload_file():
                 majors_completed = get_major_by_courses(ret)
                 majors_gpa = get_major_by_gpa(ret)
                 certificates_completed = get_major_by_courses(ret_certs)
+                
+                major_interests,certificate_interests = get_major_certificate_interests(netid)
+                majors_of_interest = []
+                certificates_of_interest = []
+                for maj in majors_completed:
+                    if maj[0] in major_interests:
+                        majors_of_interest.append(maj)
+                for cert in certificates_completed:
+                    if cert[0] in certificate_interests:
+                        certificates_of_interest.append(cert)
+
+                #print majors_of_interest
+                #print majors_completed
 
                 d = {
                     'netid': netid,
                     'majors_completed': majors_completed,
                     'majors_gpa': majors_gpa,
-                    'certificates_completed': certificates_completed
+                    'certificates_completed': certificates_completed,
+                    'interested_majors': majors_of_interest,
+                    'interested_certificates': certificates_of_interest
                 }
                 return render_template('success_bs.html',d=d)
 
@@ -163,4 +188,4 @@ def upload_file():
 if __name__ == "__main__":
     port = int(os.environ['PORT'])
     app.run(host='0.0.0.0', port=port)
-    # app.run(host='127.0.0.1', port=5000, debug=True)
+    #app.run(host='127.0.0.1', port=5000, debug=True)

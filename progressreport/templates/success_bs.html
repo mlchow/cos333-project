@@ -69,7 +69,7 @@
                         <a class="page-scroll" href="#contact">Contact</a>
                     </li>
                     <li>
-                        <a onclick="logout()">Logout</a>
+                        <a style="cursor:pointer;" onclick="logout()">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -124,7 +124,7 @@
                 <input type="file" accept=".pdf" name="transcript"></input>
                 <input type="submit" name="Submit"></input> -->
                 </form>
-                <button id="re-upload-trans" type="submit" class="btn btn-primary" name="Submit">Update</button>
+                <button id="re-upload-trans" type="submit" class="btn btn-primary" onclick="update_transcript()" name="Submit">Update</button>
                 <br>
             </div> <!-- end transcript div -->
             <br>
@@ -140,9 +140,67 @@
               <div class="panel-body">
                 <div class="panel-group" id="my-board-content" role="tablist" aria-multiselectable="true">
                 <!-- append courses here -->
+                {% for major in d.interested_majors %}
+                  <div class="panel panel-info major-board" id="completed-{{major.0}}">
+                    <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
+                      <h4 class="panel-title">
+                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
+                        <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                        </a>
+                        <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;">Remove</button>
+                      </h4>
+                    </div>
+                    <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
+                      <div class="panel-body">
+                        <table class="table table-condensed table-bordered">
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                          <tr class="info">
+                            <th colspan="2">{{req}}</th>
+                          </tr>
+                          {% for c in major.1[req] %}
+                            <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                          {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                {% for major in d.interested_certificates %}
+                  <div class="panel panel-info major-board" id="completed-{{major.0}}">
+                    <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
+                      <h4 class="panel-title">
+                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
+                        <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                        </a>
+                        <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;">Remove</button>
+                      </h4>
+                    </div>
+                    <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
+                      <div class="panel-body">
+                        <table class="table table-condensed table-bordered">
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                          <tr class="info">
+                            <th colspan="2">{{req}}</th>
+                          </tr>
+                          {% for c in major.1[req] %}
+                            <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                          {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
                 </div>
                 <hr>
-                <button type="button" class="btn btn-info" id="submit-my-board">Submit</button>
+                <button type="button" class="btn btn-info" id="submit-my-board">Save</button>
               </div>
             </div>
             </div>
@@ -150,45 +208,6 @@
             <div id="suggested_courses">
             </div>
 
-            <!-- Majors by # Courses Completed -->
-
-            <div class="row">
-            <div class="col-sm-6" id="completed">
-
-            <h4>
-              <b>Majors by Most Courses Completed</b> 
-              <button type="button" onclick="showCompleted()" id="show-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-              <button type="button" onclick="hideCompleted()" id="hide-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
-            </h4>
-
-            <div class="panel-group" id="completed" role="tablist" aria-multiselectable="true">
-            {% for major in d.majors_completed %}
-              <div class="panel panel-default major-board" id="completed-{{major.0}}">
-                <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
-                  <h4 class="panel-title">
-                    <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
-                    <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
-                    </a>
-                    <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
-                    <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
-                  </h4>
-                </div>
-                <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
-                  <div class="panel-body">
-                    <table class="table table-condensed table-bordered">
-                    {% for req in major.1 %}
-                    {% if req != "grade" and req != "num_courses" %}
-                      <tr class="info">
-                        <th colspan="2">{{req}}</th>
-                      </tr>
-                      {% for c in major.1[req] %}
-                        <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
-                      {% endfor %}
-                    {% endif %}
-                    {% endfor %}
-                    </table>
-                  </div>
-                </div>
         </div> <!-- end my board row -->
 
         <ul class="nav nav-tabs nav-justified">
@@ -349,7 +368,6 @@
 
 
     <div id="overlay">
-        <button type="button" class="btn btn-info" id="exit_view_course"></button>
     </div>
 
     <section class="bg-primary" id="about">
@@ -377,10 +395,10 @@
                     <i class="fa fa-phone fa-3x wow bounceIn"></i>
                     <p>123-456-6789</p>
                 </div> -->
-                <div class="col-lg-4 text-center">
+                <!--<div class="col-lg-4 text-center">
                     <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
                     <p><a href="mailto:email@princeton.edu">email@princeton.edu</a></p>
-                </div>
+                </div>-->
             </div>
         </div>
     </aside>

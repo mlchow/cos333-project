@@ -376,10 +376,12 @@ def get_progress(netid):
                     el2 = em
                     for el2 in list(em):
                         #print el
-                        if type(el2[0]) == list:
+                        if len(el2) > 0 and type(el2[0]) == list:
                             for el3 in list(el2):
                                 #print el3
                                 el.append(el3)
+                        elif len(el2) == 0 and type(el2) == list:
+                            continue
                         else:
                             #print el2
                             el.append(el2)
@@ -489,10 +491,12 @@ def get_progress_certificates(netid):
                     el2 = em
                     for el2 in list(em):
                         #print el
-                        if type(el2[0]) == list:
+                        if len(el2) > 0 and type(el2[0]) == list:
                             for el3 in list(el2):
                                 #print el3
                                 el.append(el3)
+                        elif len(el2) == 0 and type(el2) == list:
+                            continue
                         else:
                             #print el2
                             el.append(el2)

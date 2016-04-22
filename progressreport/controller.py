@@ -32,16 +32,6 @@ def convert_grade_to_numeric_GPA(grade):
     else:
         return 0.0
 
-def recommend_courses(all_courses):
-
-    # do not recommend courses the user has already completed
-
-    # recommend prerequisites first
-
-    # use major/certificate table to recommend courses in certain tracks
-
-    return None
-
 # get all eligible majors; 
 # def getMajors(progress):
 #     # code

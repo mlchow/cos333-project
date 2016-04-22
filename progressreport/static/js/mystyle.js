@@ -5,6 +5,46 @@ $( document ).ready(function() {
 	refresh()
 });
 
+function logout() {
+	$.ajax({
+        url: '/logout',
+        type: 'GET',
+        async: true
+        /*success: function(data) {
+            window.location.reload(true);
+        }*/
+    });
+}
+
+function update_transcript() {
+    //console.log("clicked")
+    	/*printme = $('#latest_transcript').html()*/
+    var form = $('form').first().children('fieldset').children('input').first()[0]
+    	/*console.log(form)*/
+    var formdata = new FormData()
+    formdata.append('transcript',form.files[0])
+    	/*console.log(formdata)*/
+    	/*form = $(form).children('input').first()[0]*/
+    	/*console.log(form)*/
+    	/*console.log(printme)*/
+	$.ajax({
+    	url: '/updatetranscript',
+     	data: formdata,
+    	type: 'POST',
+    	async: true,
+    	contentType: false,
+ 		processData: false,
+ 		success: function() {
+    		window.location.reload(true);
+		}
+    });
+}
+
+function exit_course_view() {
+	var el = $("#overlay")[0]
+	el.style.visibility = "hidden"
+}
+
 function showCompleted() {
 	$("#completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("out")

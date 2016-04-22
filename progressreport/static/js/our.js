@@ -4,16 +4,6 @@
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
 }*/
 $(function() {
-    function logout() = {
-        $.ajax({
-            url: '/logout',
-            type: 'GET',
-            async: true,
-            success: function(data) {
-                window.location.reload(true);
-            }
-        });
-    }
     /*$('#logout-button').click(function() {
         $.ajax({
             url: '/logout',
@@ -52,25 +42,26 @@ $(function() {
             success: function(data) {
                 var data = JSON.parse(data)
                 var suggested_courses = data['suggested_courses']
-                var txt = "Courses we would recommend for you... <br />"
+                var txt = "Courses we would recommend for you based on your interests... <br />"
                 for (i = 0; i < suggested_courses.length; i++) {
-                    txt = txt + suggested_courses[i][0] + "<br />"
+                    if (suggested_courses[i][0].length > 0)
+                        txt = txt + suggested_courses[i][0] + "<br />"
                 }
                 $("#suggested_courses").html(txt)
             }
         });
     });
-    $('#main > button#re-upload-trans').click(function() {
-    	/*console.log("clicked")*/
-    	/*printme = $('#latest_transcript').html()*/
+    /*$('#re-upload-trans').click(function() {
+    	console.log("clicked")
+    	/*printme = $('#latest_transcript').html()
     	var form = $('form').first().children('fieldset').children('input').first()[0]
-    	/*console.log(form)*/
+    	/*console.log(form)
     	var formdata = new FormData()
     	formdata.append('transcript',form.files[0])
-    	/*console.log(formdata)*/
-    	/*form = $(form).children('input').first()[0]*/
-    	/*console.log(form)*/
-    	/*console.log(printme)*/
+    	/*console.log(formdata)
+    	/*form = $(form).children('input').first()[0]
+    	/*console.log(form)
+    	/*console.log(printme)
         $.ajax({
             url: '/updatetranscript',
             data: formdata,
@@ -83,12 +74,12 @@ $(function() {
 			}
         });
 
-    });
-    $('#exit_view_course').click(function() {
+    });*/
+    /*$('#exit_view_course').click(function() {
     	console.log("EXIT")
     	var el = $("#overlay")[0]
 		el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible"
-    });
+    });*/
     $('tr:not(.info)').each(function() {
     	// maybe we should change click to hover
 		$(this).children("td").first().click(function() {
@@ -108,7 +99,8 @@ $(function() {
 	 				console.log(data)*/
 	 				var data = JSON.parse(data)
 	 				var int_maj = data['interested_majors']
-	 				var html = "<br />" + name + " is currently fulfilling requirements in the following areas for you...<br />"
+	 				var html = "<button type='button' onclick='exit_course_view()' class='btn btn-info' id='exit_view_course'>Hide</button>"
+                    html = html + "<br />" + name + " is currently fulfilling requirements in the following areas of interest for you...<br />"
 	 				if (int_maj != undefined){
 	 					for (i=0;i<int_maj.length;i++)
 	 						html = html + "<b>" + int_maj[i] + "</b><br />"
@@ -120,13 +112,13 @@ $(function() {
 	 				}
 	 				int_maj = data['others']
 	 				if (int_maj != undefined){
-	 					html = html + "<br />" + name + " could also fulfill requirements in the following areas...<br />"
-	 					for (i=0;i<int_maj.length;i++)
+	 					html = html + "<br />" + name + " could also fulfill requirements in these areas among others...<br />"
+	 					for (i=0;i<int_maj.length && i < 5;i++)
 	 						html = html + int_maj[i] + "<br />"
 	 				}
 					$("#overlay").html(html)
 					var el = $("#overlay")[0]
-					el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible"
+					el.style.visibility = "visible"
 	 			}
 	        });
 		});
