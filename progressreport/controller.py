@@ -39,7 +39,7 @@ def convert_grade_to_numeric_GPA(grade):
 
 # returns majors and data in order of number of courses completed.
 def get_major_by_courses(progress):
-    progress_dictionary = show_progress(progress)
+    progress_dictionary,doublecount = show_progress(progress)
     # sort by major_gpa
     by_courses = []
 
@@ -55,11 +55,11 @@ def get_major_by_courses(progress):
         by_courses.append(best_item)
         del progress_dictionary[best_item[0]]
 
-    return by_courses
+    return by_courses,doublecount
 
 # returns majors and data by major GPA.
 def get_major_by_gpa(progress):
-    progress_dictionary = show_progress(progress)
+    progress_dictionary,doublecount = show_progress(progress)
     # sort by major_gpa
     by_major = []
 
@@ -75,7 +75,7 @@ def get_major_by_gpa(progress):
         by_major.append(best_item)
         del progress_dictionary[best_item[0]]
 
-    return by_major
+    return by_major,doublecount
 
 def old_show_progress(progress):
     progress_dictionary = {}
@@ -249,13 +249,19 @@ def show_progress(progress):
             curr_grade_total = progress_dictionary[major]['grade']
             progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
     # print progress_dictionary
+    doublecount = []
     for key,val in progress_dictionary.iteritems():
         # just get the major GPA and append to the major item
         count_courses = 0
+        lis_courses = []
         for key2,val2 in val.iteritems():
             if type(val2) == list:
                 for tup in val2:
                     name,grade = tup
+                    if name in lis_courses:
+                        doublecount.append((key,key2,name))
+                    else:
+                        lis_courses.append(name)
                     if grade != "P" and grade != "" and grade != "None":
                         count_courses += 1
         if count_courses > 0:
@@ -264,7 +270,7 @@ def show_progress(progress):
         else:
             progress_dictionary[key]['grade'] = 'Unknown'
         progress_dictionary[key]['num_courses'] = count_courses
-    return progress_dictionary
+    return progress_dictionary,doublecount
 
 # WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
 def parse_course(course):

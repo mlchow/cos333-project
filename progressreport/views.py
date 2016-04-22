@@ -87,22 +87,22 @@ def update_interests():
 @app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
     if request.method == 'GET' or request.method == 'HEAD':
-        ticket_from_cas = request.args.get('ticket')
-        nid = C.Authenticate2(ticket_from_cas)
-        if nid == "" or None:
-            nid = cache.get('netid')
-        if nid == "":
-            return "<html><body>Invalid netid</body></html>"
-        #nid = "iingato"
+        #ticket_from_cas = request.args.get('ticket')
+        #nid = C.Authenticate2(ticket_from_cas)
+        #if nid == "" or None:
+            #nid = cache.get('netid')
+        #if nid == "":
+            #return "<html><body>Invalid netid</body></html>"
+        nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
         if netid:
             ret = get_progress(netid)
             ret_certs = get_progress_certificates(netid)
 
-            majors_completed = get_major_by_courses(ret)
-            majors_gpa = get_major_by_gpa(ret)
-            certificates_completed = get_major_by_courses(ret_certs)
+            majors_completed,doublecountcom = get_major_by_courses(ret)
+            majors_gpa,doublecountgpa = get_major_by_gpa(ret)
+            certificates_completed,doublecountcerts = get_major_by_courses(ret_certs)
 
             major_interests,certificate_interests = get_major_certificate_interests(netid)
             majors_of_interest = []
@@ -114,13 +114,44 @@ def upload_file():
                 if cert[0] in certificate_interests:
                     certificates_of_interest.append(cert)
 
+            #print doublecountcom, doublecountgpa, doublecountcerts
+            simple_dc = []
+            for dc in doublecountcom:
+                simple_dc.append(dc[0])
+            for dc in doublecountgpa:
+                simple_dc.append(dc[0])
+            for dc in doublecountcerts:
+                simple_dc.append(dc[0])
+            #print simple_dc
+
+            majors_temp = []
+
+            # Loop to remove from rest of page
+            for maj in majors_completed:
+                if maj[0] not in major_interests:
+                    majors_temp.append(maj)
+            majors_completed = majors_temp
+
+            majors_temp = []
+            for maj in majors_gpa:
+                if maj[0] not in major_interests:
+                    majors_temp.append(maj)
+            majors_gpa = majors_temp
+
+            majors_temp = []
+            for maj in certificates_completed:
+                if maj[0] not in certificate_interests:
+                    majors_temp.append(maj)
+            certificates_completed = majors_temp
+
             d = {
                 'netid': netid,
                 'majors_completed': majors_completed,
                 'majors_gpa': majors_gpa,
                 'certificates_completed': certificates_completed,
                 'interested_majors': majors_of_interest,
-                'interested_certificates': certificates_of_interest
+                'interested_certificates': certificates_of_interest,
+                'doublecount': simple_dc
             }
             return render_template('success_bs.html',d=d)
     if request.method == 'POST':
@@ -140,10 +171,10 @@ def upload_file():
                 ret = get_progress(netid)
                 ret_certs = get_progress_certificates(netid)
 
-                majors_completed = get_major_by_courses(ret)
-                majors_gpa = get_major_by_gpa(ret)
-                certificates_completed = get_major_by_courses(ret_certs)
-                
+                majors_completed,doublecountcom = get_major_by_courses(ret)
+                majors_gpa,doublecountgpa = get_major_by_gpa(ret)
+                certificates_completed,doublecountcerts = get_major_by_courses(ret_certs)
+
                 major_interests,certificate_interests = get_major_certificate_interests(netid)
                 majors_of_interest = []
                 certificates_of_interest = []
@@ -154,8 +185,34 @@ def upload_file():
                     if cert[0] in certificate_interests:
                         certificates_of_interest.append(cert)
 
-                #print majors_of_interest
-                #print majors_completed
+                #print doublecountcom, doublecountgpa, doublecountcerts
+                simple_dc = []
+                for dc in doublecountcom:
+                    simple_dc.append(dc[0])
+                for dc in doublecountgpa:
+                    simple_dc.append(dc[0])
+                for dc in doublecountcerts:
+                    simple_dc.append(dc[0])
+
+                majors_temp = []
+
+                # Loop to remove from rest of page
+                for maj in majors_completed:
+                    if maj[0] not in major_interests:
+                        majors_temp.append(maj)
+                majors_completed = majors_temp
+
+                majors_temp = []
+                for maj in majors_gpa:
+                    if maj[0] not in major_interests:
+                        majors_temp.append(maj)
+                majors_gpa = majors_temp
+
+                majors_temp = []
+                for maj in certificates_completed:
+                    if maj[0] not in certificate_interests:
+                        majors_temp.append(maj)
+                certificates_completed = majors_temp
 
                 d = {
                     'netid': netid,
@@ -163,7 +220,8 @@ def upload_file():
                     'majors_gpa': majors_gpa,
                     'certificates_completed': certificates_completed,
                     'interested_majors': majors_of_interest,
-                    'interested_certificates': certificates_of_interest
+                    'interested_certificates': certificates_of_interest,
+                    'doublecount': simple_dc
                 }
                 return render_template('success_bs.html',d=d)
 
@@ -186,6 +244,6 @@ def upload_file():
     #return render_template('success.html',netid=netid)
 
 if __name__ == "__main__":
-    port = int(os.environ['PORT'])
-    app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000, debug=True)
+    #port = int(os.environ['PORT'])
+    #app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=5000, debug=True)

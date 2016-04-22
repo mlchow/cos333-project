@@ -147,6 +147,9 @@
                         <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
                         <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
                         </a>
+                        {% if major in d.doublecount %}
+                        <b>Double Counting Warning</b>
+                        {% endif %}
                         <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
                         <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;">Remove</button>
                       </h4>
@@ -176,6 +179,9 @@
                         <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
                         <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
                         </a>
+                        {% if major in d.doublecount %}
+                        <b>Double Counting Warning</b>
+                        {% endif %}
                         <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
                         <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;">Remove</button>
                       </h4>
@@ -238,6 +244,9 @@
                 <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
                 <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
                 </a>
+                {% if major in d.doublecount %}
+                <b>Double Counting Warning</b>
+                {% endif %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                 <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
               </h4>
@@ -283,6 +292,9 @@
                 <a id="expansion" role="button" data-toggle="collapse" data-parent="#gpa" href="#gpa-collapse-{{major.0}}" aria-expanded="true" aria-controls="gpa-collapse-{{major.0}}">
                 <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
                 </a>
+                {% if major in d.doublecount %}
+                <b>Double Counting Warning</b>
+                {% endif %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                 <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
               </h4>
@@ -333,6 +345,9 @@
                     <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{certificate.0}}" aria-expanded="true" aria-controls="completed-collapse-{{certificate.0}}">
                     <b>{{certificate.0}}</b>
                     </a>
+                    {% if major in d.doublecount %}
+                    <b>Double Counting Warning</b>
+                    {% endif %}
                     <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                     <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
                   </h4>
