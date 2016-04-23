@@ -32,9 +32,9 @@ def suggestcourses(netid):
             if nec != None:
                 if type(nec[0][0]) == list:
                     for el in nec[0]:
-                        potential_maj_courses.append(el)
+                        potential_maj_courses.append((maj,el))
                 else:
-                    potential_maj_courses.append(nec[0])
+                    potential_maj_courses.append((maj,nec[0]))
                 
     potential_cert_courses = []
     if intcerts != None:
@@ -44,9 +44,9 @@ def suggestcourses(netid):
             if nec != None:
                 if type(nec[0][0]) == list:
                     for el in nec[0]:
-                        potential_cert_courses.append(el)
+                        potential_cert_courses.append((maj,el))
                 else:
-                    potential_cert_courses.append(nec[0])
+                    potential_cert_courses.append((maj,nec[0]))
 
     # GET FULFILLED COURSES IN MAJORS / CERTIFICATES
     curr.execute("SELECT fulfilled FROM users WHERE netid = '"+netid+"';")
@@ -69,55 +69,112 @@ def suggestcourses(netid):
         fulfilledcourses.append(f[0]) # just the course name
         trackinfo.append((f[2],f[3]))
 
+    #print trackinfo
+
     # SORT / REMOVE COURSES THAT HAVE ALREADY BEEN TAKEN OR ARE NOT 6 characters / THEN WEIGHT BY HOW MANY TIMES APPEARS / IF PREREQUISITE
 
-    potential_courses = sorted((potential_maj_courses+potential_cert_courses),key=lambda majtra: (majtra[0], majtra[1]))
+    potential_courses = sorted((potential_maj_courses+potential_cert_courses),key=lambda majtra: (majtra[1][0],majtra[0],majtra[1][1]))
     new_potential_courses = []
     lst_course = ""
     lst_track = ""
+    lst_maj = ""
     count = 1
     alltracks = []
+    allmaj = []
 
-    for coursetrack in potential_courses:
+    # GET MAJOR/CERTIFICATES REQUIREMENTS (IF EXIST IN DB) / DELETE IF FULFILLED / ADD ADDITIONAL WEIGHTING, then sort by that
+
+    total_maj_reqs_needed = {}
+    if intmajors != None:
+        for maj in intmajors:
+            curr.execute("SELECT track_reqs FROM majors WHERE name = '"+maj+"';")
+            nec = curr.fetchone()
+            mini = []
+            if nec != None:
+                if type(nec[0]) == list:
+                    for t in nec[0]:
+                        mini.append(t)
+                else:
+                    mini.append(nec[0])
+                total_maj_reqs_needed[maj] = mini
+
+    total_cert_reqs_needed = {}
+    if intcerts != None:
+        for maj in intcerts:
+            curr.execute("SELECT track_reqs FROM certificates WHERE name = '"+maj+"';")
+            nec = curr.fetchone()
+            mini = []
+            if nec != None:
+                if type(nec[0]) == list:
+                    for t in nec[0]:
+                        mini.append(t)
+                else:
+                    mini.append(nec[0])
+                total_cert_reqs_needed[maj] = mini
+
+    # eliminate already completed progress
+    for maj,track in trackinfo:
+        tracks = []
+        mes = 0
+        if maj in total_maj_reqs_needed:
+            tracks = total_maj_reqs_needed[maj]
+            mes = 1
+        if maj in total_cert_reqs_needed:
+            tracks = total_cert_reqs_needed[maj]
+            mes = 2
+        i = -1
+        for j,x in enumerate(tracks):
+            if track == x[0]:
+                i = j
+        if i >= 0:
+            spec = tracks[i]
+            del tracks[i]
+            tracks.append((spec[0],int(spec[1])-1,spec[2]))
+            if mes == 1:
+                total_maj_reqs_needed[maj] = tracks
+            if mes == 2:
+                total_cert_reqs_needed[maj] = tracks
+
+    #print trackinfo, total_maj_reqs_needed
+
+    for maj,coursetrack in potential_courses:
+        tracks = []
+        if maj in total_maj_reqs_needed:
+            tracks = total_maj_reqs_needed[maj]
+        if maj in total_cert_reqs_needed:
+            tracks = total_cert_reqs_needed[maj]
         course = coursetrack[0]
         if len(course) != 6:
             continue
         track = coursetrack[1]
         if course not in fulfilledcourses:
-            if course == lst_course and track == lst_track:
-                count = count + 1
+            for trak in tracks:
+                if trak[0] == track:
+                    count = count + int(trak[1])
+            if course == lst_course and maj == lst_maj and track == lst_track:
+                #count = count + 1
+                continue
             elif course == lst_course:
+                allmaj.append(maj)
                 alltracks.append(track)
                 count = count + 1
                 # weight prerequisites higher
                 if track == "prerequisite":
                     count = count + 1
             else:
-                new_potential_courses.append((lst_course,alltracks,count))
+                new_potential_courses.append((lst_course,alltracks,allmaj,count))
                 lst_course = course
                 lst_track = track
+                lst_maj = maj
                 count = 1
                 alltracks = []
+                allmaj = []
 
-    new_potential_courses = sorted(new_potential_courses,key=lambda cs: cs[2],reverse=True)
+    new_potential_courses = sorted(new_potential_courses,key=lambda cs: cs[3],reverse=True)
+
     #print new_potential_courses
 
-    # GET MAJOR/CERTIFICATES REQUIREMENTS (IF EXIST IN DB) / DELETE IF FULFILLED / ADD ADDITIONAL WEIGHTING, then sort by that
-
-    #total_maj_reqs_needed = []
-    #if intmajors != None:
-        #for maj in intmajors:
-            #curr.execute("SELECT track_reqs FROM majors WHERE name = '"+maj+"';")
-            #nec = curr.fetchone()
-            #if nec != None:
-             #   total_maj_reqs_needed.append((maj,nec[0]))
-   # total_cert_reqs_needed = []
-    #if intcerts != None:
-     #   for maj in intcerts:
-      #      curr.execute("SELECT track_reqs FROM certificates WHERE name = '"+maj+"';")
-       #     nec = curr.fetchone()
-       #     if nec != None:
-        #        total_cert_reqs_needed.append((maj,nec[0]))
+    #print total_maj_reqs_needed,total_cert_reqs_needed
 
     curr.close()
     conn.close()

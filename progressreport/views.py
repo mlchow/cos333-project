@@ -244,6 +244,14 @@ def upload_file():
     #return render_template('success.html',netid=netid)
 
 if __name__ == "__main__":
+    #extra_dirs = ['templates','static']
+    #extra_files = extra_dirs[:]
+    #for extra_dir in extra_dirs:
+    #    for dirname, dirs, files in os.walk(extra_dir):
+    #        for filename in files:
+    #            filename = os.path.join(dirname, filename)
+    #            if os.path.isfile(filename):
+    #                extra_files.append(filename)
     #port = int(os.environ['PORT'])
     #app.run(host='0.0.0.0', port=port)
     app.run(host='127.0.0.1', port=5000, debug=True)
