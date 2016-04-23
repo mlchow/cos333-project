@@ -1,6 +1,6 @@
 #overlay {
      visibility: hidden;
-     position: absolute;
+     position: fixed;
      text-align:center;
      color: black;
      z-index: 1000;
@@ -23,3 +23,11 @@
 td {
 	cursor: pointer;
 }
+
+/*.panel-info>.panel-heading {
+     background-color: #f05f40;
+}
+
+.panel.panel-info.major-board {
+     background-color: white;
+}*/

@@ -103,7 +103,6 @@
             <button type="button" class="btn btn-default btn-md" data-toggle="collapse" data-target="#reupload-transcript">
             <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Re-upload Transcript
             </button>
-            <h5>Select a major or certificate to pin it to your board.</h5>
 
         <div class="row">
             
@@ -129,6 +128,8 @@
             </div> <!-- end transcript div -->
             <br>
         </div> <!-- end header row -->
+
+        <h5>Select a major or certificate to pin it to your board.</h5>
             
         <div class="row">
             <!-- My Board -->
@@ -151,7 +152,8 @@
                             <b>Warning - Double Counting</b>
                         {% endif %}
                         <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
-                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;">Remove</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;visibility: visible">Remove</button>
+                        <button
                       </h4>
                     </div>
                     <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
@@ -183,7 +185,7 @@
                         <b>Warning - Double Counting</b>
                         {% endif %}
                         <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
-                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;">Remove</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;visibility: visible">Remove</button>
                       </h4>
                     </div>
                     <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
