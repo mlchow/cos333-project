@@ -87,13 +87,13 @@ def update_interests():
 @app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
     if request.method == 'GET' or request.method == 'HEAD':
-        ticket_from_cas = request.args.get('ticket')
-        nid = C.Authenticate2(ticket_from_cas)
-        if nid == "" or None:
-            nid = cache.get('netid')
-        if nid == "":
-            return "<html><body>Invalid netid</body></html>"
-        #nid = "iingato"
+        #ticket_from_cas = request.args.get('ticket')
+        #nid = C.Authenticate2(ticket_from_cas)
+        #if nid == "" or None:
+        #    nid = cache.get('netid')
+        #if nid == "":
+        #    return "<html><body>Invalid netid</body></html>"
+        nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
         if netid:
@@ -252,6 +252,6 @@ if __name__ == "__main__":
     #            filename = os.path.join(dirname, filename)
     #            if os.path.isfile(filename):
     #                extra_files.append(filename)
-    port = int(os.environ['PORT'])
-    app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000, debug=True)
+    #port = int(os.environ['PORT'])
+    #app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=5000, debug=True)

@@ -129,15 +129,22 @@ def suggestcourses(netid):
         if i >= 0:
             spec = tracks[i]
             del tracks[i]
-            tracks.append((spec[0],int(spec[1])-1,spec[2]))
+            if int(spec[1]) > 0:
+                tracks.append((spec[0],int(spec[1])-1,spec[2]))
+            else:
+                tracks.append((spec[0],int(spec[1]),spec[2]))
             if mes == 1:
                 total_maj_reqs_needed[maj] = tracks
             if mes == 2:
                 total_cert_reqs_needed[maj] = tracks
 
-    #print trackinfo, total_maj_reqs_needed
+    #print total_maj_reqs_needed, total_cert_reqs_needed
+    #pos = ""
+    #pos_cnt = 0
+    #maj_ps = ""
 
     for maj,coursetrack in potential_courses:
+        #print maj, coursetrack
         tracks = []
         if maj in total_maj_reqs_needed:
             tracks = total_maj_reqs_needed[maj]
@@ -145,11 +152,18 @@ def suggestcourses(netid):
             tracks = total_cert_reqs_needed[maj]
         course = coursetrack[0]
         if len(course) != 6:
+            #pos = course
+            #pos_cnt = len(coursetrack[1])
+            #maj_ps = maj
             continue
         track = coursetrack[1]
         if course not in fulfilledcourses:
+            #if course[0:3] == pos and maj == maj_ps:
+                #print course[0:3], pos
+                #count = count + pos_cnt/2
             for trak in tracks:
-                if trak[0] == track:
+                #print trak
+                if trak[0] == track or trak[0] == course[3]:
                     count = count + int(trak[1])
             if course == lst_course and maj == lst_maj and track == lst_track:
                 #count = count + 1
@@ -160,7 +174,7 @@ def suggestcourses(netid):
                 count = count + 1
                 # weight prerequisites higher
                 if track == "prerequisite":
-                    count = count + 1
+                    count = count + 0.5
             else:
                 new_potential_courses.append((lst_course,alltracks,allmaj,count))
                 lst_course = course
@@ -172,7 +186,7 @@ def suggestcourses(netid):
 
     new_potential_courses = sorted(new_potential_courses,key=lambda cs: cs[3],reverse=True)
 
-    #print new_potential_courses
+    print new_potential_courses
 
     #print total_maj_reqs_needed,total_cert_reqs_needed
 
