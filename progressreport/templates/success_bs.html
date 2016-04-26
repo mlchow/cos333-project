@@ -142,20 +142,20 @@
                 <div class="panel-group" id="my-board-content" role="tablist" aria-multiselectable="true">
                 <!-- append courses here -->
                 {% for major in d.interested_majors %}
-                  <div class="panel panel-info major-board" id="completed-{{major.0}}">
-                    <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
+                  <div class="panel panel-info major-board" id="board-{{major.0}}">
+                    <div class="panel-heading" role="tab" id="board-heading-{{major.0}}">
                       <h4 class="panel-title">
-                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
+                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#my-board-content" href="#board-collapse-{{major.0}}" aria-expanded="true" aria-controls="board-collapse-{{major.0}}">
                         <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
                         </a>
                         {% if major.0 in d.doublecount %}
-                            <b>Warning - Double Counting</b>
+                            <mark>Warning - Double Counting</mark>
                         {% endif %}
-                        <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
-                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;visibility: visible">Remove</button>
+                        <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
                       </h4>
                     </div>
-                    <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
+                    <div id="board-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="board-heading-{{major.0}}">
                       <div class="panel-body">
                         <table class="table table-condensed table-bordered">
                         {% for req in major.1 %}
@@ -174,20 +174,20 @@
                   </div>
                 {% endfor %}
                 {% for major in d.interested_certificates %}
-                  <div class="panel panel-info major-board" id="completed-{{major.0}}">
-                    <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
+                  <div class="panel panel-info major-board" id="certificate-{{major.0}}">
+                    <div class="panel-heading" role="tab" id="certificate-heading-{{major.0}}">
                       <h4 class="panel-title">
-                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
+                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#certificate" href="#certificate-collapse-{{major.0}}" aria-expanded="true" aria-controls="certificate-collapse-{{major.0}}">
                         <b>{{major.0}}</b> <!--<i>Major GPA: {{major.1['grade']}}</i>-->
                         </a>
                         {% if major.0 in d.doublecount %}
-                        <b>Warning - Double Counting</b>
+                        <mark>Warning - Double Counting</mark>
                         {% endif %}
                         <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
                         <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;visibility: visible">Remove</button>
                       </h4>
                     </div>
-                    <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
+                    <div id="certificate-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="certificate-heading-{{major.0}}">
                       <div class="panel-body">
                         <table class="table table-condensed table-bordered">
                         {% for req in major.1 %}
@@ -223,7 +223,7 @@
         </ul>
         <br>
 
-        <div class="tab-content">
+        <div class="tab-content" id="selection">
 
         <!-- Majors by # Courses Completed -->
 
@@ -246,7 +246,7 @@
                 <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
                 </a>
                 {% if major.0 in d.doublecount %}
-                <b>Warning - Double Counting</b>
+                <mark>Warning - Double Counting</mark>
                 {% endif %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                 <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
@@ -294,7 +294,7 @@
                 <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
                 </a>
                 {% if major.0 in d.doublecount %}
-                <b>Warning - Double Counting</b>
+                <mark>Warning - Double Counting</mark>
                 {% endif %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                 <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
@@ -347,7 +347,7 @@
                     <b>{{certificate.0}}</b>
                     </a>
                     {% if certificate.0 in d.doublecount %}
-                    <b>Warning - Double Counting</b>
+                    <mark>Warning - Double Counting</mark>
                     {% endif %}
                     <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                     <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
@@ -378,6 +378,21 @@
         </div> <!-- end container for certificates-->
 
         </div> <!-- end tab content -->
+
+        <div class="row">
+
+        <!-- Recently Removed from Board -->
+        <div class="panel panel-default" id="my-board">
+        <div class="panel-heading">
+            <h3 class="panel-title">Recently Removed</h3>
+        </div>
+        <div class="panel-body">
+        <div class="panel-group" id="recently-removed" role="tablist" aria-multiselectable="true">
+        </div>
+        </div> <!-- end panel body -->
+        </div> <!-- end panel-default -->
+
+        </div> <!-- end row -->
 
         </div> <!-- end container for board + major  + certif -->
     </section>

@@ -93,7 +93,7 @@ def upload_file():
             nid = cache.get('netid')
         if nid == "":
             return "<html><body>Invalid netid</body></html>"
-        #nid = "iingato"
+        # nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
         if netid:
@@ -157,8 +157,8 @@ def upload_file():
     if request.method == 'POST':
         file = request.files['transcript']
         netid = cache.get('netid')
-        # netid = "iingato"
-        # cache.set('netid',netid)
+        netid = "iingato"
+        cache.set('netid',netid)
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
@@ -254,4 +254,4 @@ if __name__ == "__main__":
     #                extra_files.append(filename)
     port = int(os.environ['PORT'])
     app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000, debug=True)
+    # app.run(host='127.0.0.1', port=5000, debug=True)

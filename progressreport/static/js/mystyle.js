@@ -88,18 +88,35 @@ function hideCertCompleted() {
 }
 
 function refresh() {
+	$('#my-board .remove-major').show()
+	$('#my-board .pin-major').hide()
+	$('#recently-removed .remove-major').hide()
+	$('#recently-removed .pin-major').show()
 	$('.major-board').each(function(i,obj) {
 		$('.remove-major')[i].onclick = function() {
+
+			// prevent deleting permanently any majors 
+			// added during the session
+			var obj_id = $(obj).attr("id")
+			var from_board = obj_id.startsWith("board")
 
 			// make clone and replace with holder
 			var clone = $(obj).clone()
 			var holder_id = $(obj).attr('id')+"-holder"
 			var id = $(obj).attr('id')
+
 			if (id.startsWith("completed"))
 				$(clone).find("#expansion").attr('data-parent','#completed')
 			else
 				$(clone).find("#expansion").attr('data-parent','#gpa')
-			$("#"+holder_id).replaceWith(clone)
+			
+			if (from_board)
+				$("#recently-removed").append(clone)
+			else {
+				var newclone = $(obj).clone()
+				$("#recently-removed").append(newclone)
+				$("#"+holder_id).replaceWith(clone)
+			}
 			$(clone).find(".remove-major").hide()
 			$(clone).find(".pin-major").show()
 
@@ -119,39 +136,15 @@ function refresh() {
 
 	    	var holder = "<div id='"+$(obj).attr('id')+"-holder'></div>"
 	    	$(obj).replaceWith($(holder))
+
+	    	// basically remove all instances of that board (eg ELE) 
+	    	// from the page, so you don't have one ELE board on My Board
+	    	// and another in Completed etc
+	    	var boardID = $(obj).attr("id")
+	    	$("#selection div[id='"+boardID+"']").remove()
+	    	$("#recently-removed div[id='"+boardID+"']").remove()
+
 	    	refresh()
 	    }
 	});
-
-	/*$("#show-completed").onclick = function() {
-		console.log("show completed")
-		$("#completed").find(".panel-collapse").each(function(i,obj) {
-			$(obj).removeClass("out")
-			$(obj).addClass("in")
-		});
-	}
-
-	$("#hide-completed").onclick = function() {
-		console.log("hide completed")
-		$("#completed").find(".panel-collapse").each(function(i,obj) {
-			$(obj).removeClass("in")
-			$(obj).addClass("out")
-		});
-	}
-
-	$("#show-gpa").onclick = function() {
-		console.log("show gpa")
-		$("#gpa").find(".panel-collapse").each(function(i,obj) {
-			$(obj).removeClass("out")
-			$(obj).addClass("in")
-		});
-	}
-
-	$("#hide-gpa").onclick = function() {
-		console.log("hide gpa")
-		$("#gpa").find(".panel-collapse").each(function(i,obj) {
-			$(obj).removeClass("in")
-			$(obj).addClass("out")
-		});
-	}*/
 }
