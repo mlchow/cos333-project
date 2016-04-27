@@ -66,8 +66,12 @@ def update_transcript():
         #netid = request.form['netid']
         if file and netid:
             studentinfo = parse_transcript(file)
-            add_user(studentinfo,netid,True)
-        return json.dumps({'status':'OK'})
+            if studentinfo != None:
+                add_user(studentinfo,netid,True)
+        if studentinfo == None:
+            return json.dumps({'status':'OK','correctfile':'No'})
+        else:
+            return json.dumps({'status':'OK','correctfile':'Yes'})
 
 @app.route("/updateinterests",methods=["POST"])
 def update_interests():
@@ -166,6 +170,8 @@ def upload_file():
         # netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
+            if studentinfo == None:
+                return render_template('index_bs.html')
             if add_user(studentinfo,netid,False) != None:
                 #return render_template('success.html',netid=netid)
                 ret = get_progress(netid)

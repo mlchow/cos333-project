@@ -186,7 +186,7 @@ def suggestcourses(netid):
 
     new_potential_courses = sorted(new_potential_courses,key=lambda cs: cs[3],reverse=True)
 
-    print new_potential_courses
+    #print new_potential_courses
 
     #print total_maj_reqs_needed,total_cert_reqs_needed
 

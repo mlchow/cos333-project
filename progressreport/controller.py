@@ -305,12 +305,16 @@ def parse_transcript(transcript):
     try:
         pdf = pdfquery.PDFQuery(transcript)
     except:
-        return render_template('index.html') # CHANGE ERROR***
+        return None
     pdf.load(0) # arg(s) are the pages to consider
     label = pdf.pq('LTTextLineHorizontal:contains("Name: ")')
     name = label.text()
+    if name == "":
+        return None
     label = pdf.pq('LTTextLineHorizontal:contains("Program: ")')
     degree = label.text()
+    if degree == "":
+        return None
     label = pdf.pq('LTTextLineHorizontal:contains("Plan: ")')
     major = label.text() # IF NO MAJOR, THIS IS JUST EMPTY
     #print name,degree,major
