@@ -90,6 +90,7 @@ def update_interests():
 
 @app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
+    mistake = False
     if request.method == 'GET' or request.method == 'HEAD':
         #ticket_from_cas = request.args.get('ticket')
         #nid = C.Authenticate2(ticket_from_cas)
@@ -171,7 +172,7 @@ def upload_file():
         if file:
             studentinfo = parse_transcript(file)
             if studentinfo == None:
-                return render_template('index_bs.html')
+                mistake = True
             if add_user(studentinfo,netid,False) != None:
                 #return render_template('success.html',netid=netid)
                 ret = get_progress(netid)
@@ -235,7 +236,10 @@ def upload_file():
                 #return str(ret)
                 #return "<html><body>" + str(get_progress(netid)) + '</body></html>'
                 #return redirect(url_for("success"))
-    return render_template('index_bs.html')
+    d = { 
+        'mistake':mistake
+    }
+    return render_template('index_bs.html',d)
         #str(get_progress(netid)) + '</body></html>'
 
 #@app.route("/see_progress",)

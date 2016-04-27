@@ -37,7 +37,7 @@ function update_transcript() {
  		success: function(data) {
  			var data = JSON.parse(data)
  			if (data['correctfile'] == 'No') {
- 				$('#mistake').text("Oops! This doesn't look like your transcript. Double check that you are uploading your unencrypted transcript and please upload again.")
+ 				$('#mistake').text("Oops! This doesn't look like your transcript to us. Double check that you are uploading your unencrypted unofficial transcript as a pdf and please upload again.")
  				//console.log("here")
  			}
  			else {
