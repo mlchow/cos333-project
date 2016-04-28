@@ -67,9 +67,9 @@ def update_transcript():
         file = request.files['transcript']
         netid = session['netid'] if 'netid' in session else None
         # netid = cache.get('netid')
-        #netid = "mlchow"
+        #netid = "iingato"
         #cache.set('netid',netid)
-        # netid = "mlchow"
+        # netid = "iingato"
         #netid = request.form['netid']
         if file and netid:
             studentinfo = parse_transcript(file)
@@ -109,7 +109,7 @@ def upload_file():
            nid = session['netid'] if 'netid' in session else None
         if nid == "":
            return "<html><body>Invalid netid</body></html>"
-        # nid = "mlchow"
+        # nid = "iingato"
         # cache.set('netid',nid)
         session['netid'] = nid
         netid = search_users(nid)
@@ -175,13 +175,13 @@ def upload_file():
         file = request.files['transcript']
         # netid = cache.get('netid')
         netid = session['netid']
-        netid = "mlchow"
+        netid = "iingato"
         session['netid'] = netid
         # cache.set('netid',netid)
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
-        # netid = "mlchow"
+        # netid = "iingato"
         # netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
