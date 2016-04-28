@@ -1,5 +1,5 @@
 import os,psycopg2,urlparse
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, session
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa
@@ -22,6 +22,9 @@ os.environ['REQUEST_URI'] = '/welcome.html'
 
 #netid = "" # bad security but useful for now
 
+# this should actually be really secret so we maybe shouldn't put this on github??
+app.secret_key = "3#bC$Zx#XoKb@#xB7Dozl}sj7"
+
 @app.route("/")
 def start():
     loginpage = C.Authenticate1()
@@ -30,12 +33,14 @@ def start():
 
 @app.route("/logout",methods=["GET","POST"])
 def end():
+    session.pop('netid', None)
     logoutpage = C.Authenticate1out()
     return redirect(logoutpage)
 
 @app.route("/suggestcourses", methods=["POST","GET"])
 def suggest_courses():
-    netid = cache.get('netid')
+    # netid = cache.get('netid')
+    netid = session['netid']
     return json.dumps({'status':'OK','suggested_courses': suggestcourses(netid)})
 
 #@app.route("/",methods=["GET"])
@@ -50,7 +55,8 @@ def suggest_courses():
 def view_course():
     if request.method == 'POST':
         course = request.get_json()['coursename']
-        netid = cache.get('netid')
+        # netid = cache.get('netid')
+        netid = session['netid']
         interested_majors,interested_certificates,others = get_course_value(netid,course)
         #print interested_majors,interested_certificates,others
         return json.dumps({'status':'OK','interested_majors':interested_majors,'interested_certificates':interested_certificates,'others':others})
@@ -59,15 +65,16 @@ def view_course():
 def update_transcript():
     if request.method == 'POST':
         file = request.files['transcript']
-        netid = cache.get('netid')
-        #netid = "iingato"
+        netid = session['netid'] if 'netid' in session else None
+        # netid = cache.get('netid')
+        #netid = "mlchow"
         #cache.set('netid',netid)
-        #netid = "iingato"
+        # netid = "mlchow"
         #netid = request.form['netid']
         if file and netid:
             studentinfo = parse_transcript(file)
             if studentinfo != None:
-                add_user(studentinfo,netid,True)
+                add_user(studentinfo,session['netid'],True)
         if studentinfo == None:
             return json.dumps({'status':'OK','correctfile':'No'})
         else:
@@ -78,28 +85,33 @@ def update_interests():
     if request.method == 'POST':
         majors = request.get_json()
         listofmajors = majors['majors']
-        netid = cache.get('netid')
-        if netid == None:
+        # netid = cache.get('netid')
+        netid = None
+        try:
+            netid = session['netid']
+            save_major_and_certificate_interests(netid,listofmajors)
+            #print listofmajors
+            return json.dumps({'status':'OK'})
+            #print majors
+            #return render_template('index_bs.html')
+        except KeyError:
             #print "HELP"
             return json.dumps({'status':'OK'})
-        save_major_and_certificate_interests(netid,listofmajors)
-        #print listofmajors
-        return json.dumps({'status':'OK'})
-        #print majors
-        #return render_template('index_bs.html')
+        
 
 @app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
     mistake = False
     if request.method == 'GET' or request.method == 'HEAD':
-        #ticket_from_cas = request.args.get('ticket')
-        #nid = C.Authenticate2(ticket_from_cas)
-        #if nid == "" or None:
-        #    nid = cache.get('netid')
-        #if nid == "":
-        #    return "<html><body>Invalid netid</body></html>"
-        nid = "iingato"
-        cache.set('netid',nid)
+        ticket_from_cas = request.args.get('ticket')
+        nid = C.Authenticate2(ticket_from_cas)
+        if nid == "" or None:
+           nid = session['netid'] if 'netid' in session else None
+        if nid == "":
+           return "<html><body>Invalid netid</body></html>"
+        # nid = "mlchow"
+        # cache.set('netid',nid)
+        session['netid'] = nid
         netid = search_users(nid)
         if netid:
             ret = get_progress(netid)
@@ -161,13 +173,15 @@ def upload_file():
             return render_template('success_bs.html',d=d)
     if request.method == 'POST':
         file = request.files['transcript']
-        netid = cache.get('netid')
-        netid = "iingato"
-        cache.set('netid',netid)
+        # netid = cache.get('netid')
+        netid = session['netid']
+        netid = "mlchow"
+        session['netid'] = netid
+        # cache.set('netid',netid)
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
-        # netid = "iingato"
+        # netid = "mlchow"
         # netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
@@ -262,6 +276,6 @@ if __name__ == "__main__":
     #            filename = os.path.join(dirname, filename)
     #            if os.path.isfile(filename):
     #                extra_files.append(filename)
-    #port = int(os.environ['PORT'])
-    #app.run(host='0.0.0.0', port=port)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ['PORT'])
+    app.run(host='0.0.0.0', port=port)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
