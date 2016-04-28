@@ -74,43 +74,43 @@ function exit_course_view() {
 
 function showCompleted() {
 	$("#completed").find(".panel-collapse").each(function(i,obj) {
-		$(obj).removeClass("out")
 		$(obj).addClass("in")
+		$(obj).attr("aria-expanded","true")
 	});
 }
 
 function hideCompleted() {
 	$("#completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
-		$(obj).addClass("out")
+		$(obj).attr("aria-expanded","false")
 	});
 }
 
 function showGpa() {
 	$("#gpa").find(".panel-collapse").each(function(i,obj) {
-		$(obj).removeClass("out")
 		$(obj).addClass("in")
+		$(obj).attr("aria-expanded","true")
 	});
 }
 
 function hideGpa() {
 	$("#gpa").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
-		$(obj).addClass("out")
+		$(obj).attr("aria-expanded","false")
 	});
 }
 
 function showCertCompleted() {
 	$("#certificates_completed").find(".panel-collapse").each(function(i,obj) {
-		$(obj).removeClass("out")
 		$(obj).addClass("in")
+		$(obj).attr("aria-expanded","true")
 	});
 }
 
 function hideCertCompleted() {
 	$("#certificates_completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
-		$(obj).addClass("out")
+		$(obj).attr("aria-expanded","false")
 	});
 }
 

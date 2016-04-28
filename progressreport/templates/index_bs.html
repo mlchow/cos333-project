@@ -103,8 +103,10 @@
             <input type="submit" name="Submit"></input> -->
             <button type="submit" class="btn btn-primary" name="Submit">Submit</button>
             </form>
-            {% if d.mistake %}
-            <p>Oops! This doesn't look like your transcript to us. Double check that you are uploading your unencrypted unofficial transcript as a pdf and please upload again.</p>
+            {% if d is defined %}
+                {% if d.mistake %}
+                <p>Oops! This doesn't look like your transcript to us. Double check that you are uploading your unencrypted unofficial transcript as a pdf and please upload again.</p>
+                {% endif %}
             {% endif %}
             <h4>Want to upload manually instead? No problem!</h4>
             <fieldset class="form-group">

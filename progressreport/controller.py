@@ -11,7 +11,9 @@ regex = re.compile('\'|\"')
 # or http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html
 
 def convert_grade_to_numeric_GPA(grade):
-    if grade == "A" or grade == "A+":
+    if grade == "A+":
+        return 4.0
+    elif grade == "A":
         return 4.0
     elif grade == "A-":
         return 3.7
