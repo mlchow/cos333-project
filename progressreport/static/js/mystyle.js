@@ -16,6 +16,25 @@ function logout() {
     });
 }
 
+function add_to_progress() {
+	var form = $("#manual-update-courses") //.children('fieldset').children('input').first().val()
+	console.log(form)
+	var dict = {'courses':form}
+	var encoded = JSON.stringify(dict)
+	/*$.ajax({
+    	url: '/addmanualprogress',
+     	data: encoded,
+    	type: 'POST',
+    	async: true,
+    	contentType: "application/json; charset=utf-8",
+	 	dataType: "text",
+ 		success: function(data) {
+ 			window.location.reload(true);
+		}
+    });*/
+
+}
+
 function update_transcript() {
     //console.log("clicked")
     	/*printme = $('#latest_transcript').html()*/
@@ -42,6 +61,7 @@ function update_transcript() {
  			}
  			else {
  				window.location.reload(true);
+ 				//$.ajax({})
  			}
 		}
     });

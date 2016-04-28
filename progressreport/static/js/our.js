@@ -44,17 +44,20 @@ $(function() {
                 var suggested_courses = data['suggested_courses']
                 var txt = "Courses we would recommend for you based on your interests... <br />"
                 //console.log(suggested_courses)
+                //console.log(suggested_courses)
                 for (i = 0; i < suggested_courses.length; i++) {
                     if (suggested_courses[i][0].length > 0) {
-                        txt = txt + suggested_courses[i][0] + " fulfills... "
-                        var lst = [];
-                        for (k = 0; k < suggested_courses[i][2].length; k++) {
-                            if (lst.indexOf(suggested_courses[i][2][k]) < 0) {
-                                txt = txt + suggested_courses[i][2][k] + " "
-                                lst.push(suggested_courses[i][2][k])
+                        if (suggested_courses[i][0][2].length > 0) {
+                            txt = txt + suggested_courses[i][0] + " fulfills... "
+                            var lst = [];
+                            for (k = 0; k < suggested_courses[i][2].length; k++) {
+                                if (lst.indexOf(suggested_courses[i][2][k]) < 0) {
+                                    txt = txt + suggested_courses[i][2][k] + " "
+                                    lst.push(suggested_courses[i][2][k])
+                                }
                             }
+                            txt = txt + "<br />"
                         }
-                        txt = txt + "<br />"
                     }
                 }
                 $("#suggested_courses").html(txt)

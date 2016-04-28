@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa
-from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses
+from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 import json
@@ -37,6 +37,16 @@ def end():
 def suggest_courses():
     netid = cache.get('netid')
     return json.dumps({'status':'OK','suggested_courses': suggestcourses(netid)})
+
+@app.route("/addmanualprogress", methods=["POST","GET"])
+def add_manual_progress():
+    if request.method == 'POST':
+        courses = request.get_json()['courses']
+        #print courses
+        netid = cache.get('netid')
+        #print netid
+        update_just_transcript(netid, courses)
+        return json.dumps({'status':'OK'})
 
 #@app.route("/",methods=["GET"])
 #def restart():
@@ -97,11 +107,13 @@ def upload_file():
         #if nid == "" or None:
         #    nid = cache.get('netid')
         #if nid == "":
-        #    return "<html><body>Invalid netid</body></html>"
+        #    return render_template(url_for('start'))
         nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
         if netid:
+            info = get_student_info(netid)
+
             ret = get_progress(netid)
             ret_certs = get_progress_certificates(netid)
 
@@ -110,6 +122,9 @@ def upload_file():
             certificates_completed,doublecountcerts = get_major_by_courses(ret_certs)
 
             major_interests,certificate_interests = get_major_certificate_interests(netid)
+            #print major_interests,certificate_interests
+
+            # get info of courses for interested majors/certificates
             majors_of_interest = []
             certificates_of_interest = []
             for maj in majors_completed:
@@ -129,25 +144,25 @@ def upload_file():
                 simple_dc.append(dc[0])
             #print simple_dc
 
-            majors_temp = []
+            #majors_temp = []
 
             # Loop to remove from rest of page
-            for maj in majors_completed:
-                if maj[0] not in major_interests:
-                    majors_temp.append(maj)
-            majors_completed = majors_temp
+            #for maj in majors_completed:
+            #    if maj[0] not in major_interests:
+            #        majors_temp.append(maj)
+            #majors_completed = majors_temp
 
-            majors_temp = []
-            for maj in majors_gpa:
-                if maj[0] not in major_interests:
-                    majors_temp.append(maj)
-            majors_gpa = majors_temp
+            #majors_temp = []
+            #for maj in majors_gpa:
+            #    if maj[0] not in major_interests:
+            #        majors_temp.append(maj)
+            #majors_gpa = majors_temp
 
-            majors_temp = []
-            for maj in certificates_completed:
-                if maj[0] not in certificate_interests:
-                    majors_temp.append(maj)
-            certificates_completed = majors_temp
+            #majors_temp = []
+            #for maj in certificates_completed:
+            ##    if maj[0] not in certificate_interests:
+             #       majors_temp.append(maj)
+            #certificates_completed = majors_temp
 
             d = {
                 'netid': netid,
@@ -156,7 +171,8 @@ def upload_file():
                 'certificates_completed': certificates_completed,
                 'interested_majors': majors_of_interest,
                 'interested_certificates': certificates_of_interest,
-                'doublecount': simple_dc
+                'doublecount': simple_dc,
+                'info': info
             }
             return render_template('success_bs.html',d=d)
     if request.method == 'POST':
@@ -175,6 +191,9 @@ def upload_file():
                 mistake = True
             if add_user(studentinfo,netid,False) != None:
                 #return render_template('success.html',netid=netid)
+
+                info = [studentinfo[0],studentinfo[1],studentinfo[2],studentinfo[4]]
+
                 ret = get_progress(netid)
                 ret_certs = get_progress_certificates(netid)
 
@@ -201,25 +220,25 @@ def upload_file():
                 for dc in doublecountcerts:
                     simple_dc.append(dc[0])
 
-                majors_temp = []
+                #majors_temp = []
 
                 # Loop to remove from rest of page
-                for maj in majors_completed:
-                    if maj[0] not in major_interests:
-                        majors_temp.append(maj)
-                majors_completed = majors_temp
+                #for maj in majors_completed:
+                #    if maj[0] not in major_interests:
+                #        majors_temp.append(maj)
+                #majors_completed = majors_temp
 
-                majors_temp = []
-                for maj in majors_gpa:
-                    if maj[0] not in major_interests:
-                        majors_temp.append(maj)
-                majors_gpa = majors_temp
+                #majors_temp = []
+                #for maj in majors_gpa:
+                #    if maj[0] not in major_interests:
+                #        majors_temp.append(maj)
+                #majors_gpa = majors_temp
 
-                majors_temp = []
-                for maj in certificates_completed:
-                    if maj[0] not in certificate_interests:
-                        majors_temp.append(maj)
-                certificates_completed = majors_temp
+                #majors_temp = []
+                #for maj in certificates_completed:
+                #    if maj[0] not in certificate_interests:
+                #        majors_temp.append(maj)
+                #certificates_completed = majors_temp
 
                 d = {
                     'netid': netid,
@@ -228,7 +247,8 @@ def upload_file():
                     'certificates_completed': certificates_completed,
                     'interested_majors': majors_of_interest,
                     'interested_certificates': certificates_of_interest,
-                    'doublecount': simple_dc
+                    'doublecount': simple_dc,
+                    'info': info
                 }
                 return render_template('success_bs.html',d=d)
 

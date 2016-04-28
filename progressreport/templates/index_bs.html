@@ -106,6 +106,19 @@
             {% if d.mistake %}
             <p>Oops! This doesn't look like your transcript to us. Double check that you are uploading your unencrypted unofficial transcript as a pdf and please upload again.</p>
             {% endif %}
+            <h4>Want to upload manually instead? No problem!</h4>
+            <fieldset class="form-group">
+                <label for="Name">Name</label>
+                <input type="text" name="Name" id="name-manual"><br>
+                <label for="Degree">Degree</label><br>
+                <input type="radio" name="Degree" id="degree-manual" value="AB" checked>AB<br>
+                <input type="radio" name="Degree" id="degree2-manual" value="BSE">BSE<br>
+                <label for="Major">Major</label>
+                <input type="text" name="Major" id="major-manual"><br>
+                <label for="Courses">Courses</label>
+                <small class="text-muted">Separate courses with a comma. Example: MAT103,PHY104</small><br>
+                <input type="text" id="courses-manual">
+            </fieldset>
         </div>
     </section>
 

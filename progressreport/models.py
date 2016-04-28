@@ -3,6 +3,27 @@ import psycopg2, re
 regex = re.compile('\'|\"')
 #regex2 = re.compile('\( ([^\)]*,) ([^\)]*,) ([^\)]*) \)')
 
+def get_student_info(netid):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return None
+    curr = conn.cursor()
+
+    curr.execute("SELECT name FROM users WHERE netid = '"+netid+"';")
+    name = curr.fetchone()
+
+    curr.execute("SELECT degree FROM users WHERE netid = '"+netid+"';")
+    deg = curr.fetchone()
+
+    curr.execute("SELECT major FROM users WHERE netid = '"+netid+"';")
+    maj = curr.fetchone()
+
+    curr.execute("SELECT num_pdfs FROM users WHERE netid = '"+netid+"';")
+    pdfs = curr.fetchone()
+
+    return [name[0],deg[0],maj[0],pdfs[0]]
+
 # USES A WEIGHTING SCHEMA, then suggests top 5 courses - insert some randomness
 def suggestcourses(netid):
     try:
@@ -82,6 +103,8 @@ def suggestcourses(netid):
     alltracks = []
     allmaj = []
 
+    #print potential_courses
+
     # GET MAJOR/CERTIFICATES REQUIREMENTS (IF EXIST IN DB) / DELETE IF FULFILLED / ADD ADDITIONAL WEIGHTING, then sort by that
 
     total_maj_reqs_needed = {}
@@ -150,6 +173,7 @@ def suggestcourses(netid):
             tracks = total_maj_reqs_needed[maj]
         if maj in total_cert_reqs_needed:
             tracks = total_cert_reqs_needed[maj]
+        #print tracks
         course = coursetrack[0]
         if len(course) != 6:
             #pos = course
@@ -158,13 +182,21 @@ def suggestcourses(netid):
             continue
         track = coursetrack[1]
         if course not in fulfilledcourses:
+            #print maj,course,track
             #if course[0:3] == pos and maj == maj_ps:
                 #print course[0:3], pos
                 #count = count + pos_cnt/2
             for trak in tracks:
-                #print trak
-                if trak[0] == track or trak[0] == course[3]:
+                #print trak[0],course[3]
+                #print course[3]
+                #print trak[0]
+                if trak[0] == track or (len(trak) == 1 and int(trak[0]) <= int(course[3])):
+                    #print maj,coursetrack,"plus"
                     count = count + int(trak[1])
+                    if maj not in allmaj:
+                        allmaj.append(maj)
+                    if track not in alltracks:
+                        alltracks.append(track)
             if course == lst_course and maj == lst_maj and track == lst_track:
                 #count = count + 1
                 continue
@@ -172,6 +204,8 @@ def suggestcourses(netid):
                 allmaj.append(maj)
                 alltracks.append(track)
                 count = count + 1
+                if maj != lst_maj:
+                    count = count + 1
                 # weight prerequisites higher
                 if track == "prerequisite":
                     count = count + 0.5
@@ -236,7 +270,7 @@ def get_course_value(netid,course):
                 el2 = em
                 for el2 in list(em):
                         #print el
-                    if type(el2[0]) == list:
+                    if len(el2) > 0 and type(el2[0]) == list:
                         for el3 in list(el2):
                                 #print el3
                             el.append(el3)
@@ -325,7 +359,7 @@ def search_users(netid):
     conn.close()
     return netid
 
-def add_user(studentinfo,netid, flag):
+def add_user(studentinfo,netid,flag):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
     except:
@@ -352,12 +386,14 @@ def add_user(studentinfo,netid, flag):
             interested_majors = str(interested_majors)
             interested_majors = interested_majors.replace("[","{")
             interested_majors = interested_majors.replace("]","}")
+            interested_majors = regex.sub("",interested_majors)
         if interested_certificates == None:
             interested_certificates = "{}"
         else:
             interested_certificates = str(interested_certificates)
             interested_certificates = interested_certificates.replace("[","{")
             interested_certificates = interested_certificates.replace("]","}")
+            interested_certificates = regex.sub("",interested_certificates)
         fulfilled = "{}"
         fulfilledcerts = "{}"
         curr.execute("DELETE FROM users WHERE netid ='"+netid+"';")
@@ -661,6 +697,31 @@ def save_progress_certificates(netid,progress):
     conn.close()
     return ret
 
+def update_just_transcript(netid, courses):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return None
+    curr = conn.cursor()
+    curr.execute("SELECT courses FROM users WHERE netid = '"+netid+"';")
+    trans = curr.fetchone()
+    if trans == None:
+        return
+    trans = trans[0]
+    trans = str(trans)
+    trans = regex.sub("",trans)
+    trans = trans.replace("[","{")
+    trans = trans.replace("]","}")
+    courses = courses.split(",")
+    for course in courses:
+        courses_and_grades.append([course.strip(),"None"])
+    courses_and_grades = str(courses_and_grades)
+    courses_and_grades = regex.sub("",courses_and_grades)
+    courses_and_grades = courses_and_grades.replace("[","{")
+    courses_and_grades = courses_and_grades.replace("]","}")
+    curr.execute("UPDATE users SET courses = %s::text[] || %s::text[][], fulfilled = NULL, fulfilledcerts = NULL WHERE name = %s;",(courses_and_grades,trans,netid))
+    conn.commit()
+
 def get_major_certificate_interests(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -671,6 +732,9 @@ def get_major_certificate_interests(netid):
     intmajors = curr.fetchone()
     curr.execute("SELECT interested_certificates FROM users WHERE netid = '"+netid+"';")
     intcerts = curr.fetchone()
+    #print intmajors,intcerts
+    #retmajors = []
+    #retcerts = []
     if intmajors == None and intcerts == None:
         return None
     if intmajors != None:
