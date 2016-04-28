@@ -278,10 +278,15 @@ def show_progress(progress):
 
 # WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
 def parse_course(course):
+    #print course
+    course = course + " "
     ret = []
     dep = course[0:3]
     num = course[4:7]
     #grade_basis = course[8:10]
+
+    # this changes based on when the transcript was created (order of distribution requirements/grade changed)
+
     dis_req = course[-3:]
     dis_req = dis_req.strip()
     # NONE will show up as ONE be aware
@@ -291,6 +296,7 @@ def parse_course(course):
     if course[-1:] == "W":
         dis_req = "W"
     s_obj = grade_regex.findall(course)
+    #print s_obj
     if len(s_obj) < 1:
         grade = "None"
     else:
@@ -324,13 +330,21 @@ def parse_transcript(transcript):
     #print name,degree,major
     i_name = name.index(" ")
     i_degree = degree.index(" ")
-    i_major = ""
-    if major != "":
-        i_major = major.index(" ")
+    i_major = 0
+    if major == "Plan: Not Available-Temporary Only":
+        i_major = -1
+    if major != "" and major != "Plan: Not Available-Temporary Only":
+        try:
+            i_major = major.index(" ")
+        except:
+            i_major = -1
     new_name = name[i_name+1:].split(",")
     student['name'] =  new_name[1].strip() + " " + new_name[0].strip()
     student['degree'] = degree[i_degree+1:]
-    student['major'] = major[i_major+1:]
+    if i_major < 0:
+        student['major'] = ""
+    else:
+        student['major'] = major[i_major+1:]
     courses = []
     pdf.load()
     label = pdf.pq('LTTextLineHorizontal:contains("GRD")')
@@ -372,6 +386,7 @@ def parse_transcript(transcript):
     studentinfo.append(student['major'])
     studentinfo.append(student['courses'])
     studentinfo.append(count_spf)
+    #print studentinfo
     #curr.execute("INSERT INTO Users VALUES (%s,%s,%s)",(student['name'],student['degree'],student['major']))
     #conn.commit()
     #curr.close()
