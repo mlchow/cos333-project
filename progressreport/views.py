@@ -66,12 +66,8 @@ def update_transcript():
         #netid = request.form['netid']
         if file and netid:
             studentinfo = parse_transcript(file)
-            if studentinfo != None:
-                add_user(studentinfo,netid,True)
-        if studentinfo == None:
-            return json.dumps({'status':'OK','correctfile':'No'})
-        else:
-            return json.dumps({'status':'OK','correctfile':'Yes'})
+            add_user(studentinfo,netid,True)
+        return json.dumps({'status':'OK'})
 
 @app.route("/updateinterests",methods=["POST"])
 def update_interests():
@@ -90,15 +86,14 @@ def update_interests():
 
 @app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
-    mistake = False
     if request.method == 'GET' or request.method == 'HEAD':
-        #ticket_from_cas = request.args.get('ticket')
-        #nid = C.Authenticate2(ticket_from_cas)
-        #if nid == "" or None:
-        #    nid = cache.get('netid')
-        #if nid == "":
-        #    return "<html><body>Invalid netid</body></html>"
-        nid = "iingato"
+        ticket_from_cas = request.args.get('ticket')
+        nid = C.Authenticate2(ticket_from_cas)
+        if nid == "" or None:
+            nid = cache.get('netid')
+        if nid == "":
+            return "<html><body>Invalid netid</body></html>"
+        # nid = "iingato"
         cache.set('netid',nid)
         netid = search_users(nid)
         if netid:
@@ -171,8 +166,6 @@ def upload_file():
         # netid = request.form['netid']
         if file:
             studentinfo = parse_transcript(file)
-            if studentinfo == None:
-                mistake = True
             if add_user(studentinfo,netid,False) != None:
                 #return render_template('success.html',netid=netid)
                 ret = get_progress(netid)
@@ -236,10 +229,7 @@ def upload_file():
                 #return str(ret)
                 #return "<html><body>" + str(get_progress(netid)) + '</body></html>'
                 #return redirect(url_for("success"))
-    d = { 
-        'mistake':mistake
-    }
-    return render_template('index_bs.html',d)
+    return render_template('index_bs.html')
         #str(get_progress(netid)) + '</body></html>'
 
 #@app.route("/see_progress",)
@@ -262,6 +252,6 @@ if __name__ == "__main__":
     #            filename = os.path.join(dirname, filename)
     #            if os.path.isfile(filename):
     #                extra_files.append(filename)
-    #port = int(os.environ['PORT'])
-    #app.run(host='0.0.0.0', port=port)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ['PORT'])
+    app.run(host='0.0.0.0', port=port)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
