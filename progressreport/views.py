@@ -48,7 +48,7 @@ def add_manual_progress():
     if request.method == 'POST':
         courses = request.get_json()['courses']
         #print courses
-        netid = cache.get('netid')
+        netid = session['netid']
         #print netid
         update_just_transcript(netid, courses)
         return json.dumps({'status':'OK'})
@@ -119,7 +119,7 @@ def upload_file():
            nid = session['netid'] if 'netid' in session else None
         if nid == "":
            return "<html><body>Invalid netid</body></html>"
-        # nid = "iingato"
+        #nid = "iingato"
         # cache.set('netid',nid)
         session['netid'] = nid
         netid = search_users(nid)
@@ -176,6 +176,8 @@ def upload_file():
              #       majors_temp.append(maj)
             #certificates_completed = majors_temp
 
+            #print major_interests, certificate_interests
+
             d = {
                 'netid': netid,
                 'majors_completed': majors_completed,
@@ -183,6 +185,8 @@ def upload_file():
                 'certificates_completed': certificates_completed,
                 'interested_majors': majors_of_interest,
                 'interested_certificates': certificates_of_interest,
+                'int_majors': major_interests,
+                'int_certificates': certificate_interests,
                 'doublecount': simple_dc,
                 'info': info
             }
@@ -261,6 +265,8 @@ def upload_file():
                     'certificates_completed': certificates_completed,
                     'interested_majors': majors_of_interest,
                     'interested_certificates': certificates_of_interest,
+                    'int_majors': major_interests,
+                    'int_certificates': certificate_interests,
                     'doublecount': simple_dc,
                     'info': info
                 }
@@ -298,4 +304,4 @@ if __name__ == "__main__":
     #                extra_files.append(filename)
     port = int(os.environ['PORT'])
     app.run(host='0.0.0.0', port=port)
-    # app.run(host='127.0.0.1', port=5000, debug=True)
+    #app.run(host='127.0.0.1', port=5000, debug=True)

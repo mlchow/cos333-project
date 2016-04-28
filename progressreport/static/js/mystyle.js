@@ -17,11 +17,11 @@ function logout() {
 }
 
 function add_to_progress() {
-	var form = $("#manual-update-courses") //.children('fieldset').children('input').first().val()
-	console.log(form)
+	var form = $("#extra-courses").val() //.children('fieldset').children('input').first().val()
+	//console.log(form)
 	var dict = {'courses':form}
 	var encoded = JSON.stringify(dict)
-	/*$.ajax({
+	$.ajax({
     	url: '/addmanualprogress',
      	data: encoded,
     	type: 'POST',
@@ -31,7 +31,7 @@ function add_to_progress() {
  		success: function(data) {
  			window.location.reload(true);
 		}
-    });*/
+    });
 
 }
 
@@ -130,20 +130,34 @@ function refresh() {
 			// make clone and replace with holder
 			var clone = $(obj).clone()
 			var holder_id = $(obj).attr('id')+"-holder"
-			var id = $(obj).attr('id')
+			var id = $(obj).attr('id').substring(6)
 
+			$("[id$="+id+"] .pin-major").each(function() {
+				$(this).css("visibility","visible")
+			});
+			console.log($("[id$="+id+"] .pin-major"))
+
+			/*
+			$("div[id$='"+id+"'").each(function() {
+				// make pin visible
+				//$(this).find(".pin-major").show()
+				$(this).find("button .pin-major").css("visiblity","visible")
+				console.log($(this).find("button .pin-major"))
+				console.log(this)
+			});*/
+			/*
 			if (id.startsWith("completed"))
 				$(clone).find("#expansion").attr('data-parent','#completed')
 			else
 				$(clone).find("#expansion").attr('data-parent','#gpa')
-			
-			if (from_board)
+			*/
+			/*if (from_board)
 				$("#recently-removed").append(clone)
 			else {
 				var newclone = $(obj).clone()
 				$("#recently-removed").append(newclone)
 				$("#"+holder_id).replaceWith(clone)
-			}
+			}*/
 			$(clone).find(".remove-major").hide()
 			$(clone).find(".pin-major").show()
 

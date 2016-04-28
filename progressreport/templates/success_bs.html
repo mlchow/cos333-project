@@ -265,7 +265,6 @@
 
         <div class="panel-group" id="completed" role="tablist" aria-multiselectable="true">
         {% for major in d.majors_completed %}
-        {% if major not in d.interested_majors %}
           <div class="panel panel-info major-board" id="completed-{{major.0}}">
             <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
               <h4 class="panel-title">
@@ -275,7 +274,11 @@
                 {% if major.0 in d.doublecount %}
                 <mark>Warning - Double Counting</mark>
                 {% endif %}
+                {% if major.0 not in d.int_majors %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                {% else %}
+                <button type="button" class="btn btn-info btn-sm pin-major" style="visibility:hidden;">Pin</button>
+                {% endif %}
                 <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
               </h4>
             </div>
@@ -301,7 +304,6 @@
               </div>
             </div>
           </div>
-        {% endif %}
         {% endfor %}
         </div>
 
@@ -320,7 +322,6 @@
 
         <div class="panel-group" id="gpa" role="tablist" aria-multiselectable="true">
         {% for major in d.majors_gpa %}
-        {% if major not in d.interested_majors %}
           <div class="panel panel-info major-board" id="gpa-{{major.0}}">
             <div class="panel-heading" role="tab" id="gpa-heading-{{major.0}}">
               <h4 class="panel-title">
@@ -330,7 +331,11 @@
                 {% if major.0 in d.doublecount %}
                 <mark>Warning - Double Counting</mark>
                 {% endif %}
+                {% if major.0 not in d.int_majors %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                {% else %}
+                <button type="button" class="btn btn-info btn-sm pin-major" style="visibility:hidden;">Pin</button>
+                {% endif %}
                 <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
               </h4>
             </div>
@@ -356,7 +361,6 @@
               </div>
             </div>
           </div>
-        {% endif %}
         {% endfor %}
         </div>
         
@@ -380,7 +384,6 @@
 
             <div class="panel-group" id="certificates_completed" role="tablist" aria-multiselectable="true">
             {% for certificate in d.certificates_completed %}
-            {% if major not in d.interested_certificates %}
               <div class="panel panel-warning major-board" id="completed-{{certificate.0}}">
                 <div class="panel-heading" role="tab" id="completed-heading-{{certificate.0}}">
                   <h4 class="panel-title">
@@ -390,7 +393,11 @@
                     {% if certificate.0 in d.doublecount %}
                     <mark>Warning - Double Counting</mark>
                     {% endif %}
+                    {% if certificate.0 not in d.int_certificates %}
                     <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                    {% else %}
+                    <button type="button" class="btn btn-info btn-sm pin-major" style="visibility:hidden;">Pin</button>
+                    {% endif %}
                     <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
                   </h4>
                 </div>
@@ -416,7 +423,6 @@
                   </div>
                 </div>
               </div>
-            {% endif %}
             {% endfor %}
             </div> <!-- end panel group -->
         </div> <!-- end col -->
@@ -425,21 +431,6 @@
         </div> <!-- end container for certificates-->
 
         </div> <!-- end tab content -->
-
-        <div class="row">
-
-        <!-- Recently Removed from Board -->
-        <div class="panel panel-default" id="my-board">
-        <div class="panel-heading">
-            <h3 class="panel-title">Recently Removed</h3>
-        </div>
-        <div class="panel-body">
-        <div class="panel-group" id="recently-removed" role="tablist" aria-multiselectable="true">
-        </div>
-        </div> <!-- end panel body -->
-        </div> <!-- end panel-default -->
-
-        </div> <!-- end row -->
 
         </div> <!-- end container for board + major  + certif -->
     </section>

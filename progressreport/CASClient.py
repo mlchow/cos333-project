@@ -14,8 +14,8 @@ class CASClient:
       return login_url
    #logout
    def Authenticate1out(self):
-      logout_url = self.cas_url + 'logout' \
-            + '?service=' + urllib.quote('http://' + os.environ['HTTP_HOST'])
+      logout_url = self.cas_url + 'logout'
+            #+ '?service=' + urllib.quote('http://' + os.environ['HTTP_HOST'])
       return logout_url
    def Authenticate2(self,ticket_from_cas):
       # If the request contains a login ticket, try to validate it
