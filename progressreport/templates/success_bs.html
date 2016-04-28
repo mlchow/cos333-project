@@ -71,6 +71,9 @@
                     <li>
                         <a style="cursor:pointer;" onclick="logout()">Logout</a>
                     </li>
+                    <li>
+                        <a style="cursor:pointer;" onclick="delete_acc()">Delete My Account</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -105,7 +108,9 @@
                 | {{d.info[2]}}
             {% endif %}
             </h2>
+            {% if d.info[3]|int >= 0 %}
             <h3>You have used {{d.info[3]}} of your 4 PDFs.</h3>
+            {% endif %}
             <button type="button" class="btn btn-default btn-md" data-toggle="collapse" data-target="#reupload-transcript">
             <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Re-upload Transcript
             </button>
@@ -183,7 +188,7 @@
                         {% for req in major.1 %}
                         {% if req != "grade" and req != "num_courses" %}
                           <tr class="info">
-                            <th colspan="2">{{req}}</th>
+                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
                             <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -220,7 +225,7 @@
                         {% for req in major.1 %}
                         {% if req != "grade" and req != "num_courses" %}
                           <tr class="info">
-                            <th colspan="2">{{req}}</th>
+                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
                             <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -294,7 +299,7 @@
                 {% for req in major.1 %}
                 {% if req != "grade" and req != "num_courses" %}
                   <tr class="info">
-                    <th colspan="2">{{req}}</th>
+                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
                     <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -351,7 +356,7 @@
                 {% for req in major.1 %}
                 {% if req != "grade" and req != "num_courses" %}
                   <tr class="info">
-                    <th colspan="2">{{req}}</th>
+                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
                     <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -413,7 +418,7 @@
                     {% for req in certificate.1 %}
                     {% if req != "grade" and req != "num_courses" %}
                       <tr class="info">
-                        <th colspan="2">{{req}}</th>
+                        <th colspan="2">{{req}} <i>{{certificate.1[req]|length}} Courses Completed</i></th>
                       </tr>
                       {% for c in certificate.1[req] %}
                         <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>

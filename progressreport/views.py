@@ -2,8 +2,8 @@ import os,psycopg2,urlparse
 from flask import Flask, request, redirect, url_for, session
 from flask import render_template
 import CASClient
-from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa
-from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript
+from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa, parse_manual_courses
+from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 import json
@@ -33,6 +33,14 @@ def start():
 
 @app.route("/logout",methods=["GET","POST"])
 def end():
+    session.pop('netid', None)
+    logoutpage = C.Authenticate1out()
+    return redirect(logoutpage)
+
+@app.route("/deleteaccount",methods=["GET","POST"])
+def deleteacc():
+    netid = session['netid']
+    delete_account(netid)
     session.pop('netid', None)
     logoutpage = C.Authenticate1out()
     return redirect(logoutpage)
@@ -194,8 +202,12 @@ def upload_file():
             return render_template('success_bs.html',d=d)
     if request.method == 'POST':
         file = request.files['transcript']
+        studentname = request.form['Name']
+        degree = request.form['Degree']
+        major = request.form['Major']
+        manualcourses = request.form['manual_courses']
         # netid = cache.get('netid')
-        netid = session['netid']
+        #netid = session['netid']
         netid = "iingato"
         session['netid'] = netid
         # cache.set('netid',netid)
@@ -207,7 +219,15 @@ def upload_file():
         if file:
             studentinfo = parse_transcript(file)
             if studentinfo == None:
-                mistake = True
+                mistake = True          
+        if not mistake and (file or manualcourses):
+            if not file and manualcourses:
+                if studentname == "":
+                    studentname == "Anonymous Tiger"
+                course_manual_parsed = parse_manual_courses(manualcourses)
+                # since we do not know how many pdfs, set to -1
+                studentinfo = [studentname,degree,major,course_manual_parsed,-1]
+                #print studentinfo
             if add_user(studentinfo,netid,False) != None:
                 #return render_template('success.html',netid=netid)
 
@@ -280,7 +300,7 @@ def upload_file():
     d = { 
         'mistake':mistake
     }
-    return render_template('index_bs.html',d)
+    return render_template('index_bs.html',d=d)
         #str(get_progress(netid)) + '</body></html>'
 
 #@app.route("/see_progress",)

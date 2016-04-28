@@ -3,6 +3,15 @@ import psycopg2, re
 regex = re.compile('\'|\"')
 #regex2 = re.compile('\( ([^\)]*,) ([^\)]*,) ([^\)]*) \)')
 
+def delete_account(netid):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return None
+    curr = conn.cursor()
+    curr.execute("DELETE FROM users WHERE netid = '"+netid+"';")
+    conn.commit()
+
 def get_student_info(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -401,7 +410,10 @@ def add_user(studentinfo,netid,flag):
         curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,courses,num_pdfs,name,fulfilled,fulfilledcerts))
         conn.commit()
     # new user
-    if nettry == None:
+    if nettry == None or flag == False:
+        #if flag == False:
+        #    curr.execute("DELETE FROM users WHERE netid ='"+netid+"';")
+        #    conn.commit()
         name = studentinfo[0]
         degree = studentinfo[1]
         major = studentinfo[2]

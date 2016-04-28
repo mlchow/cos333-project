@@ -85,8 +85,9 @@
     <section id="main">
         <div class="container">
             <h1>Welcome to Progress Report</h1>
-            <h2>Let's get started. Please tell us more about you and your academic history and interests!</h2>
+            <h2>Let's get started. Please tell us more about you and your academic history!</h2>
             <!-- <p>Please share your netid and upload your transcript. You must <a href='http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html'>unencrypt</a> your transcript first to let us see it.</p> -->
+            <!-- would look better with toggle button -->
             <form enctype="multipart/form-data" method="post">
             <!-- <fieldset class="form-group">
                 <label for="netid">NetID</label>
@@ -97,33 +98,30 @@
                 <small class="text-muted">Your data is safe with us.</small>
                 <input type="file" accept=".pdf" class="form-control-file" name="transcript">
                 <small class="text-muted">You must <a href='http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html'>unencrypt</a> your transcript first to let us see it.</small>
-            </fieldset>
+            <h4>Want to upload manually instead? No problem!</h4>
             <!-- <input type="text" name="netid"></input>
             <input type="file" accept=".pdf" name="transcript"></input>
             <input type="submit" name="Submit"></input> -->
+            <label for="Name">Name</label>
+                <input type="text" name="Name" id="name-manual"><br>
+                <label for="Degree">Degree</label> 
+                <input type="radio" name="Degree" id="degree-manual" value="AB" checked>AB
+                <input type="radio" name="Degree" id="degree2-manual" value="BSE">BSE<br>
+                <label for="Major">Major</label><small class="text-muted"> If none yet, leave empty.</small>
+                <input type="text" name="Major" id="major-manual"><br>
+                <label for="Courses">Course History</label>
+                <small class="text-muted">Separate courses with a comma and put a space between the course and grade (if you list it).</small><br>
+                <small class="text-muted">To add a cross-listed course, please list only one of the listings.</small><br>
+                <small class="text-muted">Example: MAT103,PHY104 A-,COS306</small><br>
+                <input type="text" id="manual-courses" name="manual_courses"><br>
             <button type="submit" class="btn btn-primary" name="Submit">Submit</button>
+            </fieldset>
             </form>
             {% if d is defined %}
                 {% if d.mistake %}
                 <p>Oops! This doesn't look like your transcript to us. Double check that you are uploading your unencrypted unofficial transcript as a pdf and please upload again.</p>
                 {% endif %}
             {% endif %}
-            <h4>Want to upload manually instead? No problem!</h4>
-            <fieldset class="form-group">
-                <label for="Name">Name</label>
-                <input type="text" name="Name" id="name-manual"><br>
-                <label for="Degree">Degree</label><br>
-                <input type="radio" name="Degree" id="degree-manual" value="AB" checked>AB<br>
-                <input type="radio" name="Degree" id="degree2-manual" value="BSE">BSE<br>
-                <label for="Major">Major</label>
-                <input type="text" name="Major" id="major-manual"><br>
-                <h5>To add a cross-listed course, please list only one of the listings.</h5>
-                <h5>Example: MAT103,PHY104 A-,COS306</h5>
-                <label for="Courses">Additional Courses</label>
-                <small class="text-muted">Separate courses with a comma and put a space between the course and grade (if you list it).</small>
-                <input type="text" id="manual-courses">
-                <button id="update-manually" type="submit" class="btn btn-primary" name="Submit">Add Courses</button>
-            </fieldset>
         </div>
     </section>
 

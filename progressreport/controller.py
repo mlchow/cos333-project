@@ -276,6 +276,23 @@ def show_progress(progress):
         progress_dictionary[key]['num_courses'] = count_courses
     return progress_dictionary,doublecount
 
+def parse_manual_courses(courses):
+    courses = str(courses)
+    if courses == "":
+        return
+    courses = courses.split(",")
+    courses_and_grades = []
+    for course in courses:
+        course_grad = course.split(" ")
+        if course_grad[0] == "":
+            continue
+        #print course_grad
+        if len(course_grad) == 1:
+            courses_and_grades.append([course_grad[0],"None"])
+        else:
+            courses_and_grades.append([course_grad[0],course_grad[1]])
+    return courses_and_grades
+    
 # WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
 def parse_course(course):
     #print course

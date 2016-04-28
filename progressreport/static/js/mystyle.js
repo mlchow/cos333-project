@@ -16,6 +16,17 @@ function logout() {
     });
 }
 
+function delete_acc() {
+	$.ajax({
+        url: '/deleteaccount',
+        type: 'GET',
+        async: true
+        /*success: function(data) {
+            window.location.reload(true);
+        }*/
+    });
+}
+
 function add_to_progress() {
 	var form = $("#extra-courses").val() //.children('fieldset').children('input').first().val()
 	//console.log(form)
