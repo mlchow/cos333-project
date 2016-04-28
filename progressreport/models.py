@@ -712,14 +712,26 @@ def update_just_transcript(netid, courses):
     trans = regex.sub("",trans)
     trans = trans.replace("[","{")
     trans = trans.replace("]","}")
+    courses = str(courses)
+    if courses == "":
+        return
     courses = courses.split(",")
+    courses_and_grades = []
     for course in courses:
-        courses_and_grades.append([course.strip(),"None"])
+        course_grad = course.split(" ")
+        if course_grad[0] == "":
+            continue
+        #print course_grad
+        if len(course_grad) == 1:
+            courses_and_grades.append([course_grad[0],"None"])
+        else:
+            courses_and_grades.append([course_grad[0],course_grad[1]])
     courses_and_grades = str(courses_and_grades)
     courses_and_grades = regex.sub("",courses_and_grades)
     courses_and_grades = courses_and_grades.replace("[","{")
     courses_and_grades = courses_and_grades.replace("]","}")
-    curr.execute("UPDATE users SET courses = %s::text[] || %s::text[][], fulfilled = NULL, fulfilledcerts = NULL WHERE name = %s;",(courses_and_grades,trans,netid))
+    #print trans,courses_and_grades
+    curr.execute("UPDATE users SET courses = %s::text[] || %s::text[][], fulfilled = NULL, fulfilledcerts = NULL WHERE netid = %s;",(courses_and_grades,trans,netid))
     conn.commit()
 
 def get_major_certificate_interests(netid):

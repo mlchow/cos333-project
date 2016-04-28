@@ -135,11 +135,12 @@
                 <br>
             </div> <!-- end transcript div -->
             <br>
-            <h4>Need to include courses that were fulfilled by AP Credit or other courses that don't normally show up on your transcript? No problem! Add them manually here.</h4>
-            <h5>Example: MAT103,PHY104</h5>
+            <h4>Need to include courses that were fulfilled by AP Credit or other courses that don't normally show up on your transcript? No problem! Add them manually here. If you don't want to share your grades for specific courses or all courses with us, that's fine.</h4>
+            <h5>To add a cross-listed course, please list only one of the listings.</h5>
+            <h5>Example: MAT103,PHY104 A-,COS306</h5>
             <fieldset class="form-group" id="manualupdatecourses">
                 <label for="Courses">Additional Courses</label>
-                <small class="text-muted">Separate courses with a comma.</small>
+                <small class="text-muted">Separate courses with a comma and put a space between the course and grade (if you list it).</small>
                 <input type="text" id="extra-courses">
                 <button id="re-update-manually" type="submit" class="btn btn-primary" onclick="add_to_progress()" name="Submit">Add Courses</button>
             </fieldset>
@@ -233,7 +234,7 @@
                 {% endfor %}
                 </div>
                 <hr>
-                <button type="button" class="btn btn-info" id="submit-my-board">Save</button>
+                <button type="button" class="btn btn-info" id="submit-my-board">Save and Get Course Suggestions</button>
               </div>
             </div>
             </div>

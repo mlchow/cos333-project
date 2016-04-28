@@ -1,0 +1,3 @@
+MAT103,m,COS,prerequisite
+MAT104,m,COS,prerequisite
+MAT202,m,COS,prerequisite

@@ -117,9 +117,12 @@
                 <input type="radio" name="Degree" id="degree2-manual" value="BSE">BSE<br>
                 <label for="Major">Major</label>
                 <input type="text" name="Major" id="major-manual"><br>
-                <label for="Courses">Courses</label>
-                <small class="text-muted">Separate courses with a comma. Example: MAT103,PHY104</small><br>
-                <input type="text" id="courses-manual">
+                <h5>To add a cross-listed course, please list only one of the listings.</h5>
+                <h5>Example: MAT103,PHY104 A-,COS306</h5>
+                <label for="Courses">Additional Courses</label>
+                <small class="text-muted">Separate courses with a comma and put a space between the course and grade (if you list it).</small>
+                <input type="text" id="manual-courses">
+                <button id="update-manually" type="submit" class="btn btn-primary" name="Submit">Add Courses</button>
             </fieldset>
         </div>
     </section>
