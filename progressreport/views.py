@@ -31,6 +31,98 @@ def start():
     return redirect(loginpage)
     # return render_template('index_bs.html')
 
+@app.route("/refreshandreloadpage",methods=["GET"])
+def reload_refresh():
+    netid = session['netid']
+    #ticket_from_cas = request.args.get('ticket')
+    #nid = C.Authenticate2(ticket_from_cas)
+    #if nid == "" or None:
+    #    nid = session['netid'] if 'netid' in session else None
+    #if nid == "" or None:
+    #    loginpage = C.Authenticate1()
+    #    return redirect(loginpage)
+        #nid = "iingato"
+        # cache.set('netid',nid)
+    #session['netid'] = nid
+    netid = search_users(nid)
+    if netid:
+        info = get_student_info(netid)
+
+        ret = get_progress(netid)
+        ret_certs = get_progress_certificates(netid)
+
+        majors_completed,doublecountcom = get_major_by_courses(ret)
+        majors_gpa,doublecountgpa = get_major_by_gpa(ret)
+        certificates_completed,doublecountcerts = get_major_by_courses(ret_certs)
+
+        major_interests,certificate_interests = get_major_certificate_interests(netid)
+
+            #print major_interests,certificate_interests
+
+            # get info of courses for interested majors/certificates
+        majors_of_interest = []
+        certificates_of_interest = []
+        major_names = []
+        certificate_names = []
+        for maj in majors_completed:
+            major_names.append(maj[0])
+            if maj[0] in major_interests:
+                majors_of_interest.append(maj)
+        for cert in certificates_completed:
+            certificate_names.append(cert[0])
+            if cert[0] in certificate_interests:
+                certificates_of_interest.append(cert)
+
+        requirements_dictionary = get_major_cert_requirements(major_names,certificate_names)
+            #print requirements_dictionary
+
+            #print doublecountcom, doublecountgpa, doublecountcerts
+        simple_dc = []
+        for dc in doublecountcom:
+            simple_dc.append(dc[0])
+        for dc in doublecountgpa:
+            simple_dc.append(dc[0])
+        for dc in doublecountcerts:
+            simple_dc.append(dc[0])
+            #print simple_dc
+
+            #majors_temp = []
+
+            # Loop to remove from rest of page
+            #for maj in majors_completed:
+            #    if maj[0] not in major_interests:
+            #        majors_temp.append(maj)
+            #majors_completed = majors_temp
+
+            #majors_temp = []
+            #for maj in majors_gpa:
+            #    if maj[0] not in major_interests:
+            #        majors_temp.append(maj)
+            #majors_gpa = majors_temp
+
+            #majors_temp = []
+            #for maj in certificates_completed:
+            ##    if maj[0] not in certificate_interests:
+             #       majors_temp.append(maj)
+            #certificates_completed = majors_temp
+
+            #print major_interests, certificate_interests
+
+        d = {
+            'netid': netid,
+            'majors_completed': majors_completed,
+            'majors_gpa': majors_gpa,
+            'certificates_completed': certificates_completed,
+            'interested_majors': majors_of_interest,
+            'interested_certificates': certificates_of_interest,
+            'int_majors': major_interests,
+            'int_certificates': certificate_interests,
+            'doublecount': simple_dc,
+            'info': info,
+            'reqs_dict':requirements_dictionary
+        }
+        return render_template('success_bs.html',d=d)
+
 @app.route("/deletemanualprogress",methods=["POST"])
 def delete_man():
     netid = session['netid']

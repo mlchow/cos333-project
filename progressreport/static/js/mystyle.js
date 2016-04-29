@@ -67,7 +67,12 @@ function add_to_progress() {
     	contentType: "application/json; charset=utf-8",
 	 	dataType: "text",
  		success: function(data) {
- 			window.location.reload(true);
+ 			//window.location.reload(true);
+ 			$.ajax({
+        		url: '/refreshandreloadpage',
+        		type: 'GET',
+        		async: true
+    		});
 		}
     });
 
@@ -98,8 +103,13 @@ function update_transcript() {
  				//console.log("here")
  			}
  			else {
- 				window.location.reload(true);
+ 				//window.location.reload(true);
  				//$.ajax({})
+ 				$.ajax({
+	        		url: '/refreshandreloadpage',
+	        		type: 'GET',
+	        		async: true
+	    		});
  			}
 		}
     });
