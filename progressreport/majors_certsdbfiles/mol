@@ -1,0 +1,9 @@
+MOL,m,chemprerequisite,1
+MOL,m,molprerequisite,1
+MOL,m,organicchemrequirement,2
+MOL,m,quantitativestat,1
+MOL,m,quantitative,1
+MOL,m,physics,2
+MOL,m,core,4
+MOL,m,elective,4
+OVERALL,m,MOL,16,0

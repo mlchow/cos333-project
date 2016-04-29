@@ -32,7 +32,10 @@ def get_major_cert_requirements(maj,certs):
         req = {}
 
         for r in reqs:
-            req[r[0]] = int(r[1])
+            try:
+                req[r[0]] = int(r[1])
+            except:
+                continue
 
         mini['reqs'] = req
 
