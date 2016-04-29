@@ -51,10 +51,10 @@ $(function() {
                             txt = txt + suggested_courses[i][0] + " fulfills... "
                             var lst = [];
                             for (k = 0; k < suggested_courses[i][2].length; k++) {
-                                if (lst.indexOf(suggested_courses[i][2][k]) < 0) {
-                                    txt = txt + suggested_courses[i][2][k] + " "
-                                    lst.push(suggested_courses[i][2][k])
-                                }
+                                //if (lst.indexOf(suggested_courses[i][2][k]) < 0) {
+                                txt = txt + suggested_courses[i][2][k] + " "
+                                lst.push(suggested_courses[i][2][k])
+                                //}
                             }
                             txt = txt + "<br />"
                         }

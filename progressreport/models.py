@@ -781,6 +781,7 @@ def save_progress_certificates(netid,progress):
     conn.close()
     return ret
 
+# deletes only progress, not transcript
 def delete_progress(netid,course,major,track,morc):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')

@@ -173,7 +173,7 @@ function refresh() {
 			$("[id$="+id+"] .pin-major").each(function() {
 				$(this).css("visibility","visible")
 			});
-			console.log($("[id$="+id+"] .pin-major"))
+			//console.log($("[id$="+id+"] .pin-major"))
 
 			/*
 			$("div[id$='"+id+"'").each(function() {
