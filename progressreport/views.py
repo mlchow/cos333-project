@@ -230,9 +230,9 @@ def upload_file():
         major = request.form['Major']
         manualcourses = request.form['manual_courses']
         # netid = cache.get('netid')
-        #netid = session['netid']
+        netid = session['netid']
         #netid = "iingato"
-        session['netid'] = netid
+        #session['netid'] = netid
         # cache.set('netid',netid)
         if netid is None:
             loginpage = C.Authenticate1()
