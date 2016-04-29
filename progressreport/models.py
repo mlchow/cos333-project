@@ -274,7 +274,7 @@ def suggestcourses(netid):
                 #print trak[0],course[3]
                 #print course[3]
                 #print trak[0]
-                if trak[0] == track or (len(trak) == 1 and int(trak[0]) <= int(course[3])):
+                if trak[0] == track or (len(trak) >= 1 and trak[0].isdigit() and course[3].isdigit() and int(trak[0]) <= int(course[3])):
                     #print maj,coursetrack,"plus"
                     count = count + int(trak[1])
                     if maj not in allmaj:

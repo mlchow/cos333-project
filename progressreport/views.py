@@ -131,11 +131,15 @@ def update_interests():
 def upload_file():
     mistake = False
     if request.method == 'GET' or request.method == 'HEAD':
+        #d = { 
+        #    'mistake':mistake
+        #}
+        #return render_template('index_bs.html',d=d)
         ticket_from_cas = request.args.get('ticket')
         nid = C.Authenticate2(ticket_from_cas)
         if nid == "" or None:
            nid = session['netid'] if 'netid' in session else None
-        if nid == "":
+        if nid == "" or None:
            loginpage = C.Authenticate1()
            return redirect(loginpage)
         #nid = "iingato"
