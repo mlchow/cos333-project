@@ -71,9 +71,9 @@
                     <li>
                         <a style="cursor:pointer;" onclick="logout()">Logout</a>
                     </li>
-                    <li>
+                    <!--<li>
                         <a style="cursor:pointer;" onclick="delete_acc()">Delete My Account</a>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -173,6 +173,14 @@
                         {% if major.0 in d.doublecount %}
                             <mark>Warning - Double Counting</mark>
                         {% endif %}
+                        <mark id="warning-fill-{{major.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementById("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                         <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                         <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
                       </h4>
@@ -218,6 +226,14 @@
                         {% if major.0 in d.doublecount %}
                         <mark>Warning - Double Counting</mark>
                         {% endif %}
+                        <mark id="warning-fill-{{major.0}}" style="display: none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementId("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                         <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
                         <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;visibility: visible">Remove</button>
                       </h4>
@@ -296,6 +312,14 @@
                 {% if major.0 in d.doublecount %}
                 <mark>Warning - Double Counting</mark>
                 {% endif %}
+                <mark id="warning-fill-{{major.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementById("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                 {% if major.0 not in d.int_majors %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                 {% else %}
@@ -361,6 +385,14 @@
                 {% if major.0 in d.doublecount %}
                 <mark>Warning - Double Counting</mark>
                 {% endif %}
+                <mark id="warning-fill-{{major.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementById("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                 {% if major.0 not in d.int_majors %}
                 <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                 {% else %}
@@ -431,6 +463,15 @@
                     {% if certificate.0 in d.doublecount %}
                     <mark>Warning - Double Counting</mark>
                     {% endif %}
+                    <mark id="warning-fill-{{certificate.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in certificate.1 %}
+                            {% if certificate.0 in d.reqs_dict and req in d.reqs_dict[certificate.0]['reqs'] %}
+                                {% if certificate.1[req]|length > d.reqs_dict[certificate.0]['reqs'][req] %}
+                                    <script>
+                                    document.getElementById("warning-fill-{{certificate.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
                     {% if certificate.0 not in d.int_certificates %}
                     <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
                     {% else %}
