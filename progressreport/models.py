@@ -65,6 +65,9 @@ def get_major_cert_requirements(maj,certs):
 
         maj_to_needs[m] = mini
 
+    curr.close()
+    conn.close()
+
     return maj_to_needs
 
 def delete_account(netid):
@@ -75,6 +78,8 @@ def delete_account(netid):
     curr = conn.cursor()
     curr.execute("DELETE FROM users WHERE netid = '"+netid+"';")
     conn.commit()
+    curr.close()
+    conn.close()
 
 def get_student_info(netid):
     try:
@@ -94,6 +99,9 @@ def get_student_info(netid):
 
     curr.execute("SELECT num_pdfs FROM users WHERE netid = '"+netid+"';")
     pdfs = curr.fetchone()
+
+    curr.close()
+    conn.close()
 
     return [name[0],deg[0],maj[0],pdfs[0]]
 
@@ -773,6 +781,41 @@ def save_progress_certificates(netid,progress):
     conn.close()
     return ret
 
+def delete_progress(netid,course,major,track,morc):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return None
+    curr = conn.cursor()
+    if morc == "m":
+        curr.execute("SELECT fulfilled FROM users WHERE netid = '"+netid+"';")
+        ful = curr.fetchone()
+    else:
+        curr.execute("SELECT fulfilledcerts FROM users WHERE netid = '"+netid+"';")
+        ful = curr.fetchone()
+    if ful == None:
+        return
+    ful = ful[0]
+    #print ful
+    new_ful = []
+    for el in ful:
+        #print el[0],el[2],el[3]
+        if el[0] == course and el[2] == major and el[3] == track:
+            continue
+        new_ful.append(el)
+    new_progress = str(new_ful)
+    new_progress = regex.sub("",new_progress)
+    new_progress = new_progress.replace("[","{")
+    new_progress = new_progress.replace("]","}")
+    #print new_progress
+    if morc == "m":
+        curr.execute("UPDATE users SET fulfilled = %s::text[][] WHERE netid = %s;", (new_progress,netid))
+    else:
+        curr.execute("UPDATE users SET fulfilledcerts = %s::text[][] WHERE netid = %s;", (new_progress,netid))
+    conn.commit()
+    curr.close()
+    conn.close()
+
 def update_just_transcript(netid, courses):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -809,6 +852,8 @@ def update_just_transcript(netid, courses):
     #print trans,courses_and_grades
     curr.execute("UPDATE users SET courses = %s::text[] || %s::text[][], fulfilled = NULL, fulfilledcerts = NULL WHERE netid = %s;",(courses_and_grades,trans,netid))
     conn.commit()
+    curr.close()
+    conn.close()
 
 def get_major_certificate_interests(netid):
     try:
@@ -829,6 +874,8 @@ def get_major_certificate_interests(netid):
         intmajors = intmajors[0]
     if intcerts != None:
         intcerts = intcerts[0]
+    curr.close()
+    conn.close()
     return (intmajors,intcerts)
 
 def save_major_and_certificate_interests(netid,majcert):
@@ -878,4 +925,5 @@ def save_major_and_certificate_interests(netid,majcert):
     curr.execute("UPDATE users SET interested_certificates = %s::text[] WHERE netid = %s;", (certificates,netid))
     conn.commit()
     curr.close()
+    conn.close()
 

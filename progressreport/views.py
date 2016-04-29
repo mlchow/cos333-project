@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for, session
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa, parse_manual_courses
-from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account, get_major_cert_requirements
+from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account, get_major_cert_requirements, delete_progress
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 import json
@@ -30,6 +30,16 @@ def start():
     loginpage = C.Authenticate1()
     return redirect(loginpage)
     # return render_template('index_bs.html')
+
+@app.route("/deletemanualprogress",methods=["POST"])
+def delete_man():
+    netid = session['netid']
+    course = request.get_json()['course']
+    major = request.get_json()['major']
+    track = request.get_json()['track']
+    morc = request.get_json()['type']
+    delete_progress(netid,course,major,track,morc)
+    return json.dumps({'status':'OK'})
 
 @app.route("/logout",methods=["GET","POST"])
 def end():
@@ -121,14 +131,14 @@ def update_interests():
 def upload_file():
     mistake = False
     if request.method == 'GET' or request.method == 'HEAD':
-        #ticket_from_cas = request.args.get('ticket')
-        #nid = C.Authenticate2(ticket_from_cas)
-        #if nid == "" or None:
-        #   nid = session['netid'] if 'netid' in session else None
-        #if nid == "":
-        #   loginpage = C.Authenticate1()
-        #   return redirect(loginpage)
-        nid = "iingato"
+        ticket_from_cas = request.args.get('ticket')
+        nid = C.Authenticate2(ticket_from_cas)
+        if nid == "" or None:
+           nid = session['netid'] if 'netid' in session else None
+        if nid == "":
+           loginpage = C.Authenticate1()
+           return redirect(loginpage)
+        #nid = "iingato"
         # cache.set('netid',nid)
         session['netid'] = nid
         netid = search_users(nid)
@@ -217,7 +227,7 @@ def upload_file():
         manualcourses = request.form['manual_courses']
         # netid = cache.get('netid')
         #netid = session['netid']
-        netid = "iingato"
+        #netid = "iingato"
         session['netid'] = netid
         # cache.set('netid',netid)
         if netid is None:
@@ -341,6 +351,6 @@ if __name__ == "__main__":
     #            filename = os.path.join(dirname, filename)
     #            if os.path.isfile(filename):
     #                extra_files.append(filename)
-    #port = int(os.environ['PORT'])
-    #app.run(host='0.0.0.0', port=port)
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ['PORT'])
+    app.run(host='0.0.0.0', port=port)
+    #app.run(host='127.0.0.1', port=5000, debug=True)

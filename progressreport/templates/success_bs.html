@@ -199,7 +199,7 @@
                             <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
-                            <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                            <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{major.0}}-{{req}}-m" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
                           {% endfor %}
                         {% endif %}
                         {% endfor %}
@@ -252,7 +252,7 @@
                             <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
-                            <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                            <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{major.0}}-{{req}}-c" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
                           {% endfor %}
                         {% endif %}
                         {% endfor %}
@@ -342,7 +342,7 @@
                     <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
-                    <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                    <tr><td>{{c.0}}<td>{{c.1}} <span name="{{major.0}}-{{req}}-m" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></td></tr>
                   {% endfor %}
                 {% endif %}
                 {% endfor %}
@@ -415,7 +415,7 @@
                     <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
-                    <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                    <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{major.0}}-{{req}}-m" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
                   {% endfor %}
                 {% endif %}
                 {% endfor %}
@@ -494,7 +494,7 @@
                         <th colspan="2">{{req}} <i>{{certificate.1[req]|length}} {% if certificate.0 in d.reqs_dict and req in d.reqs_dict[certificate.0]['reqs'] %} of {{d.reqs_dict[certificate.0]['reqs'][req]}} {% endif %}Completed</i></th>
                       </tr>
                       {% for c in certificate.1[req] %}
-                        <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
+                        <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{certificate.0}}-{{req}}-c" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
                       {% endfor %}
                     {% endif %}
                     {% endfor %}

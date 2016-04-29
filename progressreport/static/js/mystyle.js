@@ -1,5 +1,28 @@
 $( document ).ready(function() {
 
+	$(".glyphicon-remove").click(function() {
+		course_grade = $(this).parent().parent().text()
+		maj_req = $(this).attr("name").split("-")
+		course = course_grade.substring(0,6)
+		maj = maj_req[0]
+		track = maj_req[1]
+		mc = maj_req[2]
+		$(this).parent().parent().remove()
+		var dict = {'course':course,'major':maj,'track':track,'type':mc}
+		var encoded = JSON.stringify(dict)
+		$.ajax({
+	    	url: '/deletemanualprogress',
+	     	data: encoded,
+	    	type: 'POST',
+	    	async: true,
+	    	contentType: "application/json; charset=utf-8",
+		 	dataType: "text",
+    	});
+		//console.log(course)
+		//console.log(maj)
+		//console.log(track)
+	});
+
 	$(".remove-major").hide()
 
 	refresh()
@@ -14,6 +37,10 @@ function logout() {
             window.location.reload(true);
         }*/
     });
+}
+
+function remove_course() {
+
 }
 
 function delete_acc() {
