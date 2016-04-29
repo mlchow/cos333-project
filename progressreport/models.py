@@ -3,6 +3,70 @@ import psycopg2, re
 regex = re.compile('\'|\"')
 #regex2 = re.compile('\( ([^\)]*,) ([^\)]*,) ([^\)]*) \)')
 
+def get_major_cert_requirements(maj,certs):
+    maj_to_needs = {}
+
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return None
+    curr = conn.cursor()
+    for m in maj:
+        mini = {}
+
+        curr.execute("SELECT track_reqs FROM majors WHERE name ='"+m+"';")
+        reqs = curr.fetchone()
+        if reqs == None:
+            continue
+        reqs = reqs[0]
+
+        curr.execute("SELECT num_pdfs_allowed FROM majors WHERE name ='"+m+"';")
+        pdfs = curr.fetchone()[0]
+
+        curr.execute("SELECT total_num_courses_needed FROM majors WHERE name ='"+m+"';")
+        total = curr.fetchone()[0]
+
+        mini['pdfs'] = int(pdfs)
+        mini['total'] = int(total)
+
+        req = {}
+
+        for r in reqs:
+            req[r[0]] = int(r[1])
+
+        mini['reqs'] = req
+
+        maj_to_needs[m] = mini
+
+    for m in certs:
+        mini = {}
+
+        curr.execute("SELECT track_reqs FROM certificates WHERE name ='"+m+"';")
+        reqs = curr.fetchone()
+        if reqs == None:
+            continue
+        reqs = reqs[0]
+
+        curr.execute("SELECT num_pdfs_allowed FROM certificates WHERE name ='"+m+"';")
+        pdfs = curr.fetchone()[0]
+
+        curr.execute("SELECT total_num_courses_needed FROM certificates WHERE name ='"+m+"';")
+        total = curr.fetchone()[0]
+
+        mini['pdfs'] = int(pdfs)
+        mini['total'] = int(total)
+
+        req = {}
+
+        for r in reqs:
+            req[r[0]] = int(r[1])
+
+        mini['reqs'] = req
+
+        maj_to_needs[m] = mini
+
+    return maj_to_needs
+
 def delete_account(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')

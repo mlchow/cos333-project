@@ -188,7 +188,7 @@
                         {% for req in major.1 %}
                         {% if req != "grade" and req != "num_courses" %}
                           <tr class="info">
-                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
+                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
                             <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -196,6 +196,14 @@
                         {% endif %}
                         {% endfor %}
                         </table>
+                        {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                       </div>
                     </div>
                   </div>
@@ -225,7 +233,7 @@
                         {% for req in major.1 %}
                         {% if req != "grade" and req != "num_courses" %}
                           <tr class="info">
-                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
+                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
                             <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -233,6 +241,14 @@
                         {% endif %}
                         {% endfor %}
                         </table>
+                        {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                       </div>
                     </div>
                   </div>
@@ -299,7 +315,7 @@
                 {% for req in major.1 %}
                 {% if req != "grade" and req != "num_courses" %}
                   <tr class="info">
-                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
+                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
                     <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -307,6 +323,14 @@
                 {% endif %}
                 {% endfor %}
                 </table>
+                {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
               </div>
             </div>
           </div>
@@ -356,7 +380,7 @@
                 {% for req in major.1 %}
                 {% if req != "grade" and req != "num_courses" %}
                   <tr class="info">
-                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} Courses Completed</i></th>
+                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
                     <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -364,6 +388,14 @@
                 {% endif %}
                 {% endfor %}
                 </table>
+                {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
               </div>
             </div>
           </div>
@@ -418,7 +450,7 @@
                     {% for req in certificate.1 %}
                     {% if req != "grade" and req != "num_courses" %}
                       <tr class="info">
-                        <th colspan="2">{{req}} <i>{{certificate.1[req]|length}} Courses Completed</i></th>
+                        <th colspan="2">{{req}} <i>{{certificate.1[req]|length}} {% if certificate.0 in d.reqs_dict and req in d.reqs_dict[certificate.0]['reqs'] %} of {{d.reqs_dict[certificate.0]['reqs'][req]}} {% endif %}Completed</i></th>
                       </tr>
                       {% for c in certificate.1[req] %}
                         <tr><td>{{c.0}}</td><td>{{c.1}}</td></tr>
@@ -426,6 +458,14 @@
                     {% endif %}
                     {% endfor %}
                     </table>
+                    {% if certificate.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[certificate.0]['reqs'].iteritems() %}
+                                {% if re not in certificate.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                   </div>
                 </div>
               </div>

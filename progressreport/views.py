@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for, session
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa, parse_manual_courses
-from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account
+from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account, get_major_cert_requirements
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 import json
@@ -143,17 +143,25 @@ def upload_file():
             certificates_completed,doublecountcerts = get_major_by_courses(ret_certs)
 
             major_interests,certificate_interests = get_major_certificate_interests(netid)
+
             #print major_interests,certificate_interests
 
             # get info of courses for interested majors/certificates
             majors_of_interest = []
             certificates_of_interest = []
+            major_names = []
+            certificate_names = []
             for maj in majors_completed:
+                major_names.append(maj[0])
                 if maj[0] in major_interests:
                     majors_of_interest.append(maj)
             for cert in certificates_completed:
+                certificate_names.append(cert[0])
                 if cert[0] in certificate_interests:
                     certificates_of_interest.append(cert)
+
+            requirements_dictionary = get_major_cert_requirements(major_names,certificate_names)
+            #print requirements_dictionary
 
             #print doublecountcom, doublecountgpa, doublecountcerts
             simple_dc = []
@@ -197,7 +205,8 @@ def upload_file():
                 'int_majors': major_interests,
                 'int_certificates': certificate_interests,
                 'doublecount': simple_dc,
-                'info': info
+                'info': info,
+                'reqs_dict':requirements_dictionary
             }
             return render_template('success_bs.html',d=d)
     if request.method == 'POST':
@@ -241,14 +250,22 @@ def upload_file():
                 certificates_completed,doublecountcerts = get_major_by_courses(ret_certs)
 
                 major_interests,certificate_interests = get_major_certificate_interests(netid)
+                
                 majors_of_interest = []
                 certificates_of_interest = []
+                major_names = []
+                certificate_names = []
                 for maj in majors_completed:
+                    major_names.append(maj[0])
                     if maj[0] in major_interests:
                         majors_of_interest.append(maj)
                 for cert in certificates_completed:
+                    certificate_names.append(cert[0])
                     if cert[0] in certificate_interests:
                         certificates_of_interest.append(cert)
+
+                requirements_dictionary = get_major_cert_requirements(major_names,certificate_names)
+                #print requirements_dictionary
 
                 #print doublecountcom, doublecountgpa, doublecountcerts
                 simple_dc = []
@@ -289,7 +306,8 @@ def upload_file():
                     'int_majors': major_interests,
                     'int_certificates': certificate_interests,
                     'doublecount': simple_dc,
-                    'info': info
+                    'info': info,
+                    'reqs_dict':requirements_dictionary
                 }
                 return render_template('success_bs.html',d=d)
 
