@@ -23,18 +23,92 @@ $( document ).ready(function() {
 		//console.log(track)
 	});
 
+	$(".add-extra-per-major-progress").each(function() {
+		//console.log("HERE")
+		$(this).click(function() {
+
+			//console.log("PRINT")
+
+			var form = $(this).children().first().attr("id")
+			var list_forms = form.split("-")
+			var major = list_forms[0]
+			var inputstring = ".extra-major-specific-progress-"
+			var res = inputstring.concat(major,"-",list_forms[1],":checked")
+			var inputstring2 = "#extra-"
+			var res2 = inputstring2.concat(list_forms[3],"-specific-progress-",major,"-",list_forms[1])
+			var coursegrade = $(res2).val()
+			var track = $(res).val()
+
+			// from http://stackoverflow.com/questions/17149605/syntaxerror-missing-after-argument-list
+			/*function quoteAndEscape(str) {
+			    return ''
+			        + '&#39;'                      // open quote '
+			        + (''+str)                     // force string
+			            .replace(/\\/g, '\\\\')    // double \
+			            .replace(/"/g, '\\&quot;') // encode "
+			            .replace(/'/g, '\\&#39;')  // encode '
+			        + '&#39;';                     // close quote '
+			}*/
+
+			//console.log(res)
+			//console.log(res2)
+			//console.log($(res))
+			//console.log($(res2))
+			//console.log(track)
+			//console.log(coursegrade)
+			var dict = {'coursegrade':coursegrade,'major':major,'track':track,'morc':list_forms[3]}
+			var encoded = JSON.stringify(dict)
+			$.ajax({
+		    	url: '/addmajormanualprogress',
+		     	data: encoded,
+		    	type: 'POST',
+		    	async: true,
+		    	contentType: "application/json; charset=utf-8",
+			 	dataType: "text",
+			 	success: function(data) {
+			 		var data = JSON.parse(data)
+                	var courses = data['courses']
+			 		for (var i = 0; i < courses.length; i++) {
+			 			var toselect = "#"
+			 			var restoselect = toselect.concat(major,"-",track,"-info-",list_forms[1])
+			 			c = courses[i][0]
+			 			g = courses[i][1]
+			 			var toadd = "<tr><td>"
+			 			var toaddmore = toadd.concat(c,"</td><td>",g,"</td>")
+			 			var toadd2 = toaddmore.concat('<span name=\\&quot;',major,'-',track,'-',list_forms[3][0],'\\&quot;')
+			 			var toadd3 = toadd2.concat('class=\\&quot;glyphicon glyphicon-remove\\&quot; aria-hidden=\\&quot;true\\&quot;></span></td></tr>')
+			 			//console.log(toadd3)
+			 			if ($(restoselect).length) {
+			 				$(restoselect).after(toadd3)
+			 			}
+			 			else {
+			 				toselect = "table#"
+			 				restoselect = toselect.concat(major,"-",list_forms[1])
+			 				var newrowheader = '<tr class=info id='
+			 				var addme = newrowheader.concat(major,'-',track,'-info-',list_forms[1],'><th style=background-color:#d9edf7;border: 1px solid #ddd;padding:5px; colspan=2>',track,'</th></tr>',toadd3)
+			 				$(restoselect).children().first().before(addme)
+			 			}
+
+			 		}
+			 	}
+		    });
+		});
+	});
+
 	$(".remove-major").hide()
 
 	refresh()
 });
+
+//console.log($(".add-extra-per-major-progress").children())
 
 function logout() {
 	$.ajax({
         url: '/logout',
         type: 'GET',
         async: true
-        /*success: function(data) {
-            window.location.reload(true);
+        /*success: function() {
+           	$("#real-logout").click()
         }*/
     });
 }
@@ -67,12 +141,12 @@ function add_to_progress() {
     	contentType: "application/json; charset=utf-8",
 	 	dataType: "text",
  		success: function(data) {
- 			//window.location.reload(true);
- 			$.ajax({
+ 			window.location.reload(true);
+ 			/*$.ajax({
         		url: '/refreshandreloadpage',
         		type: 'GET',
         		async: true
-    		});
+    		});*/
 		}
     });
 
@@ -103,13 +177,13 @@ function update_transcript() {
  				//console.log("here")
  			}
  			else {
- 				//window.location.reload(true);
+ 				window.location.reload(true);
  				//$.ajax({})
- 				$.ajax({
+ 				/*$.ajax({
 	        		url: '/refreshandreloadpage',
 	        		type: 'GET',
 	        		async: true
-	    		});
+	    		});*/
  			}
 		}
     });

@@ -1,5 +1,6 @@
 #from views import app
 import psycopg2, re
+grade_regex = re.compile("(A|B|C|D|F|P)(\+|-)?")
 regex = re.compile('\'|\"')
 #regex2 = re.compile('\( ([^\)]*,) ([^\)]*,) ([^\)]*) \)')
 
@@ -819,6 +820,59 @@ def delete_progress(netid,course,major,track,morc):
     conn.commit()
     curr.close()
     conn.close()
+
+def add_major_specific_manual_progress(netid,coursegrade,major,track,morc):
+    try:
+        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+    except:
+        return
+    curr = conn.cursor()
+    major = str(major)
+    track = str(track)
+    netid = str(netid)
+    morc = str(morc)
+    courses = str(coursegrade)
+    if courses == "":
+        return
+    courses = courses.split(",")
+    courses_and_grades = []
+    for course in courses:
+        course_grad = course.split(" ")
+        if course_grad[0] == "" or len(course_grad) > 2:
+            continue
+        #print course_grad
+        if len(course_grad) == 1:
+            courses_and_grades.append([course_grad[0],"None",major,track])
+        else:
+            #if grade_regex.find_all(course_grad[1]) != None:
+            courses_and_grades.append([course_grad[0],course_grad[1],major,track])
+    org_courses = courses_and_grades
+    courses_and_grades = str(courses_and_grades)
+    courses_and_grades = regex.sub("",courses_and_grades)
+    courses_and_grades = courses_and_grades.replace("[","{")
+    courses_and_grades = courses_and_grades.replace("]","}")
+    if morc == "major":
+        curr.execute("SELECT fulfilled FROM users WHERE netid = '"+netid+"';")
+        ful = curr.fetchone()
+    else:
+        curr.execute("SELECT fulfilledcerts FROM users WHERE netid = '"+netid+"';")
+        ful = curr.fetchone()
+    if ful == None:
+        return
+    ful = ful[0]
+    ful = str(ful)
+    ful = regex.sub("",ful)
+    ful = ful.replace("[","{")
+    ful = ful.replace("]","}")
+    if morc == "major":
+        #print courses_and_grades,ful
+        curr.execute("UPDATE users SET fulfilled = %s::text[][] || %s::text[][] WHERE netid = %s;", (courses_and_grades,ful,netid))
+    else:
+        curr.execute("UPDATE users SET fulfilledcerts = %s::text[][] || %s::text[][] WHERE netid = %s;", (courses_and_grades,ful,netid))
+    conn.commit()
+    curr.close()
+    conn.close()
+    return org_courses
 
 def update_just_transcript(netid, courses):
     try:

@@ -33,36 +33,41 @@ $(function() {
             contentType: "application/json; charset=utf-8",
  			dataType: "text"
         });
-        $.ajax({
-            url: '/suggestcourses',
-            data: encoded,
-            contentType: "application/json; charset=utf-8",
-            dataType: "text",
-            type: 'POST',
-            success: function(data) {
-                var data = JSON.parse(data)
-                var suggested_courses = data['suggested_courses']
-                var txt = "Courses we would recommend for you based on your interests... <br />"
-                //console.log(suggested_courses)
-                //console.log(suggested_courses)
-                for (i = 0; i < suggested_courses.length; i++) {
-                    if (suggested_courses[i][0].length > 0) {
-                        if (suggested_courses[i][0][2].length > 0) {
-                            txt = txt + suggested_courses[i][0] + " fulfills... "
-                            var lst = [];
-                            for (k = 0; k < suggested_courses[i][2].length; k++) {
-                                //if (lst.indexOf(suggested_courses[i][2][k]) < 0) {
-                                txt = txt + suggested_courses[i][2][k] + " "
-                                lst.push(suggested_courses[i][2][k])
-                                //}
+        if (lis.length > 0) {
+            $.ajax({
+                url: '/suggestcourses',
+                data: encoded,
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                type: 'POST',
+                success: function(data) {
+                    var data = JSON.parse(data)
+                    var suggested_courses = data['suggested_courses']
+                    var txt = "Courses we would recommend for you based on your interests... <br />"
+                    //console.log(suggested_courses)
+                    //console.log(suggested_courses)
+                    for (i = 0; i < suggested_courses.length; i++) {
+                        if (suggested_courses[i][0].length > 0) {
+                            if (suggested_courses[i][0][2].length > 0) {
+                                txt = txt + suggested_courses[i][0] + " fulfills... "
+                                var lst = [];
+                                for (k = 0; k < suggested_courses[i][2].length; k++) {
+                                    //if (lst.indexOf(suggested_courses[i][2][k]) < 0) {
+                                    txt = txt + suggested_courses[i][2][k] + " "
+                                    lst.push(suggested_courses[i][2][k])
+                                    //}
+                                }
+                                txt = txt + "<br />"
                             }
-                            txt = txt + "<br />"
                         }
                     }
+                    $("#suggested_courses").html(txt)
                 }
-                $("#suggested_courses").html(txt)
-            }
-        });
+            });
+        }
+        else {
+            $("#suggested_courses").html("")
+        }
     });
     /*$('#re-upload-trans').click(function() {
     	console.log("clicked")
@@ -131,7 +136,8 @@ $(function() {
 	 				}
 					$("#overlay").html(html)
 					var el = $("#overlay")[0]
-					el.style.visibility = "visible"
+                    if ((data['interested_majors'] != undefined && data['interested_majors'].length) || (data['interested_certificates'] != undefined && data['interested_certificates'].length) || (data['others'] != undefined && data['others'].length))
+					   el.style.visibility = "visible"
 	 			}
 	        });
 		});

@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for, session
 from flask import render_template
 import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa, parse_manual_courses
-from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account, get_major_cert_requirements, delete_progress
+from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account, get_major_cert_requirements, delete_progress, add_major_specific_manual_progress
 import CASClient
 from werkzeug.contrib.cache import SimpleCache
 import json
@@ -44,7 +44,7 @@ def reload_refresh():
         #nid = "iingato"
         # cache.set('netid',nid)
     #session['netid'] = nid
-    netid = search_users(nid)
+    netid = search_users(netid)
     if netid:
         info = get_student_info(netid)
 
@@ -133,11 +133,24 @@ def delete_man():
     delete_progress(netid,course,major,track,morc)
     return json.dumps({'status':'OK'})
 
+@app.route("/addmajormanualprogress",methods=["POST"])
+def add_maj_man():
+    netid = session['netid']
+    coursegrade = request.get_json()['coursegrade']
+    major = request.get_json()['major']
+    track = request.get_json()['track']
+    morc = request.get_json()['morc']
+    courses = add_major_specific_manual_progress(netid,coursegrade,major,track,morc)
+    #print courses
+    return json.dumps({'status':'OK','courses':courses})
+
 @app.route("/logout",methods=["GET","POST"])
 def end():
     session.pop('netid', None)
-    logoutpage = C.Authenticate1out()
-    return redirect(logoutpage)
+    #print "h"
+    #logoutpage = C.Authenticate1out()
+    #return redirect(logoutpage)
+    return json.dumps({'status':'OK'})
 
 @app.route("/deleteaccount",methods=["GET","POST"])
 def deleteacc():

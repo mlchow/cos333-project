@@ -31,3 +31,7 @@ td {
 .panel.panel-info.major-board {
      background-color: white;
 }*/
+
+.glyphicon-plus {
+     cursor: pointer;
+}

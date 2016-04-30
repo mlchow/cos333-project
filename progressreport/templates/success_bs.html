@@ -69,8 +69,9 @@
                         <a class="page-scroll" href="#contact">Contact</a>
                     </li>
                     <li>
-                        <a style="cursor:pointer;" onclick="logout()">Logout</a>
+                        <a style="cursor:pointer;" href="https://fed.princeton.edu/cas/logout" onclick="logout()">Logout</a>
                     </li>
+                    <!--<a id="real-logout" href="https://fed.princeton.edu/cas/logout" style="display:none;"></a>-->
                     <!--<li>
                         <a style="cursor:pointer;" onclick="delete_acc()">Delete My Account</a>
                     </li>-->
@@ -192,10 +193,25 @@
                         {% else %}
                             <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
                         {% endif %}
-                        <table class="table table-condensed table-bordered">
+                        <br>
+                        Add Additional Progress to this Major:<br> 
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
                         {% for req in major.1 %}
                         {% if req != "grade" and req != "num_courses" %}
-                          <tr class="info">
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="other" checked>other <br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-int"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-int-add-major"></span></button><br>
+                        <table id="{{major.0}}-int" class="table table-condensed table-bordered">
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                          <tr class="info" id="{{major.0}}-{{req}}-info-int">
                             <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
@@ -245,10 +261,25 @@
                         {% else %}
                             <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
                         {% endif %}
-                        <table class="table table-condensed table-bordered">
+                        <br>
+                        Add Additional Progress to this Certificate: <br>
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{re}}"> {{req}} 
+                        {% endfor %}
+                        {% else %}
                         {% for req in major.1 %}
                         {% if req != "grade" and req != "num_courses" %}
-                          <tr class="info">
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{re}}"> {{re}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="other" checked>other <br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-int"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-int-add-cert"></span></button><br>
+                        <table id="{{major.0}}-int" class="table table-condensed table-bordered">
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                          <tr class="info" id="{{major.0}}-{{req}}-info-int">
                             <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                           </tr>
                           {% for c in major.1[req] %}
@@ -335,10 +366,25 @@
                         {% else %}
                             <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
                         {% endif %}
-                <table class="table table-condensed table-bordered">
+                <br>
+                        Add Additional Progress to this Major: <br>
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-com" class="extra-major-specific-progress-{{major.0}}-com" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{major.0}}-com" class="extra-major-specific-progress-{{major.0}}-com" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-com" class="extra-major-specific-progress-{{major.0}}-com" value="other" checked>other<br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-com"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-com-add-major"></span></button><br>
+                <table id="{{major.0}}-com" class="table table-condensed table-bordered">
                 {% for req in major.1 %}
                 {% if req != "grade" and req != "num_courses" %}
-                  <tr class="info">
+                  <tr class="info" id="{{major.0}}-{{req}}-info-com">
                     <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
@@ -408,10 +454,25 @@
                         {% else %}
                             <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
                         {% endif %}
-                <table class="table table-condensed table-bordered">
+                        <br>
+                        Add Additional Progress to this Major: <br>
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-gpa" class="extra-major-specific-progress-{{major.0}}-gpa" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{major.0}}-gpa" class="extra-major-specific-progress-{{major.0}}-gpa" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-gpa" class="extra-major-specific-progress-{{major.0}}-gpa" value="other" checked>other<br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-gpa"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-gpa-add-major"></span></button><br>
+                <table id="{{major.0}}-gpa" class="table table-condensed table-bordered">
                 {% for req in major.1 %}
                 {% if req != "grade" and req != "num_courses" %}
-                  <tr class="info">
+                  <tr class="info" id="{{major.0}}-{{req}}-info-gpa">
                     <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
                   </tr>
                   {% for c in major.1[req] %}
@@ -487,10 +548,26 @@
                         {% else %}
                             <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{certificate.0.lower()}}">More Information about this Program</a>
                         {% endif %}
-                    <table class="table table-condensed table-bordered">
+                    <br>
+                        Add Additional Progress to this Certificate: <br>
+                        {% if certificate.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[certificate.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{certificate.0}}-c" class="extra-major-specific-progress-{{certificate.0}}-com" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in certificate.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{certificate.0}}-c" class="extra-major-specific-progress-{{certificate.0}}-com" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{certificate.0}}-c" class="extra-major-specific-progress-{{certificate.0}}-com" value="other" checked>other
+                        <br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-cert-specific-progress-{{certificate.0}}-com"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" id="{{certificate.0}}-com-add-cert"></span></button><br>
+                    <table id="{{certificate.0}}-com" class="table table-condensed table-bordered">
                     {% for req in certificate.1 %}
                     {% if req != "grade" and req != "num_courses" %}
-                      <tr class="info">
+                      <tr class="info" id="{{certificate.0}}-{{req}}-info-com">
                         <th colspan="2">{{req}} <i>{{certificate.1[req]|length}} {% if certificate.0 in d.reqs_dict and req in d.reqs_dict[certificate.0]['reqs'] %} of {{d.reqs_dict[certificate.0]['reqs'][req]}} {% endif %}Completed</i></th>
                       </tr>
                       {% for c in certificate.1[req] %}
