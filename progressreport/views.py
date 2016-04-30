@@ -230,7 +230,7 @@ def upload_file():
         if nid == "" or None:
            loginpage = C.Authenticate1()
            return redirect(loginpage)
-        nid = "iingato"
+        #nid = "iingato"
         session['netid'] = nid
         netid = search_users(nid)
         if netid:
