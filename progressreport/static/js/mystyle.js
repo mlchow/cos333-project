@@ -197,6 +197,7 @@ function exit_course_view() {
 function showCompleted() {
 	$("#completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).addClass("in")
+		$(obj).removeAttr("style")
 		$(obj).attr("aria-expanded","true")
 	});
 }
@@ -204,6 +205,7 @@ function showCompleted() {
 function hideCompleted() {
 	$("#completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
+		$(obj).removeAttr("style")
 		$(obj).attr("aria-expanded","false")
 	});
 }
@@ -211,6 +213,7 @@ function hideCompleted() {
 function showGpa() {
 	$("#gpa").find(".panel-collapse").each(function(i,obj) {
 		$(obj).addClass("in")
+		$(obj).removeAttr("style")
 		$(obj).attr("aria-expanded","true")
 	});
 }
@@ -218,6 +221,7 @@ function showGpa() {
 function hideGpa() {
 	$("#gpa").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
+		$(obj).removeAttr("style")
 		$(obj).attr("aria-expanded","false")
 	});
 }
@@ -225,6 +229,7 @@ function hideGpa() {
 function showCertCompleted() {
 	$("#certificates_completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).addClass("in")
+		$(obj).removeAttr("style")
 		$(obj).attr("aria-expanded","true")
 	});
 }
@@ -232,6 +237,7 @@ function showCertCompleted() {
 function hideCertCompleted() {
 	$("#certificates_completed").find(".panel-collapse").each(function(i,obj) {
 		$(obj).removeClass("in")
+		$(obj).removeAttr("style")
 		$(obj).attr("aria-expanded","false")
 	});
 }
