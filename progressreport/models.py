@@ -399,7 +399,11 @@ def get_course_value(netid,course):
                         #if len(el) >= 1 and type(el[0]) == list:
                         #print major_areas
         # REMOVE DUPLICATES
-    el = sorted(el,key=lambda majtra: (majtra[0], majtra[1]))
+    n_el = []
+    for e in el:
+        if len(e) >= 2:
+            n_el.append(e)
+    el = sorted(n_el,key=lambda majtra: (majtra[0], majtra[1]))
     prevmaj = ""
     prevtrack = ""
     indices_to_del = []
