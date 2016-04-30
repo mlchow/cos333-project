@@ -486,7 +486,7 @@ def add_user(studentinfo,netid,flag):
         curr.execute("INSERT INTO users VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);",(netid,degree,major,interested_majors,interested_certificates,courses,num_pdfs,name,fulfilled,fulfilledcerts))
         conn.commit()
     # new user
-    if nettry == None or flag == False:
+    if nettry == None:
         #if flag == False:
         #    curr.execute("DELETE FROM users WHERE netid ='"+netid+"';")
         #    conn.commit()
