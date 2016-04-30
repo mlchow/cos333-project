@@ -5,16 +5,11 @@ import CASClient
 from controller import parse_transcript, show_progress, old_show_progress, get_major_by_courses, get_major_by_gpa, parse_manual_courses
 from models import search_users, add_user, get_progress, get_progress_certificates, save_major_and_certificate_interests, get_major_certificate_interests, get_course_value, suggestcourses, get_student_info, update_just_transcript, delete_account, get_major_cert_requirements, delete_progress, add_major_specific_manual_progress
 import CASClient
-from werkzeug.contrib.cache import SimpleCache
 import json
 
 app = Flask(__name__)
 
-cache = SimpleCache()
-
 #form = cgi.FieldStorage()
-
-#from progressreport import app
 
 C = CASClient.CASClient()
 os.environ["HTTP_HOST"] = 'progressreport.herokuapp.com'
@@ -42,7 +37,6 @@ def reload_refresh():
     #    loginpage = C.Authenticate1()
     #    return redirect(loginpage)
         #nid = "iingato"
-        # cache.set('netid',nid)
     #session['netid'] = nid
     netid = search_users(netid)
     if netid:
@@ -162,7 +156,6 @@ def deleteacc():
 
 @app.route("/suggestcourses", methods=["POST","GET"])
 def suggest_courses():
-    # netid = cache.get('netid')
     netid = session['netid']
     return json.dumps({'status':'OK','suggested_courses': suggestcourses(netid)})
 
@@ -188,7 +181,6 @@ def add_manual_progress():
 def view_course():
     if request.method == 'POST':
         course = request.get_json()['coursename']
-        # netid = cache.get('netid')
         netid = session['netid']
         interested_majors,interested_certificates,others = get_course_value(netid,course)
         #print interested_majors,interested_certificates,others
@@ -199,10 +191,7 @@ def update_transcript():
     if request.method == 'POST':
         file = request.files['transcript']
         netid = session['netid'] if 'netid' in session else None
-        # netid = cache.get('netid')
         #netid = "iingato"
-        #cache.set('netid',netid)
-        # netid = "iingato"
         #netid = request.form['netid']
         if file and netid:
             studentinfo = parse_transcript(file)
@@ -218,19 +207,13 @@ def update_interests():
     if request.method == 'POST':
         majors = request.get_json()
         listofmajors = majors['majors']
-        # netid = cache.get('netid')
         netid = None
         try:
             netid = session['netid']
             save_major_and_certificate_interests(netid,listofmajors)
-            #print listofmajors
             return json.dumps({'status':'OK'})
-            #print majors
-            #return render_template('index_bs.html')
         except KeyError:
-            #print "HELP"
-            return json.dumps({'status':'OK'})
-        
+            return json.dumps({'status':'OK'})        
 
 @app.route("/welcome.html",methods=["POST","GET","HEAD"])
 def upload_file():
@@ -239,7 +222,6 @@ def upload_file():
         #d = { 
         #    'mistake':mistake
         #}
-        #return render_template('index_bs.html',d=d)
         ticket_from_cas = request.args.get('ticket')
         nid = C.Authenticate2(ticket_from_cas)
         if nid == "" or None:
@@ -248,7 +230,6 @@ def upload_file():
            loginpage = C.Authenticate1()
            return redirect(loginpage)
         #nid = "iingato"
-        # cache.set('netid',nid)
         session['netid'] = nid
         netid = search_users(nid)
         if netid:
@@ -334,11 +315,8 @@ def upload_file():
         degree = request.form['Degree']
         major = request.form['Major']
         manualcourses = request.form['manual_courses']
-        # netid = cache.get('netid')
-        netid = session['netid']
+        netid = session['netid'] if 'netid' in session else None
         #netid = "iingato"
-        #session['netid'] = netid
-        # cache.set('netid',netid)
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
@@ -357,7 +335,6 @@ def upload_file():
                 studentinfo = [studentname,degree,major,course_manual_parsed,-1]
                 #print studentinfo
             if add_user(studentinfo,netid,False) != None:
-                #return render_template('success.html',netid=netid)
 
                 info = [studentinfo[0],studentinfo[1],studentinfo[2],studentinfo[4]]
 
@@ -429,11 +406,6 @@ def upload_file():
                     'reqs_dict':requirements_dictionary
                 }
                 return render_template('success_bs.html',d=d)
-
-                # return "<html><body>"+old_show_progress(ret)+"</body></html>"
-                #return str(ret)
-                #return "<html><body>" + str(get_progress(netid)) + '</body></html>'
-                #return redirect(url_for("success"))
     d = { 
         'mistake':mistake
     }
