@@ -457,6 +457,7 @@ def add_user(studentinfo,netid,flag):
     nettry = search_users(netid)
     # reset progress
     if nettry != None and flag == True:
+        print nettry, studentinfo[1],studentinfo[2]
         name = studentinfo[0]
         degree = studentinfo[1]
         major = studentinfo[2]

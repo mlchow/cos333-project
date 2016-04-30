@@ -207,6 +207,7 @@ def update_transcript():
         if file and netid:
             studentinfo = parse_transcript(file)
             if studentinfo != None:
+                #print studentinfo
                 add_user(studentinfo,session['netid'],True)
         if studentinfo == None:
             return json.dumps({'status':'OK','correctfile':'No'})
