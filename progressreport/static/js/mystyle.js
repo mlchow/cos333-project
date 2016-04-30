@@ -243,6 +243,9 @@ function hideCertCompleted() {
 }
 
 function refresh() {
+	$('.panel-collapse').removeAttr("style") 
+
+
 	$('#my-board .remove-major').show()
 	$('#my-board .pin-major').hide()
 	$('#recently-removed .remove-major').hide()
