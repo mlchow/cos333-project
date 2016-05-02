@@ -243,29 +243,43 @@ function hideCertCompleted() {
 }
 
 function refresh() {
-	$('.panel-collapse').removeAttr("style") 
-
+	/*$('.panel-collapse').css("height","")*/
 
 	$('#my-board .remove-major').show()
 	$('#my-board .pin-major').hide()
-	$('#recently-removed .remove-major').hide()
-	$('#recently-removed .pin-major').show()
+
 	$('.major-board').each(function(i,obj) {
 		$('.remove-major')[i].onclick = function() {
 
 			// prevent deleting permanently any majors 
 			// added during the session
-			var obj_id = $(obj).attr("id")
-			var from_board = obj_id.startsWith("board")
+			/*var obj_id = $(obj).attr("id")
+			var from_board = obj_id.startsWith("board")*/
 
 			// make clone and replace with holder
-			var clone = $(obj).clone()
+			/*var clone = $(obj).clone()
 			var holder_id = $(obj).attr('id')+"-holder"
-			var id = $(obj).attr('id').substring(6)
+			var id = $(obj).attr('id').substring(6)*/
 
-			$("[id$="+id+"] .pin-major").each(function() {
+			// show all major PIN buttons
+			var maj_id = $(obj).attr('id')
+	    	maj_id = maj_id.substring(maj_id.length - 3)
+	    	console.log("id: "+maj_id)
+	    	console.log($(".major-"+maj_id))
+			$(".major-"+maj_id).each(function(obj) {
+				$(this).find(".pin-major").each(function() {
+					$(this).css("visibility","visible")
+					$(this).css("display","")
+				})
+			})
+
+			// remove from my board
+			$(obj).remove()
+			refresh()
+
+			/*$("[id$="+id+"] .pin-major").each(function() {
 				$(this).css("visibility","visible")
-			});
+			});*/
 			//console.log($("[id$="+id+"] .pin-major"))
 
 			/*
@@ -289,12 +303,10 @@ function refresh() {
 				$("#recently-removed").append(newclone)
 				$("#"+holder_id).replaceWith(clone)
 			}*/
-			$(clone).find(".remove-major").hide()
-			$(clone).find(".pin-major").show()
+			/*$(clone).find(".remove-major").hide()
+			$(clone).find(".pin-major").show()*/
 
-			// remove from my board
-			$(obj).remove()
-			refresh()
+			
 		}
 
 		$(".pin-major")[i].onclick = function() {
@@ -303,18 +315,23 @@ function refresh() {
 	    	var clone = $(obj).clone()
 	    	$(clone).find("#expansion").attr('data-parent','#my-board-content')
 	    	$(clone).find(".remove-major").show()
-	    	$(clone).find(".pin-major").hide()
+	    	/*$(clone).find(".pin-major").hide()*/
 	    	$("#my-board-content").append(clone)
 
-	    	var holder = "<div id='"+$(obj).attr('id')+"-holder'></div>"
-	    	$(obj).replaceWith($(holder))
+	    	/*var holder = "<div id='"+$(obj).attr('id')+"-holder'></div>"
+	    	$(obj).replaceWith($(holder))*/
+
+	    	var maj_id = $(obj).attr('id')
+	    	maj_id = maj_id.substring(maj_id.length - 3)
+	    	//console.log(maj_id) // eg 'COS'
+	    	$(".major-"+maj_id).find(".pin-major").hide()
+
 
 	    	// basically remove all instances of that board (eg ELE) 
 	    	// from the page, so you don't have one ELE board on My Board
 	    	// and another in Completed etc
-	    	var boardID = $(obj).attr("id")
-	    	$("#selection div[id='"+boardID+"']").remove()
-	    	$("#recently-removed div[id='"+boardID+"']").remove()
+	    	/*var boardID = $(obj).attr("id")
+	    	$("#selection div[id='"+boardID+"']").remove()*/
 
 	    	refresh()
 	    }

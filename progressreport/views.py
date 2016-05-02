@@ -29,14 +29,14 @@ def start():
 @app.route("/refreshandreloadpage",methods=["GET"])
 def reload_refresh():
     netid = session['netid']
-    #ticket_from_cas = request.args.get('ticket')
-    #nid = C.Authenticate2(ticket_from_cas)
-    #if nid == "" or None:
-    #    nid = session['netid'] if 'netid' in session else None
-    #if nid == "" or None:
+    # ticket_from_cas = request.args.get('ticket')
+    # nid = C.Authenticate2(ticket_from_cas)
+    # if nid == "" or None:
+       # nid = session['netid'] if 'netid' in session else None
+    # if nid == "" or None:
     #    loginpage = C.Authenticate1()
     #    return redirect(loginpage)
-        #nid = "iingato"
+        # nid = "iingato"
     #session['netid'] = nid
     netid = search_users(netid)
     if netid:
@@ -317,7 +317,7 @@ def upload_file():
         major = request.form['Major']
         manualcourses = request.form['manual_courses']
         netid = session['netid'] if 'netid' in session else None
-        #netid = "iingato"
+        netid = "iingato"
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
@@ -435,4 +435,4 @@ if __name__ == "__main__":
     #                extra_files.append(filename)
     port = int(os.environ['PORT'])
     app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000, debug=True)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
