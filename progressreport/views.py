@@ -317,7 +317,7 @@ def upload_file():
         major = request.form['Major']
         manualcourses = request.form['manual_courses']
         netid = session['netid'] if 'netid' in session else None
-        netid = "iingato"
+        # netid = "iingato"
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
