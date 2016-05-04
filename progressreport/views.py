@@ -15,13 +15,11 @@ os.environ['REQUEST_URI'] = '/welcome.html'
 
 app.secret_key = "3#bC$Zx#XoKb@#xB7Dozl}sj7"
 
-stdinput = re.compile("^[A-Z0-9\s]*$")
-
 def validateInput(inp):
-    if re.match(stdinput,inp,re.IGNORECASE) == None:
+    if re.match("^[A-Z0-9\s,\+-]*$",inp,re.IGNORECASE) == None:
         return False
     else:
-        True
+        return True
 
 @app.route("/")
 def start():
@@ -124,7 +122,6 @@ def upload_file():
         if nid == "" or None:
            loginpage = C.Authenticate1()
            return redirect(loginpage)
-        #nid = 'iingato'
         session['netid'] = nid
         netid = search_users(nid)
         if netid:
@@ -194,6 +191,7 @@ def upload_file():
         else:
             if not validateInput(studentname) or not validateInput(major) or not validateInput(manualcourses):
                 mistake = True
+                #print validateInput(studentname), validateInput(major), validateInput(manualcourses)
         if not mistake and (file or manualcourses):
             if not file and manualcourses:
                 if studentname == "":
