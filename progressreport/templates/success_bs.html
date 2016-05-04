@@ -71,10 +71,6 @@
                     <li>
                         <a style="cursor:pointer;" href="https://fed.princeton.edu/cas/logout" onclick="logout()">Logout</a>
                     </li>
-                    <!--<a id="real-logout" href="https://fed.princeton.edu/cas/logout" style="display:none;"></a>-->
-                    <!--<li>
-                        <a style="cursor:pointer;" onclick="delete_acc()">Delete My Account</a>
-                    </li>-->
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -106,10 +102,6 @@
             
             <div id="reupload-transcript" class="collapse well well-lg">
                 <form enctype="multipart/form-data" id="re-upload-transcript">
-                <!-- <fieldset class="form-group">
-                    <label for="netid">NetID</label>
-                    <input type="text" class="form-control" name="netid" placeholder="Enter netID">
-                </fieldset> -->
                 <h4>Re-upload your transcript to update your progress.</h4>
                 <h5>This will trigger a full replacement of your course history, deleting manually added courses.</h5>
                 <fieldset class="form-group">
@@ -119,9 +111,6 @@
                     <small class="text-muted">You must <a href='http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html'>unencrypt</a> your transcript first to let us see it.</small>
                 </fieldset>
                 </form>
-                <!-- <input type="text" name="netid"></input>
-                <input type="file" accept=".pdf" name="transcript"></input>
-                <input type="submit" name="Submit"></input> -->
                 <button id="re-upload-trans" type="submit" class="btn btn-primary" onclick="update_transcript()" name="Submit">Update</button>
                 <br>
             </div> <!-- end transcript div -->
