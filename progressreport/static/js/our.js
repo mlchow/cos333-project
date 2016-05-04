@@ -1,19 +1,4 @@
-/*function overlay() {
-	el = document.getElementById("overlay");
-	el.innerHTML = ""
-	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
-}*/
 $(function() {
-    /*$('#logout-button').click(function() {
-        $.ajax({
-            url: '/logout',
-            type: 'GET',
-            async: true,
-            success: function(data) {
-                window.location.reload(true);
-            }
-        });
-    });*/
     $('#submit-my-board').click(function() {
     	var lis = []
     	$('#my-board-content').children('div').each(function() {
