@@ -1,0 +1,13 @@
+pdfquery==0.4.2
+lxml==3.5.0
+pdfminer==20140328
+pyquery==1.2.9
+Flask==0.10.1
+Jinja2==2.7.1
+MarkupSafe==0.18
+Werkzeug==0.9.4
+itsdangerous==0.23
+wsgiref==0.1.2
+psycopg2>=2.6
+sqlalchemy>=0.6
+flask-sqlalchemy>=2.1

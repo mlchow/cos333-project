@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Progress Report</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="../static/css/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/creative.css" type="text/css">
+
+    <link rel="stylesheet" href="../static/css/our.css" type="text/css">
+
+    <!--jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+    <script src="../static/js/our.js"></script>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-other navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-other">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Progress Report</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li> 
+                        <a class="page-scroll" href="#main">Top</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#about">About</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                    <li>
+                        <a style="cursor:pointer;" href="https://fed.princeton.edu/cas/logout" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <section id="main">
+        <div class="container">
+
+        <div class="container">
+        
+        <!-- Title, intro -->
+            <h1>{{d.info[0]}}</h1>
+            <h2>{{d.info[1]}}
+            {% if d.info[2] != "" %}
+                | {{d.info[2]}}
+            {% endif %}
+            </h2>
+            {% if d.info[3]|int >= 0 %}
+            <h3>You have used {{d.info[3]}} of your 4 PDFs.</h3>
+            {% endif %}
+            <button type="button" class="btn btn-default btn-md" data-toggle="collapse" data-target="#reupload-transcript">
+            <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Re-upload Transcript
+            </button>
+            <div id="mistake"></div>
+
+        <div class="row">
+            
+            <div id="reupload-transcript" class="collapse well well-lg">
+                <form enctype="multipart/form-data" id="re-upload-transcript">
+                <h4>Re-upload your transcript to update your progress.</h4>
+                <h5>This will trigger a full replacement of your course history, deleting manually added courses.</h5>
+                <fieldset class="form-group">
+                    <label for="transcript">Transcript</label>
+                    <small class="text-muted">Your data is safe with us.</small>
+                    <input type="file" accept=".pdf" class="form-control-file" name="transcript" id="latest_transcript">
+                    <small class="text-muted">You must <a href='http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html'>unencrypt</a> your transcript first to let us see it.</small>
+                </fieldset>
+                </form>
+                <button id="re-upload-trans" type="submit" class="btn btn-primary" onclick="update_transcript()" name="Submit">Update</button>
+                <br>
+            </div> <!-- end transcript div -->
+            <br>
+            <h4>Need to include courses that were fulfilled by AP Credit or other courses that don't normally show up on your transcript? No problem! Add them manually here. If you don't want to share your grades for specific courses or all courses with us, that's fine.</h4>
+            <h5>To add a cross-listed course, please list only one of the listings.</h5>
+            <h5>Example: MAT103,PHY104 A-,COS306</h5>
+            <fieldset class="form-group" id="manualupdatecourses">
+                <label for="Courses">Additional Courses</label>
+                <small class="text-muted">Separate courses with a comma and put a space between the course and grade (if you list it).</small>
+                <input type="text" id="extra-courses">
+                <button id="re-update-manually" type="submit" class="btn btn-primary" onclick="add_to_progress()" name="Submit">Add Courses</button>
+            </fieldset>
+        </div> <!-- end header row -->
+
+        <h5>Select a major or certificate to pin it to your board.</h5>
+            
+        <div class="row">
+            <!-- My Board -->
+            
+            <div class="panel panel-primary" id="my-board">
+              <div class="panel-heading">
+                <h3 class="panel-title">My Board</h3>
+              </div>
+              <div class="panel-body">
+                <div class="panel-group" id="my-board-content" role="tablist" aria-multiselectable="true">
+                <!-- append courses here -->
+                {% for major in d.interested_majors %}
+                  <div class="panel panel-info major-board major-{{major.0}}" id="board-{{major.0}}">
+                    <div class="panel-heading" role="tab" id="board-heading-{{major.0}}">
+                      <h4 class="panel-title">
+                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#my-board-content" href="#board-collapse-{{major.0}}" aria-expanded="true" aria-controls="board-collapse-{{major.0}}">
+                        <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                        </a>
+                        {% if major.0 in d.doublecount %}
+                            <mark>Warning - Double Counting</mark>
+                        {% endif %}
+                        <mark id="warning-fill-{{major.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementById("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+                      </h4>
+                    </div>
+                    <div id="board-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="board-heading-{{major.0}}">
+                      <div class="panel-body">
+                        {% if major.0 == 'COS' %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/cos{{d.info[1].lower()}}">More Information about this Program</a>
+                        {% else %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
+                        {% endif %}
+                        <br>
+                        Add Additional Progress to this Major:<br> 
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="other" checked>other <br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-int"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-int-add-major"></span></button><br>
+                        <table id="{{major.0}}-int" class="table table-condensed table-bordered">
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                          <tr class="info" id="{{major.0}}-{{req}}-info-int">
+                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
+                          </tr>
+                          {% for c in major.1[req] %}
+                            <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{major.0}}-{{req}}-m" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
+                          {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                        </table>
+                        {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                {% for major in d.interested_certificates %}
+                  <div class="panel panel-warning major-board major-{{major.0}}" id="certificate-{{major.0}}">
+                    <div class="panel-heading" role="tab" id="certificate-heading-{{major.0}}">
+                      <h4 class="panel-title">
+                        <a id="expansion" role="button" data-toggle="collapse" data-parent="#certificate" href="#certificate-collapse-{{major.0}}" aria-expanded="true" aria-controls="certificate-collapse-{{major.0}}">
+                        <b>{{major.0}}</b> <!--<i>Major GPA: {{major.1['grade']}}</i>-->
+                        </a>
+                        {% if major.0 in d.doublecount %}
+                        <mark>Warning - Double Counting</mark>
+                        {% endif %}
+                        <mark id="warning-fill-{{major.0}}" style="display: none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementId("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <button type="button" class="btn btn-info btn-sm pin-major" style="display:none;">Pin</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-major" style="display:inline-block;visibility: visible">Remove</button>
+                      </h4>
+                    </div>
+                    <div id="certificate-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="certificate-heading-{{major.0}}">
+                      <div class="panel-body">
+                        {% if major.0 == 'TES' %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/its">More Information about this Program</a>
+                        {% else %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
+                        {% endif %}
+                        <br>
+                        Add Additional Progress to this Certificate: <br>
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{re}}"> {{req}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="{{re}}"> {{re}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-int" class="extra-major-specific-progress-{{major.0}}-int" value="other" checked>other <br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-int"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-int-add-cert"></span></button><br>
+                        <table id="{{major.0}}-int" class="table table-condensed table-bordered">
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                          <tr class="info" id="{{major.0}}-{{req}}-info-int">
+                            <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
+                          </tr>
+                          {% for c in major.1[req] %}
+                            <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{major.0}}-{{req}}-c" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
+                          {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                        </table>
+                        {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                </div>
+                <hr>
+                <button type="button" class="btn btn-info" id="submit-my-board">Save and Get Course Suggestions</button>
+              </div>
+            </div>
+            </div>
+
+            <div id="suggested_courses">
+            </div>
+
+        </div> <!-- end my board row -->
+
+        <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a data-toggle="tab" href="#view-majors"><h4>Choose Majors</h4></a></li>
+            <li><a data-toggle="tab" href="#view-certificates"><h4>Choose Certificates</h4></a></li>
+        </ul>
+        <br>
+
+        <div class="tab-content" id="selection">
+
+        <!-- Majors by # Courses Completed -->
+
+        <div class="tab-pane fade in active" id="view-majors">
+        <div class="row">
+        <div class="col-sm-6" id="completed">
+
+        <h4>
+          <b>Majors by Most Courses Completed</b> 
+          <button type="button" onclick="showCompleted()" id="show-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+          <button type="button" onclick="hideCompleted()" id="hide-completed" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+        </h4>
+
+        <div class="panel-group" id="completed" role="tablist" aria-multiselectable="true">
+        {% for major in d.majors_completed %}
+          <div class="panel panel-info major-board major-{{major.0}}" id="completed-{{major.0}}">
+            <div class="panel-heading" role="tab" id="completed-heading-{{major.0}}">
+              <h4 class="panel-title">
+                <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{major.0}}" aria-expanded="true" aria-controls="completed-collapse-{{major.0}}">
+                <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                </a>
+                {% if major.0 in d.doublecount %}
+                <mark>Warning - Double Counting</mark>
+                {% endif %}
+                <mark id="warning-fill-{{major.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementById("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                {% if major.0 not in d.int_majors %}
+                <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                {% else %}
+                <button type="button" class="btn btn-info btn-sm pin-major" style="visibility:hidden;">Pin</button>
+                {% endif %}
+                <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+              </h4>
+            </div>
+            <div id="completed-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{major.0}}">
+              <div class="panel-body">
+                {% if major.0 == 'COS' %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/cos{{d.info[1].lower()}}">More Information about this Program</a>
+                        {% else %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
+                        {% endif %}
+                <br>
+                        Add Additional Progress to this Major: <br>
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-com" class="extra-major-specific-progress-{{major.0}}-com" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{major.0}}-com" class="extra-major-specific-progress-{{major.0}}-com" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-com" class="extra-major-specific-progress-{{major.0}}-com" value="other" checked>other<br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-com"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-com-add-major"></span></button><br>
+                <table id="{{major.0}}-com" class="table table-condensed table-bordered">
+                {% for req in major.1 %}
+                {% if req != "grade" and req != "num_courses" %}
+                  <tr class="info" id="{{major.0}}-{{req}}-info-com">
+                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
+                  </tr>
+                  {% for c in major.1[req] %}
+                    <tr><td>{{c.0}}<td>{{c.1}} <span name="{{major.0}}-{{req}}-m" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></td></tr>
+                  {% endfor %}
+                {% endif %}
+                {% endfor %}
+                </table>
+                {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+
+        </div> <!-- end col -->
+
+        <!-- Majors by Major GPA -->
+
+        <div class="col-sm-6" id="gpa">
+
+        <h4>
+          <b>Majors by Highest Major GPA</b> 
+          <button type="button" onclick="showGpa()" id="show-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+          <button type="button" onclick="hideGpa()" id="hide-gpa" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+        </h4>
+        <!-- <button type="button" id="show-gpa" class="btn btn-info btn-sm">Show All</button> -->
+
+        <div class="panel-group" id="gpa" role="tablist" aria-multiselectable="true">
+        {% for major in d.majors_gpa %}
+          <div class="panel panel-info major-board major-{{major.0}}" id="gpa-{{major.0}}">
+            <div class="panel-heading" role="tab" id="gpa-heading-{{major.0}}">
+              <h4 class="panel-title">
+                <a id="expansion" role="button" data-toggle="collapse" data-parent="#gpa" href="#gpa-collapse-{{major.0}}" aria-expanded="true" aria-controls="gpa-collapse-{{major.0}}">
+                <b>{{major.0}}</b> <i>Major GPA: {{major.1['grade']}}</i>
+                </a>
+                {% if major.0 in d.doublecount %}
+                <mark>Warning - Double Counting</mark>
+                {% endif %}
+                <mark id="warning-fill-{{major.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in major.1 %}
+                            {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %}
+                                {% if major.1[req]|length > d.reqs_dict[major.0]['reqs'][req] %}
+                                    <script>document.getElementById("warning-fill-{{major.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                {% if major.0 not in d.int_majors %}
+                <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                {% else %}
+                <button type="button" class="btn btn-info btn-sm pin-major" style="visibility:hidden;">Pin</button>
+                {% endif %}
+                <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+              </h4>
+            </div>
+            <div id="gpa-collapse-{{major.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="gpa-heading-{{major.0}}">
+              <div class="panel-body">
+              {% if major.0 == 'COS' %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/cos{{d.info[1].lower()}}">More Information about this Program</a>
+                        {% else %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{major.0.lower()}}">More Information about this Program</a>
+                        {% endif %}
+                        <br>
+                        Add Additional Progress to this Major: <br>
+                        {% if major.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{major.0}}-gpa" class="extra-major-specific-progress-{{major.0}}-gpa" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in major.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{major.0}}-gpa" class="extra-major-specific-progress-{{major.0}}-gpa" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{major.0}}-gpa" class="extra-major-specific-progress-{{major.0}}-gpa" value="other" checked>other<br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-major-specific-progress-{{major.0}}-gpa"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" class="add-extra-per-major-progress" id="{{major.0}}-gpa-add-major"></span></button><br>
+                <table id="{{major.0}}-gpa" class="table table-condensed table-bordered">
+                {% for req in major.1 %}
+                {% if req != "grade" and req != "num_courses" %}
+                  <tr class="info" id="{{major.0}}-{{req}}-info-gpa">
+                    <th colspan="2">{{req}} <i>{{major.1[req]|length}} {% if major.0 in d.reqs_dict and req in d.reqs_dict[major.0]['reqs'] %} of {{d.reqs_dict[major.0]['reqs'][req]}} {% endif %}Completed</i></th>
+                  </tr>
+                  {% for c in major.1[req] %}
+                    <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{major.0}}-{{req}}-m" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
+                  {% endfor %}
+                {% endif %}
+                {% endfor %}
+                </table>
+                {% if major.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[major.0]['reqs'].iteritems() %}
+                                {% if re not in major.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+        
+        </div> <!-- end col -->
+
+        </div>  <!-- end row  -->
+        </div> <!-- end container for majors -->
+
+
+        <!-- Certificates by Most Courses Completed  -->
+
+        <div class="tab-pane fade" id="view-certificates">
+        <div class="row">
+
+        <div class="col-sm-12" id="certificates_completed">
+            <h4>
+              <b>Certificates by Most Courses Completed</b> 
+              <button type="button" onclick="showCertCompleted()" id="show-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+              <button type="button" onclick="hideCertCompleted()" id="hide-completed-certificates" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button>
+            </h4>
+
+            <div class="panel-group" id="certificates_completed" role="tablist" aria-multiselectable="true">
+            {% for certificate in d.certificates_completed %}
+              <div class="panel panel-warning major-board major-{{certificate.0}}" id="completed-{{certificate.0}}">
+                <div class="panel-heading" role="tab" id="completed-heading-{{certificate.0}}">
+                  <h4 class="panel-title">
+                    <a id="expansion" role="button" data-toggle="collapse" data-parent="#completed" href="#completed-collapse-{{certificate.0}}" aria-expanded="true" aria-controls="completed-collapse-{{certificate.0}}">
+                    <b>{{certificate.0}}</b>
+                    </a>
+                    {% if certificate.0 in d.doublecount %}
+                    <mark>Warning - Double Counting</mark>
+                    {% endif %}
+                    <mark id="warning-fill-{{certificate.0}}" style="display:none;"> Warning - Overfulfilled</mark>
+                        {% for req in certificate.1 %}
+                            {% if certificate.0 in d.reqs_dict and req in d.reqs_dict[certificate.0]['reqs'] %}
+                                {% if certificate.1[req]|length > d.reqs_dict[certificate.0]['reqs'][req] %}
+                                    <script>
+                                    document.getElementById("warning-fill-{{certificate.0}}").style.display = "inline-block"</script>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% if certificate.0 not in d.int_certificates %}
+                    <button type="button" class="btn btn-info btn-sm pin-major">Pin</button>
+                    {% else %}
+                    <button type="button" class="btn btn-info btn-sm pin-major" style="visibility:hidden;">Pin</button>
+                    {% endif %}
+                    <button type="button" class="btn btn-danger btn-sm remove-major">Remove</button>
+                  </h4>
+                </div>
+                <div id="completed-collapse-{{certificate.0}}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="completed-heading-{{certificate.0}}">
+                  <div class="panel-body">
+                  {% if certificate.0 == 'TES' %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/its">More Information about this Program</a>
+                        {% else %}
+                            <a target="_blank" href="https://www.princeton.edu/ua/departmentsprograms/{{certificate.0.lower()}}">More Information about this Program</a>
+                        {% endif %}
+                    <br>
+                        Add Additional Progress to this Certificate: <br>
+                        {% if certificate.0 in d.reqs_dict %}
+                        {% for re,num in d.reqs_dict[certificate.0]['reqs'].iteritems() %}
+                            <input type="radio" name="{{certificate.0}}-c" class="extra-major-specific-progress-{{certificate.0}}-com" value="{{re}}"> {{re}} 
+                        {% endfor %}
+                        {% else %}
+                        {% for req in certificate.1 %}
+                        {% if req != "grade" and req != "num_courses" %}
+                            <input type="radio" name="{{certificate.0}}-c" class="extra-major-specific-progress-{{certificate.0}}-com" value="{{req}}"> {{req}} 
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <input type="radio" name="{{certificate.0}}-c" class="extra-major-specific-progress-{{certificate.0}}-com" value="other" checked>other
+                        <br>
+                        <small>Courses to add. Grade is optional to include. Example: Course Grade,Course Grade</small> <input type="text" id="extra-cert-specific-progress-{{certificate.0}}-com"> <button type="button" class="add-extra-per-major-progress"><span class="glyphicon glyphicon-plus" aria-hidden="true" id="{{certificate.0}}-com-add-cert"></span></button><br>
+                    <table id="{{certificate.0}}-com" class="table table-condensed table-bordered">
+                    {% for req in certificate.1 %}
+                    {% if req != "grade" and req != "num_courses" %}
+                      <tr class="info" id="{{certificate.0}}-{{req}}-info-com">
+                        <th colspan="2">{{req}} <i>{{certificate.1[req]|length}} {% if certificate.0 in d.reqs_dict and req in d.reqs_dict[certificate.0]['reqs'] %} of {{d.reqs_dict[certificate.0]['reqs'][req]}} {% endif %}Completed</i></th>
+                      </tr>
+                      {% for c in certificate.1[req] %}
+                        <tr><td>{{c.0}}</td><td>{{c.1}} <span name="{{certificate.0}}-{{req}}-c" class="glyphicon glyphicon-remove" aria-hidden="true"></span></td></tr>
+                      {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    </table>
+                    {% if certificate.0 in d.reqs_dict %}
+                        Still need:
+                            {% for re,num in d.reqs_dict[certificate.0]['reqs'].iteritems() %}
+                                {% if re not in certificate.1 %}
+                                    {{num}} {% if re|length == 1 %}{{re}}00-level{% else %}{{re}}{% endif %} classes<br>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div> <!-- end panel group -->
+        </div> <!-- end col -->
+
+        </div> <!-- end row -->
+        </div> <!-- end container for certificates-->
+
+        </div> <!-- end tab content -->
+
+        </div> <!-- end container for board + major  + certif -->
+    </section>
+
+
+    <div id="overlay">
+    </div>
+
+    <section class="bg-primary" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">About This Project</h2>
+                    <hr class="light">
+                    <p class="text-faded">It's not easy to compare majors and certificates, figure out how much progress you've made, or start planning how to fit all of your courses into your four years at Princeton. That's why we're building a web platform that lets students start planning their Princeton experience as soon as they walk onto campus.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside class="bg-dark" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">About Us</h2>
+                    <hr class="primary">
+                    <p>We're a group of students taking COS-333.</p>
+                    <p>Members: Allison Chang, Marisa Chow, Isabelle Ingato, Andrew Kim</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- jQuery -->
+    <script src="../static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="../static/js/jquery.easing.min.js"></script>
+    <script src="../static/js/jquery.fittext.js"></script>
+    <script src="../static/js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/js/creative.js"></script>
+
+    <!-- My JS -->
+    <script src="../static/js/mystyle.js"></script>
+</body>
+
+</html>

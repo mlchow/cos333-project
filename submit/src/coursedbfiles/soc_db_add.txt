@@ -1,0 +1,5 @@
+SOC101,m,SOC,prerequisite
+SOC300,m,SOC,researchmethodsandsociologicaltheory
+SOC301,m,SOC,researchmethodsandsociologicaltheory
+SOC302,m,SOC,researchmethodsandsociologicaltheory
+SOC,m,SOC,general

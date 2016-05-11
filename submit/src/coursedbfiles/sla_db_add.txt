@@ -1,0 +1,16 @@
+RUS107,m,SLA,language
+SLA2,m,SLA,departmental
+SLA3,m,SLA,departmental
+SLA4,m,SLA,departmental
+SLA5,m,SLA,departmental
+SLA219,m,SLA,coresurvey
+SLA220,m,SLA,coresurvey
+SLA,221,m,SLA,coresurvey
+RUS208,m,SLA,upperlevellanguage
+RUS405,m,SLA,upperlevellanguage
+RUS406,m,SLA,upperlevellanguage
+RUS407,m,SLA,upperlevellanguage
+RUS408,m,SLA,upperlevellanguage
+SLA308,m,SLA,upperlevellanguage
+SLA312,m,SLA,upperlevellanguage
+SLA413,m,SLA,upperlevellanguage

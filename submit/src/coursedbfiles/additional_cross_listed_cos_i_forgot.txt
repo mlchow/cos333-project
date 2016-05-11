@@ -1,0 +1,6 @@
+COS441,m,COS,theory
+ELE206,m,COS,systems
+ELE375,m,COS,systems
+MUS314,m,COS,applications
+TRA301,m,COS,applications
+ORF363,m,COS,applications

@@ -1,0 +1,5 @@
+iingato 4
+archang 3
+ak11 2
+
+I felt like Isabelle and I contributed most to the coding of the project, since Isabelle did a lot of the backend coding and mid-tier coding and I did midtier/frontend work. Allison helped a lot with building the database (she did the vast majority of the majors/minors) and wrote almost all of the final written documentation (eg final report, product guide). Andrew contributed some to the database, but didn't spend a lot of time on this project -- probably because of thesis. 

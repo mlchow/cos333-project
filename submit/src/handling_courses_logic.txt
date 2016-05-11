@@ -1,0 +1,75 @@
+Logic of handling courses
+
+GENERAL USE METHODS. Do NOT to put major-specific requirements within these methods, but rather define outside. That is, for "If AB, then require MAT103/104", don't put this in method itself. Instead, define it this way: 
+if user.degreeType == 'AB':
+	requireAll(['MAT103','MAT104'])
+AND all track requirements, too:
+if user.majorTrack == 'literature':
+	requireKinSet(4,'literature')
+and so on.
+
+ADD requirement methods as needed.
+
+#####################################################
+
+
+## Top-level requirements
+
+# return True if all courses in set are fulfilled
+# set may be a single course
+requireAll(set)
+
+# return True if K courses in set are fulfilled
+requireKofSet(k,set)
+
+# return True if K non-cross-listed courses in set are fulfilled
+requireKNoCross(k,set)
+
+# return True if K years of language have been taken
+# (year numbers may differ across language departments)
+requireKofLang(k,l)
+
+# return True if a is fulfilled or b is fulfilled
+# a, b can be single courses or sets of courses
+requireAorB(a,b)
+
+# return True if course [set] A taken by semester N, where N in 1-8
+requireAbyN(a,n)
+
+
+## Single Course fulfillment logic
+
+# require course [set] A if course [set] B taken
+requireAifB(a,b)
+
+# require course [set] A if course [set] B NOT taken
+requireAifNotB(a,b)
+
+
+Goal: make logic of requirements for a major easy to handle and human-readable. E.g. for COS concentration, we could define it as:
+
+requireAll(['COS126','COS226','COS217'])
+if user.degreeType == 'AB':
+	requireAll(['MAT103','MAT104'])
+	requireKofSet(1,['MAT202','MAT204','MAT217'])
+requireKofSet(2,'theory')
+requireKofSet(2,'applications')
+requireKofSet(2,'systems')
+requireKofSet(2,'other')
+
+ORF REQUIREMENTS
+
+requireAll('corerequirements')
+requireKofSet(1, 'mathrequirement')
+requireKofSet(2, 'orfelectives')
+requireKofSet(6, 'electives')
+
+PSY REQUIREMENTS
+requireAll('prerequisites')
+requireAll('requirement')
+requireKofSet(1, 'statistics')
+requireKofSet(2, '200requirement')
+requireKofSet(3, '300requirement')
+requireKofSet(1, '400requirement')
+requireKofSet(1, 'generalfield')
+
