@@ -1,14 +1,9 @@
 import pdfquery, re #, string
 
 grade_regex = re.compile("\s(A|B|C|D|F|P)(\+|-)?\s")
+grade_re = re.compile("(A|B|C|D|F)(\+|-)?")
 #regex = re.compile('[%s]' % re.escape(string.punctuation))
 regex = re.compile('\'|\"')
-#import views
-#import models
-
-# must unencrypt transcript before using
-# instructions we can give to user: http://smallbusiness.chron.com/remove-encryption-pdf-file-44390.html
-# or http://www.pcworld.com/article/2873665/how-to-remove-encryption-from-a-pdf-file.html
 
 def convert_grade_to_numeric_GPA(grade):
     if grade == "A+":
@@ -35,11 +30,6 @@ def convert_grade_to_numeric_GPA(grade):
         return 1.0
     else:
         return 0.0
-
-# get all eligible majors; 
-# def getMajors(progress):
-#     # code
-#     return None
 
 # returns majors and data in order of number of courses completed.
 def get_major_by_courses(progress):
@@ -225,6 +215,8 @@ def late_show_progress(progress):
         progress_dictionary[key]['num_courses'] = count_courses
     return progress_dictionary
 
+# Receives a list of the student's progress in a list in the form of tuples (coursename,grade,major,track)
+# Returns a dictionary of the student's progress indexed by major or certificate as well as a list of majors and certificates in which courses are being double counted
 def show_progress(progress):
     progress_dictionary = {}
     if progress == None:
@@ -249,7 +241,7 @@ def show_progress(progress):
             major_dict[track] = [(name,grade)]
             progress_dictionary[major] = major_dict
             progress_dictionary[major]['grade'] = 0.0
-        if grade != "P" and grade != "" and grade != "None":
+        if grade != "P" and grade != "" and grade != "None" and re.match(grade_re,grade) != None:
             curr_grade_total = progress_dictionary[major]['grade']
             progress_dictionary[major]['grade']=curr_grade_total+convert_grade_to_numeric_GPA(grade)
     # print progress_dictionary
@@ -266,7 +258,7 @@ def show_progress(progress):
                         doublecount.append((key,key2,name))
                     else:
                         lis_courses.append(name)
-                    if grade != "P" and grade != "" and grade != "None":
+                    if grade != "P" and grade != "" and grade != "None" and re.match(grade_re,grade) != None:
                         count_courses += 1
         if count_courses > 0:
             major_gpa = progress_dictionary[key]['grade'] / count_courses
@@ -274,8 +266,10 @@ def show_progress(progress):
         else:
             progress_dictionary[key]['grade'] = 'Unknown'
         progress_dictionary[key]['num_courses'] = count_courses
-    return progress_dictionary,doublecount
+    return (progress_dictionary,doublecount)
 
+# Receives a string of courses/grades
+# Returns a list of courses/grades
 def parse_manual_courses(courses):
     courses = str(courses)
     if courses == "":
@@ -293,7 +287,8 @@ def parse_manual_courses(courses):
             courses_and_grades.append([course_grad[0],course_grad[1]])
     return courses_and_grades
     
-# WE CAN BUILD COURSE TO DIST REQS DYNAMICALLY
+# Receives a string of a course
+# Returns a list of the course name and grade
 def parse_course(course):
     #print course
     course = course + " "
@@ -326,6 +321,9 @@ def parse_course(course):
     #ret.append(dis_req)
     return ret
 
+# Receives a file
+# If incorrect file or unencrypted, returns None
+# Else returns student info such as name, major, degree, list of courses, number of pdfs used in the form of a list
 def parse_transcript(transcript):
     student = {}
     # we should search for student in our database first and update

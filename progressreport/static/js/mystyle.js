@@ -1,3 +1,5 @@
+var alphanumspace = /^[0-9a-zA-Z\s,\+-]+$/;
+
 $( document ).ready(function() {
 
 	$(".glyphicon-remove").click(function() {
@@ -33,53 +35,47 @@ $( document ).ready(function() {
 			var coursegrade = $(res2).val()
 			var track = $(res).val()
 
-			// from http://stackoverflow.com/questions/17149605/syntaxerror-missing-after-argument-list
-			/*function quoteAndEscape(str) {
-			    return ''
-			        + '&#39;'                      // open quote '
-			        + (''+str)                     // force string
-			            .replace(/\\/g, '\\\\')    // double \
-			            .replace(/"/g, '\\&quot;') // encode "
-			            .replace(/'/g, '\\&#39;')  // encode '
-			        + '&#39;';                     // close quote '
-			}*/
-
 			var dict = {'coursegrade':coursegrade,'major':major,'track':track,'morc':list_forms[3]}
 			var encoded = JSON.stringify(dict)
-			$.ajax({
-		    	url: '/addmajormanualprogress',
-		     	data: encoded,
-		    	type: 'POST',
-		    	async: true,
-		    	contentType: "application/json; charset=utf-8",
-			 	dataType: "text",
-			 	success: function(data) {
-			 		var data = JSON.parse(data)
-                	var courses = data['courses']
-			 		for (var i = 0; i < courses.length; i++) {
-			 			var toselect = "#"
-			 			var restoselect = toselect.concat(major,"-",track,"-info-",list_forms[1])
-			 			c = courses[i][0]
-			 			g = courses[i][1]
-			 			var toadd = "<tr><td>"
-			 			var toaddmore = toadd.concat(c,"</td><td>",g,"</td>")
-			 			var toadd2 = toaddmore.concat('<span name=\\&quot;',major,'-',track,'-',list_forms[3][0],'\\&quot;')
-			 			var toadd3 = toadd2.concat('class=\\&quot;glyphicon glyphicon-remove\\&quot; aria-hidden=\\&quot;true\\&quot;></span></td></tr>')
-			 			//console.log(toadd3)
-			 			if ($(restoselect).length) {
-			 				$(restoselect).after(toadd3)
-			 			}
-			 			else {
-			 				toselect = "table#"
-			 				restoselect = toselect.concat(major,"-",list_forms[1])
-			 				var newrowheader = '<tr class=info id='
-			 				var addme = newrowheader.concat(major,'-',track,'-info-',list_forms[1],'><th style=background-color:#d9edf7;border: 1px solid #ddd;padding:5px; colspan=2>',track,'</th></tr>',toadd3)
-			 				$(restoselect).children().first().before(addme)
-			 			}
+			if (coursegrade.match(alphanumspace)) {
+				$.ajax({
+			    	url: '/addmajormanualprogress',
+			     	data: encoded,
+			    	type: 'POST',
+			    	async: true,
+			    	contentType: "application/json; charset=utf-8",
+				 	dataType: "text",
+				 	success: function(data) {
+				 		var data = JSON.parse(data)
+	                	var courses = data['courses']
+				 		for (var i = 0; i < courses.length; i++) {
+				 			var toselect = "#"
+				 			var restoselect = toselect.concat(major,"-",track,"-info-",list_forms[1])
+				 			c = courses[i][0]
+				 			g = courses[i][1]
+				 			var toadd = "<tr><td>"
+				 			var toaddmore = toadd.concat(c,"</td><td>",g,"</td>")
+				 			var toadd2 = toaddmore.concat('<span name=\\&quot;',major,'-',track,'-',list_forms[3][0],'\\&quot;')
+				 			var toadd3 = toadd2.concat('class=\\&quot;glyphicon glyphicon-remove\\&quot; aria-hidden=\\&quot;true\\&quot;></span></td></tr>')
+				 			//console.log(toadd3)
+				 			if ($(restoselect).length) {
+				 				$(restoselect).after(toadd3)
+				 			}
+				 			else {
+				 				toselect = "table#"
+				 				restoselect = toselect.concat(major,"-",list_forms[1])
+				 				var newrowheader = '<tr class=info id='
+				 				var addme = newrowheader.concat(major,'-',track,'-info-',list_forms[1],'><th style=background-color:#d9edf7;border: 1px solid #ddd;padding:5px; colspan=2>',track,'</th></tr>',toadd3)
+				 				$(restoselect).children().first().before(addme)
+				 			}
 
-			 		}
-			 	}
-		    });
+				 		}
+				 	}
+			    });
+			}
+			else {
+				
+			}
 		});
 	});
 
@@ -99,10 +95,6 @@ function logout() {
     });
 }
 
-function remove_course() {
-
-}
-
 function delete_acc() {
 	$.ajax({
         url: '/deleteaccount',
@@ -118,22 +110,28 @@ function add_to_progress() {
 	var form = $("#extra-courses").val() //.children('fieldset').children('input').first().val()
 	var dict = {'courses':form}
 	var encoded = JSON.stringify(dict)
-	$.ajax({
-    	url: '/addmanualprogress',
-     	data: encoded,
-    	type: 'POST',
-    	async: true,
-    	contentType: "application/json; charset=utf-8",
-	 	dataType: "text",
- 		success: function(data) {
- 			window.location.reload(true);
- 			/*$.ajax({
-        		url: '/refreshandreloadpage',
-        		type: 'GET',
-        		async: true
-    		});*/
-		}
-    });
+	if (form.match(alphanumspace)) {
+		$("#mistake").html("");
+		$.ajax({
+	    	url: '/addmanualprogress',
+	     	data: encoded,
+	    	type: 'POST',
+	    	async: true,
+	    	contentType: "application/json; charset=utf-8",
+		 	dataType: "text",
+	 		success: function(data) {
+	 			window.location.reload(true);
+	 			/*$.ajax({
+	        		url: '/refreshandreloadpage',
+	        		type: 'GET',
+	        		async: true
+	    		});*/
+			}
+	    });
+	}
+	else {
+		$("#mistake").text("Oops! This doesn't look like a correctly formatted list of courses to us! Please check the example.")
+	}
 
 }
 
@@ -231,8 +229,8 @@ function refresh() {
 			// show all major PIN buttons
 			var maj_id = $(obj).attr('id')
 	    	maj_id = maj_id.substring(maj_id.length - 3)
-	    	console.log("id: "+maj_id)
-	    	console.log($(".major-"+maj_id))
+	    	//console.log("id: "+maj_id)
+	    	//console.log($(".major-"+maj_id))
 			$(".major-"+maj_id).each(function(obj) {
 				$(this).find(".pin-major").each(function() {
 					$(this).css("visibility","visible")

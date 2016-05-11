@@ -3,6 +3,9 @@ grade_regex = re.compile("(A|B|C|D|F|P)(\+|-)?")
 regex = re.compile('\'|\"')
 #regex2 = re.compile('\( ([^\)]*,) ([^\)]*,) ([^\)]*) \)')
 
+# Receives a list of majors (maj) and list of certificates (certs) as input
+# Returns a dictionary with major/certificate names as keys and, as values, dictionaries consisting of the 
+# number of pdfs allowed in that major or certificate, the total number of courses required, and the number of courses needed in each track
 def get_major_cert_requirements(maj,certs):
     maj_to_needs = {}
 
@@ -73,17 +76,19 @@ def get_major_cert_requirements(maj,certs):
 
     return maj_to_needs
 
-def delete_account(netid):
-    try:
-        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
-    except:
-        return None
-    curr = conn.cursor()
-    curr.execute("DELETE FROM users WHERE netid = '"+netid+"';")
-    conn.commit()
-    curr.close()
-    conn.close()
+#def delete_account(netid):
+#    try:
+#        conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
+#    except:
+#        return None
+#    curr = conn.cursor()
+#    curr.execute("DELETE FROM users WHERE netid = '"+netid+"';")
+#    conn.commit()
+#    curr.close()
+#    conn.close()
 
+# Receives a student's netid
+# Returns a list with the student's name, degree type, major, and number of pdfs completed
 def get_student_info(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -93,22 +98,33 @@ def get_student_info(netid):
 
     curr.execute("SELECT name FROM users WHERE netid = '"+netid+"';")
     name = curr.fetchone()
+    if name != None:
+        name = name[0]
 
     curr.execute("SELECT degree FROM users WHERE netid = '"+netid+"';")
     deg = curr.fetchone()
+    if deg != None:
+        deg = deg[0]
 
     curr.execute("SELECT major FROM users WHERE netid = '"+netid+"';")
     maj = curr.fetchone()
+    if maj != None:
+        maj = maj[0]
 
     curr.execute("SELECT num_pdfs FROM users WHERE netid = '"+netid+"';")
     pdfs = curr.fetchone()
+    if pdfs != None:
+        pdfs = pdfs[0]
+    else:
+        pdfs = 0
 
     curr.close()
     conn.close()
 
-    return [name[0],deg[0],maj[0],pdfs[0]]
+    return [name,deg,maj,pdfs]
 
-# USES A WEIGHTING SCHEMA, then suggests top 5 courses - insert some randomness
+# Receives a student's netid
+# Returns a list of tuples of recommended courses where each tuple is in the form (name_of_course,list_of_all_tracks_it_fulfills,list_of_all_majors_it_fulfills,weight_of_recommendation)
 def suggestcourses(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -296,8 +312,13 @@ def suggestcourses(netid):
 
     curr.close()
     conn.close()
-    return new_potential_courses[0:5]
+    if len(new_potential_courses) >= 5:
+        return new_potential_courses[0:5]
+    else:
+        return new_potential_courses
 
+# Receives a net id and course name
+# Returns a tuple of the majors and certificates the course helps fulfill in the form (majors on user's board, certificates on user's board, other majors/certificates)
 def get_course_value(netid,course):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -399,7 +420,8 @@ def get_course_value(netid,course):
             incer.append(e)
     return (inmaj,incer,els)
     
-
+# Receives a netid
+# Returns None if the user is new and the netid if it is a returning user
 def search_users(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -414,6 +436,9 @@ def search_users(netid):
     conn.close()
     return netid
 
+# Receives a student's info, netid, and a flag indicating whether the user is on the login or sign up page
+# Adds a new user to the database or updates an old user's information
+# Returns the user's netid
 def add_user(studentinfo,netid,flag):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -427,7 +452,7 @@ def add_user(studentinfo,netid,flag):
     nettry = search_users(netid)
     # reset progress
     if nettry != None and flag == True:
-        print nettry, studentinfo[1],studentinfo[2]
+        #print nettry, studentinfo[1],studentinfo[2]
         name = studentinfo[0]
         degree = studentinfo[1]
         major = studentinfo[2]
@@ -478,6 +503,10 @@ def add_user(studentinfo,netid,flag):
     conn.close()
     return netid
 
+# Receives a user's netid
+# If the user's progress has not been calculated or needs to be recalculated, recalculates the progress
+# Otherwise, obtains the progress list from the database
+# Returns a user's major progress in a list of tuples of the form (course_name,grade,major_fulfilled,track_fulfilled)
 def get_progress(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -578,6 +607,10 @@ def get_progress(netid):
        # print progress
        # return progress
 
+# Receives a user's netid
+# If the user's progress has not been calculated or needs to be recalculated, recalculates the progress
+# Otherwise, obtains the progress list from the database
+# Returns a user's certificate progress in a list of tuples of the form (course_name,grade,certificate_fulfilled,track_fulfilled)
 def get_progress_certificates(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -678,7 +711,9 @@ def get_progress_certificates(netid):
        # print progress
        # return progress
 
-
+# Receives a user's netid and their calculated progress list
+# Saves their progress to the database
+# Returns their progress list in the form of a list of tuples (course_name,grade,major_fulfilled,track_fulfilled)
 def save_progress(netid,progress):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -701,6 +736,9 @@ def save_progress(netid,progress):
     conn.close()
     return ret
 
+# Receives a user's netid and their calculated progress list
+# Saves their progress to the database
+# Returns their progress list in the form of a list of tuples (course_name,grade,certificate_fulfilled,track_fulfilled)
 def save_progress_certificates(netid,progress):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -724,7 +762,8 @@ def save_progress_certificates(netid,progress):
     conn.close()
     return ret
 
-# deletes only progress, not transcript
+# Receives a student's netid, morc (whether we are considering major or certificate progress), and the course, major, and track to be deleted from progress
+# Deletes only part of a user's "progress", does not change the list of a user's courses in the database
 def delete_progress(netid,course,major,track,morc):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -760,6 +799,8 @@ def delete_progress(netid,course,major,track,morc):
     curr.close()
     conn.close()
 
+# Receives a student's netid, morc (whether we are considering major or certificate progress), and the course, major, and track to be added to progress
+# Updates a user's progress, but does not change their list of courses
 def add_major_specific_manual_progress(netid,coursegrade,major,track,morc):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -781,10 +822,13 @@ def add_major_specific_manual_progress(netid,coursegrade,major,track,morc):
             continue
         #print course_grad
         if len(course_grad) == 1:
-            courses_and_grades.append([course_grad[0],"None",major,track])
+            courses_and_grades.append([course_grad[0].upper(),"None",major,track])
         else:
+            if len(course_grad[1]) == 3:
+                courses_and_grades.append([course_grad[0].upper()+course_grad[1].upper(),"None",major,track])
             #if grade_regex.find_all(course_grad[1]) != None:
-            courses_and_grades.append([course_grad[0],course_grad[1],major,track])
+            else:
+                courses_and_grades.append([course_grad[0].upper(),course_grad[1].upper(),major,track])
     org_courses = courses_and_grades
     courses_and_grades = str(courses_and_grades)
     courses_and_grades = regex.sub("",courses_and_grades)
@@ -812,6 +856,8 @@ def add_major_specific_manual_progress(netid,coursegrade,major,track,morc):
     conn.close()
     return org_courses
 
+# Receives a user's netid and list of courses and grades to add
+# Adds each course and grade (or None if it is absent) to the user's list of courses and deletes user's fulfilled/fullfilledcerts values, which will be recalcuated on reload
 def update_just_transcript(netid, courses):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -838,9 +884,9 @@ def update_just_transcript(netid, courses):
             continue
         #print course_grad
         if len(course_grad) == 1:
-            courses_and_grades.append([course_grad[0],"None"])
+            courses_and_grades.append([course_grad[0].upper(),"None"])
         else:
-            courses_and_grades.append([course_grad[0],course_grad[1]])
+            courses_and_grades.append([course_grad[0].upper(),course_grad[1].upper()])
     courses_and_grades = str(courses_and_grades)
     courses_and_grades = regex.sub("",courses_and_grades)
     courses_and_grades = courses_and_grades.replace("[","{")
@@ -850,6 +896,8 @@ def update_just_transcript(netid, courses):
     curr.close()
     conn.close()
 
+# Receives a user's netid
+# Returns their list of interested majors and certificates in a tuple or None for either field if empty
 def get_major_certificate_interests(netid):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
@@ -872,6 +920,8 @@ def get_major_certificate_interests(netid):
     conn.close()
     return (intmajors,intcerts)
 
+# Receives a user's netid and a list of majors and certificates they are interested in
+# Saves these majors and certificates to user's interested_majors, interested_certificates fields in the database
 def save_major_and_certificate_interests(netid,majcert):
     try:
         conn = psycopg2.connect('postgres://gordibbmgwbven:7uBEh3xUMiB5g9c9fpOcXg_Mr9@ec2-54-83-57-25.compute-1.amazonaws.com:5432/d1c29niorsfphk')
