@@ -122,6 +122,7 @@ def upload_file():
         if nid == "" or None:
            loginpage = C.Authenticate1()
            return redirect(loginpage)
+        # nid = 'mlchow'
         session['netid'] = nid
         netid = search_users(nid)
         if netid:
@@ -184,6 +185,7 @@ def upload_file():
         if netid is None:
             loginpage = C.Authenticate1()
             return redirect(loginpage)
+        # netid = 'mlchow'
         if file:
             studentinfo = parse_transcript(file)
             if studentinfo == None:
@@ -257,4 +259,4 @@ def upload_file():
 if __name__ == "__main__":
     port = int(os.environ['PORT'])
     app.run(host='0.0.0.0', port=port)
-    #app.run(host='127.0.0.1', port=5000, debug=True)
+    # app.run(host='127.0.0.1', port=5000, debug=True)
